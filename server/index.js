@@ -12,21 +12,55 @@ app.use(cors())
 // app.use(auth) Per avere apikey su tutti gli endpoint
 app.use(express.json())
 
-var SpotifyWebApi = require('spotify-web-api-node');
-
-// credentials are optional
-var spotifyApi = new SpotifyWebApi({
-  clientId: '2671048b97804e938412fcbe2810b373',
-  clientSecret: '3b8081f11e264df7bc3b45bdbd23ebf1'
-});
-spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
-    function(data) {
-      console.log('Artist albums', data.body);
+const client_id = "2671048b97804e938412fcbe2810b373"
+const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1"
+var my_access_token
+var url = "https://accounts.spotify.com/api/token"
+fetch(url, {
+    method: "POST",
+    headers: {
+        Authorization: "Basic " + btoa(`${client_id}:${client_secret}`),
+        "Content-Type": "application/x-www-form-urlencoded",
     },
-    function(err) {
-      console.error(err);
+    body: new URLSearchParams({ grant_type: "client_credentials" }),
+})
+    .then((response) => response.json())
+    .then((tokenResponse) => {
+        //Sarebbe opportuno salvare il token nel local storage
+        my_access_token = tokenResponse.access_token
+        console.log(my_access_token)
     }
-  );
+    )
+var SpotifyWebApi = require('spotify-web-api-node');
+const { Console } = require('console');
+var spotifyApi = new SpotifyWebApi({
+    clientId: client_id,
+    clientSecret: client_secret,
+});
+// spotifyApi.setAccessToken(''+`${my_access_token}`);
+spotifyApi.setAccessToken(`BQCRyPhlxclmKQB7yuWIQ_vKQqTnvPeEkRzRbfXeAtr-rawc9nO-aMPRt7yQbwA8E-wAXSdaZo5qoHiQdb1lF2gCUdygYZryWekfeuB2eAM44j98hWU`);
+getTrack("6rPO02ozF3bM7NnOV4h6s2")
+function getTrack(id_track){
+    spotifyApi.getTrack(`${id_track}`).then(
+    function (data) {
+        let track=data.body;
+        console.log(track.name);
+    },
+    function (err) {
+        console.error(err);
+    }
+);
+}
+function getAlbum(id_album){
+spotifyApi.getArtistAlbums(`${id_album}`).then(
+    function (data) {
+        console.log('Artist albums', data.body);
+    },
+    function (err) {
+        console.error(err);
+    }
+);
+}
 function hash(input) {
     return crypto.createHash('md5')
         .update(input)
@@ -146,7 +180,7 @@ async function updateUser(res, id, updatedUser) {
 
 
 async function addFavorites(res, id, movie_id) {
-  
+
     try {
 
         var pwmClient = await new mongoClient(uri).connect()
@@ -154,7 +188,7 @@ async function addFavorites(res, id, movie_id) {
         var filter = { "user_id": new ObjectId(id) }
 
         var favorite = {
-            $push: {movie_ids: movie_id}
+            $push: { movie_ids: movie_id }
         }
         console.log(filter)
         console.log(favorite)
@@ -166,14 +200,14 @@ async function addFavorites(res, id, movie_id) {
         res.send(item)
 
     } catch (e) {
-  
+
         res.status(500).send(`Errore generico: ${e}`)
 
     };
 }
 
 async function removeFavorites(res, id, movie_id) {
-  
+
     try {
 
         var pwmClient = await new mongoClient(uri).connect()
@@ -181,7 +215,7 @@ async function removeFavorites(res, id, movie_id) {
         var filter = { "user_id": new ObjectId(id) }
 
         var favorite = {
-            $pull: {movie_ids: movie_id}
+            $pull: { movie_ids: movie_id }
         }
         console.log(filter)
         console.log(favorite)
@@ -193,7 +227,7 @@ async function removeFavorites(res, id, movie_id) {
         res.send(item)
 
     } catch (e) {
-  
+
         res.status(500).send(`Errore generico: ${e}`)
 
     };
@@ -261,32 +295,32 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/favorites/:id', async (req, res)=>{
-     // Ricerca nel database
-     var id = req.params.id
-     var pwmClient = await new mongoClient(uri).connect()
-     var favorites = await pwmClient.db("pwm")
-         .collection('preferiti')
-         .findOne({ "user_id": new ObjectId(id) })
-     res.json(favorites)
+app.get('/favorites/:id', async (req, res) => {
+    // Ricerca nel database
+    var id = req.params.id
+    var pwmClient = await new mongoClient(uri).connect()
+    var favorites = await pwmClient.db("pwm")
+        .collection('preferiti')
+        .findOne({ "user_id": new ObjectId(id) })
+    res.json(favorites)
 })
 
-app.post('/favorites/:id', async (req, res)=>{
+app.post('/favorites/:id', async (req, res) => {
     // Ricerca nel database
     var id = req.params.id
     movie_id = req.body.movie_id
     console.log(movie_id)
     console.log(id)
-    addFavorites(res,id,movie_id)
+    addFavorites(res, id, movie_id)
 
 })
-app.delete('/favorites/:id', async (req, res)=>{
+app.delete('/favorites/:id', async (req, res) => {
     // Ricerca nel database
     var id = req.params.id
     movie_id = req.body.movie_id
     console.log(movie_id)
     console.log(id)
-    removeFavorites(res,id,movie_id)
+    removeFavorites(res, id, movie_id)
 
 })
 
