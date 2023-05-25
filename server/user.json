@@ -1,0 +1,14 @@
+{
+    "user":{
+"nome":"andrea",
+"cognome":"Ferraboli",
+"email":"andrew.ferro04@gmail.com",
+"data_nascita":"01/01/2000",
+"password":"valerio04",
+"generi_preferiti":["drill","trap","pop"],
+"artisti_preferiti":["id_artista_1","id_artista_2"],
+"id_utente":1,
+"playlist":[{"nome":"top","descrizione":"le migliori","canzoni":[]}]
+
+    }
+}

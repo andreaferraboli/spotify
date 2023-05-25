@@ -5,8 +5,9 @@ const crypto = require('crypto')
 var cors = require('cors')
 const express = require('express')
 const path = require('path');
+const fs = require('fs');
 const uri = "mongodb+srv://pwm:programmazionewebmobile@pwm.0fld6wh.mongodb.net/?retryWrites=true&w=majority";
-
+var SpotifyWebApi = require('spotify-web-api-node');
 const app = express()
 app.use(cors())
 // app.use(auth) Per avere apikey su tutti gli endpoint
@@ -29,37 +30,61 @@ fetch(url, {
         //Sarebbe opportuno salvare il token nel local storage
         my_access_token = tokenResponse.access_token
         console.log(my_access_token)
+        // spotifyApi.setAccessToken(my_access_token);
+
     }
     )
-var SpotifyWebApi = require('spotify-web-api-node');
-const { Console } = require('console');
 var spotifyApi = new SpotifyWebApi({
     clientId: client_id,
     clientSecret: client_secret,
 });
-// spotifyApi.setAccessToken(''+`${my_access_token}`);
-spotifyApi.setAccessToken(`BQCRyPhlxclmKQB7yuWIQ_vKQqTnvPeEkRzRbfXeAtr-rawc9nO-aMPRt7yQbwA8E-wAXSdaZo5qoHiQdb1lF2gCUdygYZryWekfeuB2eAM44j98hWU`);
-getTrack("6rPO02ozF3bM7NnOV4h6s2")
-function getTrack(id_track){
+console.log("my_access_token:" + my_access_token);
+spotifyApi.setAccessToken("BQBDBmnrUnNi95B7kCCLPGDCWo5QeqXnX7HoeC9V8VhbCHnTaj_ut4_ZpXe8C0JVjk6TOT-5TIieTJ6U6oUS-EEuhupxECr-szFcBHvoOsIAVCzYYtw");
+
+
+getPlaylist("6kKHNiL4UuCxSXPv6EuYdl")
+function getTrack(id_track) {
     spotifyApi.getTrack(`${id_track}`).then(
-    function (data) {
-        let track=data.body;
-        console.log(track.name);
-    },
-    function (err) {
-        console.error(err);
-    }
-);
+        function (data) {
+            let track = {
+                "id_track": data.body.id,
+                "name": data.body.name,
+                "artist": data.body.artists.map(artist => artist.id),
+                "album": data.body.album.name,
+                "image": data.body.album.images[0].url,
+                "duration": ms_to_minute(data.body.duration_ms)
+            }
+            console.log(track)
+        },
+        function (err) {
+            console.error(err);
+        }
+    );
 }
-function getAlbum(id_album){
-spotifyApi.getArtistAlbums(`${id_album}`).then(
-    function (data) {
-        console.log('Artist albums', data.body);
-    },
-    function (err) {
-        console.error(err);
-    }
-);
+function getPlaylist(id_playlist) {
+    spotifyApi.getPlaylist(`${id_playlist}`).then(
+        function (data) {
+            let playlist = data.body
+            playlist.tracks.items.forEach(
+                function (item) {
+                    getTrack(item.track.id)
+                }
+            )
+        },
+        function (err) {
+            console.error(err);
+        }
+    );
+}
+function getAlbum(id_album) {
+    spotifyApi.getArtistAlbums(`${id_album}`).then(
+        function (data) {
+            console.log('Artist albums', data.body);
+        },
+        function (err) {
+            console.error(err);
+        }
+    );
 }
 function hash(input) {
     return crypto.createHash('md5')
@@ -305,6 +330,12 @@ app.get('/favorites/:id', async (req, res) => {
     res.json(favorites)
 })
 
+app.get('/playlist/:id', async (req, res) => {
+    // Ricerca nel database
+    var id = req.params.id
+    var pwmClient = await new mongoClient(uri).connect()
+    res.json(favorites)
+})
 app.post('/favorites/:id', async (req, res) => {
     // Ricerca nel database
     var id = req.params.id
@@ -323,7 +354,16 @@ app.delete('/favorites/:id', async (req, res) => {
     removeFavorites(res, id, movie_id)
 
 })
+function ms_to_minute(milliseconds) {
 
+    // Convert milliseconds to minutes and seconds
+    const minutes = Math.floor(milliseconds / 60000);
+    const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
+
+    // Format the result as minutes:seconds
+    const formattedTime = `${minutes}:${seconds.padStart(2, '0')}`;
+    return formattedTime
+}
 
 app.listen(3100, "0.0.0.0", () => {
     console.log("Server partito porta 3100")
