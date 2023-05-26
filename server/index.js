@@ -15,7 +15,7 @@ app.use(express.json())
 
 const client_id = "2671048b97804e938412fcbe2810b373"
 const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1"
-var my_access_token
+var my_access_token, spotifyApi;
 var url = "https://accounts.spotify.com/api/token"
 fetch(url, {
     method: "POST",
@@ -29,45 +29,74 @@ fetch(url, {
     .then((tokenResponse) => {
         //Sarebbe opportuno salvare il token nel local storage
         my_access_token = tokenResponse.access_token
-        console.log(my_access_token)
-        // spotifyApi.setAccessToken(my_access_token);
-
+        spotifyApi = new SpotifyWebApi({
+            clientId: client_id,
+            clientSecret: client_secret,
+        });
+        spotifyApi.setAccessToken(my_access_token);
+        getPlaylist("6kKHNiL4UuCxSXPv6EuYdl")
     }
     )
-var spotifyApi = new SpotifyWebApi({
-    clientId: client_id,
-    clientSecret: client_secret,
-});
-console.log("my_access_token:" + my_access_token);
-spotifyApi.setAccessToken("BQBDBmnrUnNi95B7kCCLPGDCWo5QeqXnX7HoeC9V8VhbCHnTaj_ut4_ZpXe8C0JVjk6TOT-5TIieTJ6U6oUS-EEuhupxECr-szFcBHvoOsIAVCzYYtw");
 
 
-getPlaylist("6kKHNiL4UuCxSXPv6EuYdl")
-function getTrack(id_track) {
-    spotifyApi.getTrack(`${id_track}`).then(
-        function (data) {
-            let track = {
-                "id_track": data.body.id,
-                "name": data.body.name,
-                "artist": data.body.artists.map(artist => artist.id),
-                "album": data.body.album.name,
-                "image": data.body.album.images[0].url,
-                "duration": ms_to_minute(data.body.duration_ms)
-            }
-            console.log(track)
-        },
-        function (err) {
-            console.error(err);
-        }
-    );
+
+
+// function getTrack(id_track) {
+//     let track
+//     spotifyApi.getTrack(`${id_track}`).then(
+//         function (data) {
+//             track = {
+//                 "id_track": data.body.id,
+//                 "name": data.body.name,
+//                 "artist": data.body.artists.map(artist => artist.id),
+//                 "album": data.body.album.name,
+//                 "image": data.body.album.images[0].url,
+//                 "duration": ms_to_minute(data.body.duration_ms)
+//             }
+//         },
+//         function (err) {
+//             console.error(err);
+//         }
+//     );
+//     return track
+// }
+async function getTrack(id_track) {
+    try {
+        const data = await spotifyApi.getTrack(`${id_track}`);
+        const track = {
+            "id_track": data.body.id,
+            "name": data.body.name,
+            "artist": data.body.artists.map(artist => artist.id),
+            "album": data.body.album.name,
+            "image": data.body.album.images[0].url,
+            "duration": ms_to_minute(data.body.duration_ms)
+        };
+        return track;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+async function getArtistNameFromId(id_artist) {
+    try {
+        const artist = await spotifyApi.getArtist(`${id_artist}`);
+        return artist.body.name;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }
 function getPlaylist(id_playlist) {
     spotifyApi.getPlaylist(`${id_playlist}`).then(
         function (data) {
             let playlist = data.body
             playlist.tracks.items.forEach(
-                function (item) {
-                    getTrack(item.track.id)
+                async function (item) {
+                    let track = await getTrack(item.track.id)
+                    track.artist.forEach(async (artist) => {
+                        const artistName = await getArtistNameFromId(artist);
+                        console.log("nome_artista:" + artistName);
+                    });
                 }
             )
         },
@@ -270,7 +299,9 @@ app.post("/users", auth, function (req, res) {
 
 })
 
-
+app.get("/login", async function (req, res) {
+    res.sendFile(path.join("../client/spotify-app/public", 'public', 'index.html'));
+})
 app.post("/login", async (req, res) => {
     login = req.body
 
