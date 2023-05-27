@@ -1,8 +1,12 @@
 import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import MyNavbar from './components/navbar';
 import './App.css';
 
 function App() {
   return (
+    <>
+    <MyNavbar />
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -19,6 +23,7 @@ function App() {
         </a>
       </header>
     </div>
+    </>
   );
 }
 
