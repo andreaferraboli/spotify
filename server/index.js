@@ -12,7 +12,7 @@ const app = express()
 app.use(cors())
 // app.use(auth) Per avere apikey su tutti gli endpoint
 app.use(express.json())
-app.use(express.static(path.join(__dirname, "..", "build")));
+app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
 
 const client_id = "2671048b97804e938412fcbe2810b373"
@@ -349,7 +349,7 @@ app.delete("/users/:id", auth, function (req, res) {
 })
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/index.html'));
+    res.sendFile(path.join(__dirname,'./spotify-app/build', '/index.html'));
 });
 
 
