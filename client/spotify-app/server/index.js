@@ -12,6 +12,8 @@ const app = express()
 app.use(cors())
 // app.use(auth) Per avere apikey su tutti gli endpoint
 app.use(express.json())
+app.use(express.static(path.join(__dirname, "..", "build")));
+app.use(express.static("public"));
 
 const client_id = "2671048b97804e938412fcbe2810b373"
 const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1"
