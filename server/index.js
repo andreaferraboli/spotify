@@ -302,7 +302,7 @@ app.post("/users", auth, function (req, res) {
 })
 
 app.get("/login", async function (req, res) {
-    res.sendFile(path.join("../client/spotify-app/public", 'public', 'index.html'));
+    res.sendFile(path.join(__dirname,'./spotify-app/build', '/login.html'));
 })
 app.post("/login", async (req, res) => {
     login = req.body
