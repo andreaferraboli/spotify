@@ -1,17 +1,13 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom'; // Importa il modulo useHistory per la navigazione
+import React from 'react'; // Importa il modulo useHistory per la navigazione
+import { Link } from 'react-router-dom';
 
 function LoginButton() {
-  const history = useHistory();
 
-  function handleClick() {
-    history.push('/login'); // Reindirizza l'utente alla pagina di login quando il bottone viene premuto
-  }
 
   return (
-    <button onClick={handleClick}>
+      <Link to={"/Login"}>
       Accedi
-    </button>
+      </Link>
   );
 }
 
