@@ -1,27 +1,10 @@
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
-import Layout from "./pages/Layout";
-import Home from "./pages/Home";
-import MyNavbar from "./components/navbar";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
 
-function App() {
-  return (
-    <BrowserRouter>
-      <MyNavbar />
-      <div className="container mt-2" style={{ marginTop: 40 }}>
-        <Routes>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          </Routes>
-          <Routes>
-          <Route path="/layout">
-            <Layout />
-          </Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);

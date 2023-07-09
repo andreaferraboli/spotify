@@ -1,28 +1,28 @@
-import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavbar from './components/navbar';
+import SideBar from './components/Sidebar'
 import { BrowserRouter, Routes, Route} from "react-router-dom";
-import Home from './components/home';
+import Home from '../src/pages/Home';
+import Layout from '../src/pages/Layout';
 
-import './App.css';
+import '../src/style/App.css';
 
 function App() {
   return (
+    <>
     <BrowserRouter>
-      <MyNavbar />
+      <SideBar />
       <div className="container mt-2" style={{ marginTop: 40 }}>
         <Routes>
-          <Route exact path="/">
-            <Home />
+          <Route exact path="/" Component={Home}>
           </Route>
-          </Routes>
-          <Routes>
-          <Route path="/layout">
-            <Layout />
+        </Routes>
+        <Routes>
+          <Route exact path="/layout" Component={Layout}>
           </Route>
         </Routes>
       </div>
-    </BrowserRouter>
+    </BrowserRouter></>
   );
 }
 
