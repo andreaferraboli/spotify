@@ -1,0 +1,52 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "Name": "John",
+        "Surname": "Doe",
+        "Email": "johndoe@example.com",
+        "Password": "password123",
+        "image": "path/to/image1.jpg",
+        "favourite_genres": [
+          {"id": 1, "name": "Action"},
+          {"id": 2, "name": "Drama"}
+        ],
+        "favourite_artists": [
+          {"id": 1, "name": "Artist 1", "image": "path/to/artist1.jpg"},
+          {"id": 2, "name": "Artist 2", "image": "path/to/artist2.jpg"}
+        ]
+      },
+      {
+        "id": 2,
+        "Name": "Jane",
+        "Surname": "Smith",
+        "Email": "janesmith@example.com",
+        "Password": "password456",
+        "image": "path/to/image2.jpg",
+        "favourite_genres": [
+          {"id": 3, "name": "Comedy"},
+          {"id": 4, "name": "Thriller"}
+        ],
+        "favourite_artists": [
+          {"id": 3, "name": "Artist 3", "image": "path/to/artist3.jpg"},
+          {"id": 4, "name": "Artist 4", "image": "path/to/artist4.jpg"}
+        ]
+      },
+      {
+        "id": 3,
+        "Name": "David",
+        "Surname": "Johnson",
+        "Email": "davidjohnson@example.com",
+        "Password": "password789",
+        "image": "path/to/image3.jpg",
+        "favourite_genres": [
+          {"id": 5, "name": "Sci-Fi"},
+          {"id": 6, "name": "Fantasy"}
+        ],
+        "favourite_artists": [
+          {"id": 5, "name": "Artist 5", "image": "path/to/artist5.jpg"},
+          {"id": 6, "name": "Artist 6", "image": "path/to/artist6.jpg"}
+        ]
+      }
+    ]
+  }

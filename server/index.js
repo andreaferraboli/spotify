@@ -1,48 +1,72 @@
-const mongoClient = require('mongodb').MongoClient;
-const ObjectId = require('mongodb').ObjectId;
-const auth = require('./auth').auth
-const crypto = require('crypto')
-var cors = require('cors')
-const express = require('express')
-const path = require('path');
-const fs = require('fs');
-const uri = "mongodb+srv://pwm:programmazionewebmobile@pwm.0fld6wh.mongodb.net/?retryWrites=true&w=majority";
-var SpotifyWebApi = require('spotify-web-api-node');
-const app = express()
-app.use(cors())
-// app.use(auth) Per avere apikey su tutti gli endpoint
-app.use(express.json())
+const mongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectId;
+const auth = require("./auth").auth;
+const crypto = require("crypto");
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const uri =
+  "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
+var SpotifyWebApi = require("spotify-web-api-node");
+const { Binary } = require("mongodb");
+const app = express();
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
 
-const client_id = "2671048b97804e938412fcbe2810b373"
-const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1"
+//connect spotify api
+const client_id = "2671048b97804e938412fcbe2810b373";
+const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1";
 var my_access_token, spotifyApi;
-var url = "https://accounts.spotify.com/api/token"
+var url = "https://accounts.spotify.com/api/token";
 fetch(url, {
-    method: "POST",
-    headers: {
-        Authorization: "Basic " + btoa(`${client_id}:${client_secret}`),
-        "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ grant_type: "client_credentials" }),
+  method: "POST",
+  headers: {
+    Authorization: "Basic " + btoa(`${client_id}:${client_secret}`),
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: new URLSearchParams({ grant_type: "client_credentials" }),
 })
-    .then((response) => response.json())
-    .then((tokenResponse) => {
-        //Sarebbe opportuno salvare il token nel local storage
-        my_access_token = tokenResponse.access_token
-        spotifyApi = new SpotifyWebApi({
-            clientId: client_id,
-            clientSecret: client_secret,
-        });
-        spotifyApi.setAccessToken(my_access_token);
-        getPlaylist("6kKHNiL4UuCxSXPv6EuYdl")
-    }
-    )
+  .then((response) => response.json())
+  .then((tokenResponse) => {
+    //Sarebbe opportuno salvare il token nel local storage
+    my_access_token = tokenResponse.access_token;
+    spotifyApi = new SpotifyWebApi({
+      clientId: client_id,
+      clientSecret: client_secret,
+    });
+    spotifyApi.setAccessToken(my_access_token);
+    getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
+  });
+  (async () => {
+const imageData = fs.readFileSync("foto2.jfif");
+// Conversione in formato binario BSON
+const binaryData = new Binary(imageData);
+let user = {
+  Name: "andrea",
+  Surname: "ferraboli",
+  Email: "johndoe@example.com",
+  Password: "password123",
+  image: binaryData,
+  favourite_genres: [
+    { id: 1, name: "Action" },
+    { id: 2, name: "Drama" },
+  ],
+  favourite_artists: [
+    { id: 1, name: "Artist 1", image: "path/to/artist1.jpg" },
+    { id: 2, name: "Artist 2", image: "path/to/artist2.jpg" },
+  ],
+};
+const client = await mongoClient.connect(uri);
+const db = client.db("spotify");
+const collection = db.collection("users");
+// Inserimento del documento nella collezione MongoDB
+await collection.insertOne(user);
 
-
-
-
+console.log("Documento inserito correttamente.");
+client.close(); // Chiusura della connessione al database
+  }
+)();
 // function getTrack(id_track) {
 //     let track
 //     spotifyApi.getTrack(`${id_track}`).then(
@@ -63,341 +87,319 @@ fetch(url, {
 //     return track
 // }
 async function getTrack(id_track) {
-    try {
-        const data = await spotifyApi.getTrack(`${id_track}`);
-        const track = {
-            "id_track": data.body.id,
-            "name": data.body.name,
-            "artist": data.body.artists.map(artist => artist.id),
-            "album": data.body.album.name,
-            "image": data.body.album.images[0].url,
-            "duration": ms_to_minute(data.body.duration_ms)
-        };
-        return track;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+  try {
+    const data = await spotifyApi.getTrack(`${id_track}`);
+    const track = {
+      id_track: data.body.id,
+      name: data.body.name,
+      artist: data.body.artists.map((artist) => artist.id),
+      album: data.body.album.name,
+      image: data.body.album.images[0].url,
+      duration: ms_to_minute(data.body.duration_ms),
+    };
+    return track;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 async function getArtistNameFromId(id_artist) {
-    try {
-        const artist = await spotifyApi.getArtist(`${id_artist}`);
-        return artist.body.name;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+  try {
+    const artist = await spotifyApi.getArtist(`${id_artist}`);
+    return artist.body.name;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
 function getPlaylist(id_playlist) {
-    spotifyApi.getPlaylist(`${id_playlist}`).then(
-        function (data) {
-            let playlist = data.body
-            playlist.tracks.items.forEach(
-                async function (item) {
-                    let track = await getTrack(item.track.id)
-                    track.artist.forEach(async (artist) => {
-                        const artistName = await getArtistNameFromId(artist);
-                        console.log("nome_artista:" + artistName);
-                    });
-                }
-            )
-        },
-        function (err) {
-            console.error(err);
-        }
-    );
+  spotifyApi.getPlaylist(`${id_playlist}`).then(
+    function (data) {
+      let playlist = data.body;
+      playlist.tracks.items.forEach(async function (item) {
+        let track = await getTrack(item.track.id);
+        track.artist.forEach(async (artist) => {
+          const artistName = await getArtistNameFromId(artist);
+          console.log("nome_artista:" + artistName);
+        });
+      });
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
 }
 function getAlbum(id_album) {
-    spotifyApi.getArtistAlbums(`${id_album}`).then(
-        function (data) {
-            console.log('Artist albums', data.body);
-        },
-        function (err) {
-            console.error(err);
-        }
-    );
+  spotifyApi.getArtistAlbums(`${id_album}`).then(
+    function (data) {
+      console.log("Artist albums", data.body);
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
 }
 function hash(input) {
-    return crypto.createHash('md5')
-        .update(input)
-        .digest('hex')
+  return crypto.createHash("md5").update(input).digest("hex");
 }
-app.get('/users/:id', auth, async function (req, res) {
-    // Ricerca nel database
-    var id = req.params.id
-    var pwmClient = await new mongoClient(uri).connect()
-    var user = await pwmClient.db("pwm")
-        .collection('users')
-        .find({ "_id": new ObjectId(id) })
-        .project({ "password": 0 })
-        .toArray();
-    res.json(user)
-})
+app.get("/users/:id", auth, async function (req, res) {
+  // Ricerca nel database
+  var id = req.params.id;
+  var pwmClient = await new mongoClient(uri).connect();
+  var user = await pwmClient
+    .db("pwm")
+    .collection("users")
+    .find({ _id: new ObjectId(id) })
+    .project({ password: 0 })
+    .toArray();
+  res.json(user);
+});
 
 async function addUser(res, user) {
-    if (user.name == undefined) {
-        res.status(400).send("Missing Name")
-        return
-    }
-    if (user.surname == undefined) {
-        res.status(400).send("Missing Surname")
-        return
-    }
-    if (user.email == undefined) {
-        res.status(400).send("Missing Email")
-        return
-    }
-    if (user.password == undefined || user.password.length < 3) {
-        res.status(400).send("Password is missing or too short")
-        return
-    }
-    if (user.date == undefined) {
-        res.status(400).send("Date is missing or too short")
-        return
-    }
+  if (user.name == undefined) {
+    res.status(400).send("Missing Name");
+    return;
+  }
+  if (user.surname == undefined) {
+    res.status(400).send("Missing Surname");
+    return;
+  }
+  if (user.email == undefined) {
+    res.status(400).send("Missing Email");
+    return;
+  }
+  if (user.password == undefined || user.password.length < 3) {
+    res.status(400).send("Password is missing or too short");
+    return;
+  }
+  if (user.date == undefined) {
+    res.status(400).send("Date is missing or too short");
+    return;
+  }
 
-    user.password = hash(user.password)
+  user.password = hash(user.password);
 
-    var pwmClient = await new mongoClient(uri).connect()
-    try {
-        var items = await pwmClient.db("pwm").collection('users').insertOne(user)
-        res.json(items)
-
+  var pwmClient = await new mongoClient(uri).connect();
+  try {
+    var items = await pwmClient
+      .db("pwm")
+      .collection("spotify")
+      .collection("users")
+      .insertOne(user);
+    // res.json(items)
+    console.log(items);
+  } catch (e) {
+    console.log("catch in test");
+    if (e.code == 11000) {
+      res.status(400).send("Utente già presente");
+      return;
     }
-    catch (e) {
-        console.log('catch in test');
-        if (e.code == 11000) {
-            res.status(400).send("Utente già presente")
-            return
-        }
-        res.status(500).send(`Errore generico: ${e}`)
-
-    };
-
-
+    res.status(500).send(`Errore generico: ${e}`);
+  }
 }
 function deleteUser(res, id) {
-    let index = users.findIndex(user => user.id == id)
-    if (index == -1) {
-        res.status(404).send("User not found")
-        return
-    }
-    users = users.filter(user => user.id != id)
+  let index = users.findIndex((user) => user.id == id);
+  if (index == -1) {
+    res.status(404).send("User not found");
+    return;
+  }
+  users = users.filter((user) => user.id != id);
 
-    res.json(users)
-
-
-
+  res.json(users);
 }
 async function updateUser(res, id, updatedUser) {
-    if (updatedUser.name == undefined) {
-        res.status(400).send("Missing Name")
-        return
-    }
-    if (updatedUser.surname == undefined) {
-        res.status(400).send("Missing Surname")
-        return
-    }
-    if (updatedUser.email == undefined) {
-        res.status(400).send("Missing Email")
-        return
-    }
-    if (updatedUser.password == undefined) {
-        res.status(400).send("Missing Password")
-        return
-    }
-    updatedUser.password = hash(updatedUser.password)
-    try {
+  if (updatedUser.name == undefined) {
+    res.status(400).send("Missing Name");
+    return;
+  }
+  if (updatedUser.surname == undefined) {
+    res.status(400).send("Missing Surname");
+    return;
+  }
+  if (updatedUser.email == undefined) {
+    res.status(400).send("Missing Email");
+    return;
+  }
+  if (updatedUser.password == undefined) {
+    res.status(400).send("Missing Password");
+    return;
+  }
+  updatedUser.password = hash(updatedUser.password);
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
 
-        var pwmClient = await new mongoClient(uri).connect()
+    var filter = { _id: new ObjectId(id) };
 
-        var filter = { "_id": new ObjectId(id) }
-
-        var updatedUserToInsert = {
-            $set: updatedUser
-        }
-
-        var item = await pwmClient.db("pwm")
-            .collection('users')
-            .updateOne(filter, updatedUserToInsert)
-
-        res.send(item)
-
-    } catch (e) {
-        console.log('catch in test');
-        if (e.code == 11000) {
-            res.status(400).send("Utente già presente")
-            return
-        }
-        res.status(500).send(`Errore generico: ${e}`)
-
+    var updatedUserToInsert = {
+      $set: updatedUser,
     };
+
+    var item = await pwmClient
+      .db("pwm")
+      .collection("users")
+      .updateOne(filter, updatedUserToInsert);
+
+    res.send(item);
+  } catch (e) {
+    console.log("catch in test");
+    if (e.code == 11000) {
+      res.status(400).send("Utente già presente");
+      return;
+    }
+    res.status(500).send(`Errore generico: ${e}`);
+  }
 }
 
-
 async function addFavorites(res, id, movie_id) {
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
 
-    try {
+    var filter = { user_id: new ObjectId(id) };
 
-        var pwmClient = await new mongoClient(uri).connect()
-
-        var filter = { "user_id": new ObjectId(id) }
-
-        var favorite = {
-            $push: { movie_ids: movie_id }
-        }
-        console.log(filter)
-        console.log(favorite)
-
-        var item = await pwmClient.db("pwm")
-            .collection('preferiti')
-            .updateOne(filter, favorite)
-
-        res.send(item)
-
-    } catch (e) {
-
-        res.status(500).send(`Errore generico: ${e}`)
-
+    var favorite = {
+      $push: { movie_ids: movie_id },
     };
+    console.log(filter);
+    console.log(favorite);
+
+    var item = await pwmClient
+      .db("pwm")
+      .collection("preferiti")
+      .updateOne(filter, favorite);
+
+    res.send(item);
+  } catch (e) {
+    res.status(500).send(`Errore generico: ${e}`);
+  }
 }
 
 async function removeFavorites(res, id, movie_id) {
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
 
-    try {
+    var filter = { user_id: new ObjectId(id) };
 
-        var pwmClient = await new mongoClient(uri).connect()
-
-        var filter = { "user_id": new ObjectId(id) }
-
-        var favorite = {
-            $pull: { movie_ids: movie_id }
-        }
-        console.log(filter)
-        console.log(favorite)
-
-        var item = await pwmClient.db("pwm")
-            .collection('preferiti')
-            .updateOne(filter, favorite)
-
-        res.send(item)
-
-    } catch (e) {
-
-        res.status(500).send(`Errore generico: ${e}`)
-
+    var favorite = {
+      $pull: { movie_ids: movie_id },
     };
+    console.log(filter);
+    console.log(favorite);
+
+    var item = await pwmClient
+      .db("pwm")
+      .collection("preferiti")
+      .updateOne(filter, favorite);
+
+    res.send(item);
+  } catch (e) {
+    res.status(500).send(`Errore generico: ${e}`);
+  }
 }
 
-app.get('/users', auth, async function (req, res) {
-    var pwmClient = await new mongoClient(uri).connect()
-    var users = await pwmClient.db("pwm").collection('users').find().project({ "password": 0 }).toArray();
-    res.json(users)
-
-})
-
-app.post("/users", auth, function (req, res) {
-    addUser(res, req.body)
-
-})
-
-app.get("/login", async function (req, res) {
-    res.sendFile(path.join(__dirname,'./spotify-app/build', '/login.html'));
-})
-app.post("/login", async (req, res) => {
-    login = req.body
-
-    if (login.email == undefined) {
-        res.status(400).send("Missing Email")
-        return
-    }
-    if (login.password == undefined) {
-        res.status(400).send("Missing Password")
-        return
-    }
-
-    login.password = hash(login.password)
-
-    var pwmClient = await new mongoClient(uri).connect()
-    var filter = {
-        $and: [
-            { "email": login.email },
-            { "password": login.password }
-        ]
-    }
-    var loggedUser = await pwmClient.db("pwm")
-        .collection('users')
-        .findOne(filter);
-    console.log(loggedUser)
-
-
-    if (loggedUser == null) {
-        res.status(401).send("Unauthorized")
-    } else {
-        res.json(loggedUser)
-    }
-
-}
-)
-
-app.put("/users/:id", auth, function (req, res) {
-    updateUser(res, req.params.id, req.body)
-})
-
-app.delete("/users/:id", auth, function (req, res) {
-    deleteUser(res, req.params.id)
-})
-
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname,'./spotify-app/build', '/index.html'));
+app.get("/users", auth, async function (req, res) {
+  var pwmClient = await new mongoClient(uri).connect();
+  var users = await pwmClient
+    .db("pwm")
+    .collection("users")
+    .find()
+    .project({ password: 0 })
+    .toArray();
+  res.json(users);
 });
 
+app.post("/users", auth, function (req, res) {
+  addUser(res, req.body);
+});
 
-app.get('/favorites/:id', async (req, res) => {
-    // Ricerca nel database
-    var id = req.params.id
-    var pwmClient = await new mongoClient(uri).connect()
-    var favorites = await pwmClient.db("pwm")
-        .collection('preferiti')
-        .findOne({ "user_id": new ObjectId(id) })
-    res.json(favorites)
-})
+app.get("/login", async function (req, res) {
+  res.sendFile(path.join(__dirname, "./spotify-app/build", "/login.html"));
+});
+app.post("/login", async (req, res) => {
+  login = req.body;
 
-app.get('/playlist/:id', async (req, res) => {
-    // Ricerca nel database
-    var id = req.params.id
-    var pwmClient = await new mongoClient(uri).connect()
-    res.json(favorites)
-})
-app.post('/favorites/:id', async (req, res) => {
-    // Ricerca nel database
-    var id = req.params.id
-    movie_id = req.body.movie_id
-    console.log(movie_id)
-    console.log(id)
-    addFavorites(res, id, movie_id)
+  if (login.email == undefined) {
+    res.status(400).send("Missing Email");
+    return;
+  }
+  if (login.password == undefined) {
+    res.status(400).send("Missing Password");
+    return;
+  }
 
-})
-app.delete('/favorites/:id', async (req, res) => {
-    // Ricerca nel database
-    var id = req.params.id
-    movie_id = req.body.movie_id
-    console.log(movie_id)
-    console.log(id)
-    removeFavorites(res, id, movie_id)
+  login.password = hash(login.password);
 
-})
+  var pwmClient = await new mongoClient(uri).connect();
+  var filter = {
+    $and: [{ email: login.email }, { password: login.password }],
+  };
+  var loggedUser = await pwmClient
+    .db("pwm")
+    .collection("users")
+    .findOne(filter);
+  console.log(loggedUser);
+
+  if (loggedUser == null) {
+    res.status(401).send("Unauthorized");
+  } else {
+    res.json(loggedUser);
+  }
+});
+
+app.put("/users/:id", auth, function (req, res) {
+  updateUser(res, req.params.id, req.body);
+});
+
+app.delete("/users/:id", auth, function (req, res) {
+  deleteUser(res, req.params.id);
+});
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
+});
+
+app.get("/favorites/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  var pwmClient = await new mongoClient(uri).connect();
+  var favorites = await pwmClient
+    .db("pwm")
+    .collection("preferiti")
+    .findOne({ user_id: new ObjectId(id) });
+  res.json(favorites);
+});
+
+app.get("/playlist/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  var pwmClient = await new mongoClient(uri).connect();
+  res.json(favorites);
+});
+app.post("/favorites/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  movie_id = req.body.movie_id;
+  console.log(movie_id);
+  console.log(id);
+  addFavorites(res, id, movie_id);
+});
+app.delete("/favorites/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  movie_id = req.body.movie_id;
+  console.log(movie_id);
+  console.log(id);
+  removeFavorites(res, id, movie_id);
+});
 function ms_to_minute(milliseconds) {
+  // Convert milliseconds to minutes and seconds
+  const minutes = Math.floor(milliseconds / 60000);
+  const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
 
-    // Convert milliseconds to minutes and seconds
-    const minutes = Math.floor(milliseconds / 60000);
-    const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-
-    // Format the result as minutes:seconds
-    const formattedTime = `${minutes}:${seconds.padStart(2, '0')}`;
-    return formattedTime
+  // Format the result as minutes:seconds
+  const formattedTime = `${minutes}:${seconds.padStart(2, "0")}`;
+  return formattedTime;
 }
 
 app.listen(3100, "0.0.0.0", () => {
-    console.log("Server partito porta 3100")
-})
+  console.log("Server partito porta 3100");
+});
