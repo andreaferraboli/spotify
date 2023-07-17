@@ -101,14 +101,14 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ display: { xs: "flex", md: "flex" } }}>
             
           
             <Chip
               avatar={
-                <Avatar alt={"profile.name"} src={"data:image/jpeg;base64,"+"imageBase64"} />
+                <Avatar alt={"profile.name"} src={"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} />
               }
-              label="Avatar"
+              label="profile.name"
               variant="outlined"
             />
           </Box>

@@ -1,14 +1,233 @@
 {
-    "user":{
-"nome":"andrea",
-"cognome":"Ferraboli",
-"email":"andrew.ferro04@gmail.com",
-"data_nascita":"01/01/2000",
-"password":"valerio04",
-"generi_preferiti":["drill","trap","pop"],
-"artisti_preferiti":["id_artista_1","id_artista_2"],
-"id_utente":1,
-"playlist":[{"nome":"top","descrizione":"le migliori","canzoni":[]}]
-
+    "user": {
+        "name": "Andrea",
+        "surname": "Ferraboli",
+        "profile_name": "Ferro24",
+        "email": "andrew.ferro04@gmail.com",
+        "data_nascita": "06/02/2004",
+        "password": "valerio04",
+        "image": "https://i.scdn.co/image/ab67757000003b82bcc4a300836b36834d303f46",
+        "favourite_genres": [
+            "Italian Hip Hop",
+            "Trap Italiana",
+            "Italian Pop"
+        ],
+        "favourite_artists": [
+            {
+                "id": "6jQZzWW3JlEtcRDSzFVKSP",
+                "images": "https://i.scdn.co/image/ab6761610000e5eb9cce35e850e54787804c149b",
+                "name": "Nitro"
+            },
+            {
+                "id": "0jdNdfi4vAuVi7a6cPDFBM",
+                "images": "https://i.scdn.co/image/ab6761610000e5eb103145a011fa33254e44cb77",
+                "name": "Lazza"
+            }
+        ],
+        "my_playlists": [
+            {
+                "id": "6kKHNiL4UuCxSXPv6EuYdl",
+                "name": "Top 10 capodanno",
+                "description": "top 10 capodanno sbocca",
+                "image": "https://mosaic.scdn.co/640/ab67616d0000b27301161c81847e31dd1817926aab67616d0000b2730abc6f5e1604d28b84064beeab67616d0000b27335d5abb6caff233c270d2d0cab67616d0000b2735880f9b11a2e6289f9db78d5",
+                "tracks": [
+                    {
+                        "id": "3h043RAJ7tKaG1HDFeet6w",
+                        "name": "Hace Calor - Remix",
+                        "duration": 247384,
+                        "image": "https://i.scdn.co/image/ab67616d0000b2730abc6f5e1604d28b84064bee",
+                        "album_name": "Hace Calor (Remix)",
+                        "artists": [
+                            {
+                                "id": "5U5wYVqrbD6J8SK4kNhau4",
+                                "name": "Kaleb Di Masi"
+                            },
+                            {
+                                "id": "23TFHmajVfBtlRx5MXqgoz",
+                                "name": "Sfera Ebbasta"
+                            },
+                            {
+                                "id": "2CCgb0KApjfQDuTppovpf8",
+                                "name": "Rvfv"
+                            },
+                            {
+                                "id": "5xIOUIBQhGFX7HIj8lhdyU",
+                                "name": "Omar Varela"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5YSR0sWUZk7NuIbkycxndu",
+                        "name": "NUOVO RANGE (con SFERA EBBASTA)",
+                        "duration": 176772,
+                        "image": "https://i.scdn.co/image/ab67616d0000b27301161c81847e31dd1817926a",
+                        "album_name": "TAXI DRIVER",
+                        "artists": [
+                            {
+                                "id": "056KMTw6IztdQjBmFfVyO3",
+                                "name": "Rkomi"
+                            },
+                            {
+                                "id": "23TFHmajVfBtlRx5MXqgoz",
+                                "name": "Sfera Ebbasta"
+                            },
+                            {
+                                "id": "63pCdEiziMCDjGOdM1XCrJ",
+                                "name": "Junior K"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1PWOkqMORYdGa0OEh2GaXM",
+                        "name": "Notti In Bianco",
+                        "duration": 176400,
+                        "image": "https://i.scdn.co/image/ab67616d0000b2735880f9b11a2e6289f9db78d5",
+                        "album_name": "Blu Celeste",
+                        "artists": [
+                            {
+                                "id": "1MRiIeZbc0cRuxOafDUCtH",
+                                "name": "BLANCO"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1x3Qb8np6S1UvpSLthwEJN",
+                        "name": "MI FAI IMPAZZIRE",
+                        "duration": 220235,
+                        "image": "https://i.scdn.co/image/ab67616d0000b27335d5abb6caff233c270d2d0c",
+                        "album_name": "MI FAI IMPAZZIRE",
+                        "artists": [
+                            {
+                                "id": "1MRiIeZbc0cRuxOafDUCtH",
+                                "name": "BLANCO"
+                            },
+                            {
+                                "id": "23TFHmajVfBtlRx5MXqgoz",
+                                "name": "Sfera Ebbasta"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1JAkXiY10vwLhSbcsiimrp",
+                        "name": "Body (Remix) [feat. Capo Plaza & Rondodasosa]",
+                        "duration": 205106,
+                        "image": "https://i.scdn.co/image/ab67616d0000b273c39ad754fbcc3b85d9dd947b",
+                        "album_name": "Body (Remix) [feat. Capo Plaza & Rondodasosa]",
+                        "artists": [
+                            {
+                                "id": "7b79bQFziJFedJb75k6hFt",
+                                "name": "Tion Wayne"
+                            },
+                            {
+                                "id": "3FoFW2AoUGRHBacC6i4x4p",
+                                "name": "Russ Millions"
+                            },
+                            {
+                                "id": "5SulO4l40qDuV9zUGLZx7n",
+                                "name": "Capo Plaza"
+                            },
+                            {
+                                "id": "61bQ4nwIioR8w6PGxzpyY3",
+                                "name": "Rondodasosa"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5Hjy8lyZ4h99OjrW8jzPQ8",
+                        "name": "s!r! (feat. Lazza & Sfera Ebbasta)",
+                        "duration": 237701,
+                        "image": "https://i.scdn.co/image/ab67616d0000b27390160a76ca2d3f0c101037f5",
+                        "album_name": "c@ra++ere s?ec!@le",
+                        "artists": [
+                            {
+                                "id": "19i93sA0D7yS9dYoVNBqAA",
+                                "name": "thasup"
+                            },
+                            {
+                                "id": "0jdNdfi4vAuVi7a6cPDFBM",
+                                "name": "Lazza"
+                            },
+                            {
+                                "id": "23TFHmajVfBtlRx5MXqgoz",
+                                "name": "Sfera Ebbasta"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5BqUbKq9rCMrCkRtAiz8XA",
+                        "name": "Settimana Bianca",
+                        "duration": 160476,
+                        "image": "https://i.scdn.co/image/ab67616d0000b273ef32132e1bd4bbababcf23a1",
+                        "album_name": "Paninaro 2.0",
+                        "artists": [
+                            {
+                                "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                                "name": "Il Pagante"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "67vjEOTkBppbVLUUq5mEJz",
+                        "name": "7 miliardi",
+                        "duration": 167089,
+                        "image": "https://i.scdn.co/image/ab67616d0000b273b5f4e1b36afafef6f9fbf80a",
+                        "album_name": "Scialla Semper",
+                        "artists": [
+                            {
+                                "id": "1El4YQA8oCXX7ynFSxRTFq",
+                                "name": "Massimo Pericolo"
+                            },
+                            {
+                                "id": "3o1cwVQfiDWafhYA02k13C",
+                                "name": "Crookers"
+                            },
+                            {
+                                "id": "3PbxfXGwcCLn85zVQK1ulo",
+                                "name": "Nic Sarno"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "2yuYI5NFhevxa05se7Qht9",
+                        "name": "ANSIA NO",
+                        "duration": 148500,
+                        "image": "https://i.scdn.co/image/ab67616d0000b27363747df539403e888e3f0e06",
+                        "album_name": "FSK TRAPSHIT REVENGE",
+                        "artists": [
+                            {
+                                "id": "4UikIA2yhd0jVJSXD9IOJH",
+                                "name": "FSK SATELLITE"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "21Ay8mJRYQuOMZp7qyQXl6",
+                        "name": "50 Special",
+                        "duration": 207520,
+                        "image": "https://i.scdn.co/image/ab67616d0000b273589e77507829df900fed2f9e",
+                        "album_name": "...Squérez?",
+                        "artists": [
+                            {
+                                "id": "4ZbsxiS90Pj1gLeDv3A9mN",
+                                "name": "Lùnapop"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "4ySxBjhmdnkeFUqhKxW3cY",
+                        "name": "Visiera A Becco",
+                        "duration": 187573,
+                        "image": "https://i.scdn.co/image/ab67616d0000b2730b5557811b1eab235b1fade4",
+                        "album_name": "Sfera Ebbasta",
+                        "artists": [
+                            {
+                                "id": "23TFHmajVfBtlRx5MXqgoz",
+                                "name": "Sfera Ebbasta"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 }
