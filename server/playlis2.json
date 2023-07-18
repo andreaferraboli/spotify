@@ -1,0 +1,499 @@
+{
+    "description": "",
+    "id": "1i1Xb0oQe7acaAfXlUFmAE",
+    "images": [
+        {
+            "url": "https://mosaic.scdn.co/640/ab67616d0000b2734b66e712b1c3d8936a81dddeab67616d0000b273570975a05831785b6c53db20ab67616d0000b273a177e3ce196972c4a8433337ab67616d0000b273c2c632d61fc2736d2469f58d",
+            "height": 640,
+            "width": 640
+        },
+        {
+            "url": "https://mosaic.scdn.co/300/ab67616d0000b2734b66e712b1c3d8936a81dddeab67616d0000b273570975a05831785b6c53db20ab67616d0000b273a177e3ce196972c4a8433337ab67616d0000b273c2c632d61fc2736d2469f58d",
+            "height": 300,
+            "width": 300
+        },
+        {
+            "url": "https://mosaic.scdn.co/60/ab67616d0000b2734b66e712b1c3d8936a81dddeab67616d0000b273570975a05831785b6c53db20ab67616d0000b273a177e3ce196972c4a8433337ab67616d0000b273c2c632d61fc2736d2469f58d",
+            "height": 60,
+            "width": 60
+        }
+    ],
+    "name": "Good vibes",
+    "tracks": {
+        "items": [
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273d31dd2a6061888af1677ca3b",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02d31dd2a6061888af1677ca3b",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851d31dd2a6061888af1677ca3b",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Unico"
+                    },
+                    "artists": [
+                        {
+                            "id": "0QrUbsrL5imqntAfDl8i7q",
+                            "name": "Fred De Palma"
+                        },
+                        {
+                            "id": "7FNnA9vBm6EKceENgCGRMb",
+                            "name": "Anitta"
+                        }
+                    ],
+                    "duration_ms": 167719,
+                    "id": "0pmtvLQaPHx6nqZmi2KDbr",
+                    "name": "Un altro ballo (feat. Anitta)"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273d31dd2a6061888af1677ca3b",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02d31dd2a6061888af1677ca3b",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851d31dd2a6061888af1677ca3b",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Unico"
+                    },
+                    "artists": [
+                        {
+                            "id": "0QrUbsrL5imqntAfDl8i7q",
+                            "name": "Fred De Palma"
+                        },
+                        {
+                            "id": "7FNnA9vBm6EKceENgCGRMb",
+                            "name": "Anitta"
+                        }
+                    ],
+                    "duration_ms": 141062,
+                    "id": "5NPahZFD5tDYKo9qRkLF5B",
+                    "name": "Paloma (feat. Anitta)"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273ef32132e1bd4bbababcf23a1",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02ef32132e1bd4bbababcf23a1",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851ef32132e1bd4bbababcf23a1",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Paninaro 2.0"
+                    },
+                    "artists": [
+                        {
+                            "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                            "name": "Il Pagante"
+                        }
+                    ],
+                    "duration_ms": 160476,
+                    "id": "5BqUbKq9rCMrCkRtAiz8XA",
+                    "name": "Settimana Bianca"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b2735e88440b35c26fddb6ab39bd",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e025e88440b35c26fddb6ab39bd",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d000048515e88440b35c26fddb6ab39bd",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Domani ci passa"
+                    },
+                    "artists": [
+                        {
+                            "id": "5RXnKYBIxi8zcFNCz03T71",
+                            "name": "Ludwig"
+                        }
+                    ],
+                    "duration_ms": 145462,
+                    "id": "3elLXGwE5zaREuOzWdlRJ2",
+                    "name": "Domani ci passa"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b27352430b5aa7f73b2c31603228",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e0252430b5aa7f73b2c31603228",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d0000485152430b5aa7f73b2c31603228",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Courmayeur (prod. Gabry Ponte)"
+                    },
+                    "artists": [
+                        {
+                            "id": "7fajLZIgjOSUcPFuryO80A",
+                            "name": "DJ Matrix"
+                        },
+                        {
+                            "id": "3vrdwWVmzTsSJotjp92OPW",
+                            "name": "Carolina Marquez"
+                        },
+                        {
+                            "id": "5RXnKYBIxi8zcFNCz03T71",
+                            "name": "Ludwig"
+                        },
+                        {
+                            "id": "5ENS85nZShljwNgg4wFD7D",
+                            "name": "Gabry Ponte"
+                        }
+                    ],
+                    "duration_ms": 193125,
+                    "id": "3ueGWDwh5tMsoKjxJnUFcB",
+                    "name": "Courmayeur"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273ef32132e1bd4bbababcf23a1",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02ef32132e1bd4bbababcf23a1",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851ef32132e1bd4bbababcf23a1",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Paninaro 2.0"
+                    },
+                    "artists": [
+                        {
+                            "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                            "name": "Il Pagante"
+                        }
+                    ],
+                    "duration_ms": 174919,
+                    "id": "2OewgwaDHgeMZepcAyVlzy",
+                    "name": "Il Terrone Va Di Moda"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273657757917e6b3c5701b0138b",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02657757917e6b3c5701b0138b",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851657757917e6b3c5701b0138b",
+                                "width": 64
+                            }
+                        ],
+                        "name": "El Party"
+                    },
+                    "artists": [
+                        {
+                            "id": "6JFRI91YaCXREGQYzHSnUH",
+                            "name": "Jake La Furia"
+                        },
+                        {
+                            "id": "7MBNcpWHn8RTZFUQv5fNPp",
+                            "name": "Alessio La Profunda Melodia"
+                        }
+                    ],
+                    "duration_ms": 211417,
+                    "id": "19LRRuiMQ8a9jhqSf8jVip",
+                    "name": "El Party"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b2737535a827025e186dbe61a960",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e027535a827025e186dbe61a960",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d000048517535a827025e186dbe61a960",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Rivoluzione"
+                    },
+                    "artists": [
+                        {
+                            "id": "0L1f9i3L3fkMNENljDOsjG",
+                            "name": "Rocco Hunt"
+                        },
+                        {
+                            "id": "6k8mwkKJKKjBILo7ypBspl",
+                            "name": "Ana Mena"
+                        }
+                    ],
+                    "duration_ms": 167313,
+                    "id": "3PYz3AvJxc7KbswN4MwhpB",
+                    "name": "A Un Passo Dalla Luna"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273ceaeb9d72a6398f943ca9ad8",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02ceaeb9d72a6398f943ca9ad8",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851ceaeb9d72a6398f943ca9ad8",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Devastante"
+                    },
+                    "artists": [
+                        {
+                            "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                            "name": "Il Pagante"
+                        },
+                        {
+                            "id": "3Gci1FuktNb6DnpB94DWMi",
+                            "name": "Stash"
+                        }
+                    ],
+                    "duration_ms": 190327,
+                    "id": "1Ia2pWls0xmcvZmtqZ3Ksn",
+                    "name": "Open Bar"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b2737535a827025e186dbe61a960",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e027535a827025e186dbe61a960",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d000048517535a827025e186dbe61a960",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Rivoluzione"
+                    },
+                    "artists": [
+                        {
+                            "id": "0L1f9i3L3fkMNENljDOsjG",
+                            "name": "Rocco Hunt"
+                        },
+                        {
+                            "id": "6k8mwkKJKKjBILo7ypBspl",
+                            "name": "Ana Mena"
+                        }
+                    ],
+                    "duration_ms": 167559,
+                    "id": "6MC6SFvG37JHoqioFzy2vz",
+                    "name": "Un bacio all'improvviso"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273f45d266888c7ea96ad00cf05",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02f45d266888c7ea96ad00cf05",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851f45d266888c7ea96ad00cf05",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Nena (feat. Geolier & Andry The Hitmaker)"
+                    },
+                    "artists": [
+                        {
+                            "id": "1hHYi4Vy83BGo6TqKd98hu",
+                            "name": "Boro"
+                        },
+                        {
+                            "id": "27LlKWxS3KXW7RRAxN5S8s",
+                            "name": "Geolier"
+                        },
+                        {
+                            "id": "6hb3ftxbKAFsOiNCdFbyzJ",
+                            "name": "Andry The Hitmaker"
+                        }
+                    ],
+                    "duration_ms": 149126,
+                    "id": "6TEPwGCSq4XGWu3hnZkC5m",
+                    "name": "Nena (feat. Geolier & Andry The Hitmaker)"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273df3be90c582ebe8addc5c09d",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02df3be90c582ebe8addc5c09d",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851df3be90c582ebe8addc5c09d",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Entro in pass"
+                    },
+                    "artists": [
+                        {
+                            "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                            "name": "Il Pagante"
+                        }
+                    ],
+                    "duration_ms": 259306,
+                    "id": "1ESa3YMv7iTLSD5IM2cSSU",
+                    "name": "Pettinero"
+                }
+            },
+            {
+                "track": {
+                    "album": {
+                        "images": [
+                            {
+                                "height": 640,
+                                "url": "https://i.scdn.co/image/ab67616d0000b273df3be90c582ebe8addc5c09d",
+                                "width": 640
+                            },
+                            {
+                                "height": 300,
+                                "url": "https://i.scdn.co/image/ab67616d00001e02df3be90c582ebe8addc5c09d",
+                                "width": 300
+                            },
+                            {
+                                "height": 64,
+                                "url": "https://i.scdn.co/image/ab67616d00004851df3be90c582ebe8addc5c09d",
+                                "width": 64
+                            }
+                        ],
+                        "name": "Entro in pass"
+                    },
+                    "artists": [
+                        {
+                            "id": "1vKXVGgIDP1XXZX4Tehjtn",
+                            "name": "Il Pagante"
+                        }
+                    ],
+                    "duration_ms": 212733,
+                    "id": "5XDWmsJj2ZUPShfkvtZcRX",
+                    "name": "La shampista"
+                }
+            }
+        ]
+    }
+}

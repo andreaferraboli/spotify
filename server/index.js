@@ -1,20 +1,22 @@
+const { ServerApiVersion } = require('mongodb');
 const mongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const auth = require("./auth").auth;
 const crypto = require("crypto");
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
-const uri =
-  "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
 var SpotifyWebApi = require("spotify-web-api-node");
-const { Binary } = require("mongodb");
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
-
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  next();
+});
 //connect spotify api
+const uri =
+  "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
 const client_id = "2671048b97804e938412fcbe2810b373";
 const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1";
 var my_access_token, spotifyApi;
@@ -36,37 +38,9 @@ fetch(url, {
       clientSecret: client_secret,
     });
     spotifyApi.setAccessToken(my_access_token);
-    getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
+    // getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
   });
-  (async () => {
-const imageData = fs.readFileSync("foto2.jfif");
-// Conversione in formato binario BSON
-const binaryData = new Binary(imageData);
-let user = {
-  Name: "andrea",
-  Surname: "ferraboli",
-  Email: "johndoe@example.com",
-  Password: "password123",
-  image: binaryData,
-  favourite_genres: [
-    { id: 1, name: "Action" },
-    { id: 2, name: "Drama" },
-  ],
-  favourite_artists: [
-    { id: 1, name: "Artist 1", image: "path/to/artist1.jpg" },
-    { id: 2, name: "Artist 2", image: "path/to/artist2.jpg" },
-  ],
-};
-const client = await mongoClient.connect(uri);
-const db = client.db("spotify");
-const collection = db.collection("users");
-// Inserimento del documento nella collezione MongoDB
-await collection.insertOne(user);
-
-console.log("Documento inserito correttamente.");
-client.close(); // Chiusura della connessione al database
-  }
-)();
+  
 // function getTrack(id_track) {
 //     let track
 //     spotifyApi.getTrack(`${id_track}`).then(
@@ -142,16 +116,16 @@ function getAlbum(id_album) {
 function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
-app.get("/users/:id", auth, async function (req, res) {
+app.get("/user/:id", auth, async function (req, res) {
   // Ricerca nel database
   var id = req.params.id;
   var pwmClient = await new mongoClient(uri).connect();
   var user = await pwmClient
-    .db("pwm")
+    .db("spotify")
     .collection("users")
     .find({ _id: new ObjectId(id) })
-    .project({ password: 0 })
-    .toArray();
+    .project({ password: 0 }).toArray()
+    console.log(user)
   res.json(user);
 });
 

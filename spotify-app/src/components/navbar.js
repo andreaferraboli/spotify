@@ -1,5 +1,4 @@
-import * as React from "react";
-
+import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -9,6 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import SearchIcon from "@mui/icons-material/Search";
 import uri from "../database.js";
+import styles from "../style/navbar.css";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -17,8 +17,6 @@ const Search = styled("div")(({ theme }) => ({
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
   width: "100%",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
@@ -49,48 +47,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-const fetchDataFromMongoDB = async () => {
-  // const mongoClient = require("mongodb").MongoClient;
-  // const ObjectId = require("mongodb").ObjectId;
-  // try {
-
-  //   const client = await mongoClient.connect(uri);
-  //   const db = client.db("spotify");
-  //   const collection = db.collection("users");
-
-  //   // Esegui la tua query o operazione di aggiornamento sul database
-  //   // ...
-    
-  //   // Esempio: Trova un documento e ottieni il campo "code"
-  //   const document = await collection.findOne({ _id: new ObjectId("64ac1fe73abbef0ced0d2234") });
-  //   const code = document.code;
 
 
-  //   client.close();
-  // } catch (error) {
-  //   console.error('Errore durante la chiamata al database:', error);
-  // }
-};
-// const mongoClient = require("mongodb").MongoClient;
-// const ObjectId = require("mongodb").ObjectId;
-// var pwmClient = await new mongoClient(uri).connect();
-//   const profile = await pwmClient
-//     .db("pwm")
-//     .collection("preferiti")
-//     .findOne({ _id: new ObjectId("64ac1fe73abbef0ced0d2234") });
-// Recupero del file immagine in formato binario
-// const imageBinary = profile.image;
-// console.log(profile)
-// Conversione del binario in base64
-// const imageBase64 = Buffer.from(imageBinary).toString('base64');
-
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar(props) {
+  let profile=props.user;
+  
+ 
 
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
+      <AppBar position="static" style={{ background: '#121212' }} >
+        <Toolbar >
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -101,20 +68,17 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "flex", md: "flex" } }}>
-            
-          
+          <Box item className="avatarBox">
             <Chip
               avatar={
-                <Avatar alt={"profile.name"} src={"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} />
+                <Avatar alt={profile.profile_name} src={profile.image} />
               }
-              label="profile.name"
+              label={profile.profile_name}
               variant="outlined"
             />
           </Box>
           
         </Toolbar>
       </AppBar>
-    </Box>
   );
 }
