@@ -1,0 +1,11 @@
+@import url("palette.css");
+.home-section{
+    background-color: var(--primary-color)
+}
+.home-section h2{
+    color:var(--text-color)
+}
+.home-box{
+    background-color: #000;
+    margin:0;
+}

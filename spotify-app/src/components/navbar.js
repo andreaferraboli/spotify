@@ -7,8 +7,7 @@ import InputBase from "@mui/material/InputBase";
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import SearchIcon from "@mui/icons-material/Search";
-import uri from "../database.js";
-import styles from "../style/navbar.css";
+import "../style/navbar.css";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -50,35 +49,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function PrimarySearchAppBar(props) {
-  let profile=props.user;
-  
- 
+  let profile = props.user;
+
+
 
 
   return (
-      <AppBar position="static" style={{ background: '#121212' }} >
-        <Toolbar >
+    <>
+      <AppBar position="static">
+      <div className="myAppBar">
+        <Toolbar>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
+              inputProps={{ "aria-label": "search" }} />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box item className="avatarBox">
+          <Box item >
             <Chip
-              avatar={
-                <Avatar alt={profile.profile_name} src={profile.image} />
-              }
+              avatar={<Avatar alt={profile.profile_name} src={profile.image} />}
               label={profile.profile_name}
-              variant="outlined"
-            />
+              variant="outlined" className="customLabel"/>
+              
           </Box>
-          
+
         </Toolbar>
+        </div>
       </AppBar>
+    </>
   );
 }

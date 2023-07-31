@@ -1,4 +1,7 @@
+@import url("palette.css");
 .myAppBar {
-    background: black ;
-    /* Aggiungi altre regole di stile personalizzate se necessario */
+  background-color:var(--primary-color);
+  }
+  .customLabel{
+    color: var(--text-color)
   }

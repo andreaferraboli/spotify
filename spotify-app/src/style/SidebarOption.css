@@ -1,18 +1,19 @@
+@import url("palette.css");
 .sidebarOption {
   display: flex;
   cursor: pointer;
   align-items: center;
   height: 40px;
-  color: grey;
+  color: var(--third-color);
   transition: 200ms color ease-in;
 }
 
 .sidebarOption:hover {
-  color: white;
+  color: var(--text-color);
 }
 
 .sidebar > hr {
-  border: 1px solid #282828;
+  border: 1px solid var(--primary-color);
   width: 90%;
   margin: 10px auto;
 }
