@@ -4,6 +4,8 @@
     height: 150px; /* Imposta l'altezza dell'area circolare */
     border-radius: 50%; /* Rende l'immagine circolare */
     overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
+    width: 90% !important;
+    margin: 5% 5% 5% 5%;
   }
   
   .circular-image img {
@@ -16,9 +18,19 @@
     height: 200px; /* Imposta l'altezza dell'area circolare */
     border-radius: 30%; /* Rende l'immagine circolare */
     overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
-    background-color: var(--primary-color) !important;
+    background-color: var(--background-color) !important;
   }
   .artist-name{
     font-size: 1rem !important;
     text-align: center;
+    color: var(--text-color);
+  }
+  .card-playlist{
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+
+  }
+  .card-media{
+    width: 90% !important;
+    margin: 5% 5% 5% 5%;
   }

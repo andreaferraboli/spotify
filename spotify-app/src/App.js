@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import SideBar from './components/Sidebar'
 import Navbar from './components/navbar'
 import Home from '../src/pages/Home';
+import Playlist from '../src/pages/Playlist';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import "./style/home.css";
 
 function App() {
   const [user, setUser] = useState({ my_playlists: [], favourite_artists:[]  });
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null); // Stato per l'id della playlist selezionata
 
   useEffect(() => {
     // Funzione per ottenere le playlist dall'API del database
@@ -19,7 +21,6 @@ function App() {
         if (response.ok) {
           const data = await response.json();
           if (data.length > 0) {
-            console.log(data[0]);
             setUser(data[0]);
           }
         } else {
@@ -33,6 +34,15 @@ function App() {
     // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
     fetchUser();
   }, []);
+  const handlePlaylistClick = (playlistId) => {
+    console.log(playlistId)
+    setSelectedPlaylistId(playlistId);
+  };
+
+  // Funzione per reimpostare l'id della playlist selezionata quando si ritorna alla pagina Home
+  const handleBackToHome = () => {
+    setSelectedPlaylistId(null);
+  };
   return (
     <><Box className="home-box">
       <Grid container spacing={0}>
@@ -41,7 +51,13 @@ function App() {
         </Grid>
         <Grid direction="column" item xs={12} md={10} lg={10}>
           <Navbar user={user}/>
-          <Home user={user} />
+          {selectedPlaylistId ? (
+              // Se un'id di playlist è stato selezionato, renderizza il componente Playlist
+              <Playlist playlistId={selectedPlaylistId} onBack={handleBackToHome} />
+            ) : (
+              // Altrimenti, renderizza il componente Home
+              <Home user={user} onPlaylistClick={handlePlaylistClick} />
+            )}
         </Grid>
       </Grid>
     </Box>

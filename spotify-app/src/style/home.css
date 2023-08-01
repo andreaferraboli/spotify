@@ -6,6 +6,6 @@
     color:var(--text-color)
 }
 .home-box{
-    background-color: #000;
+    background-color: var(--primary-color);
     margin:0;
 }

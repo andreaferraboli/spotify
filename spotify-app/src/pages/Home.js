@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PlaylistCard from "../components/PlaylistCard"
 import ArtistCard from "../components/ArtistCard"
 import Box from "@mui/material/Box";
 import "../style/home.css";
 
 const Home = (props) => {
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
+
+  const handlePlaylistClick = (playlistId) => {
+    props.onPlaylistClick(playlistId);
+  };
   return (
     
     <><div className='home-section'>

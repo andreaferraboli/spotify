@@ -7,7 +7,6 @@ import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 
 
 function Sidebar(props) {
-  // console.log(props)
   let playlists=props.playlists;
   return (
     <div className="sidebar">
