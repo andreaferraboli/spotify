@@ -125,7 +125,6 @@ app.get("/user/:id", auth, async function (req, res) {
     .collection("users")
     .find({ _id: new ObjectId(id) })
     .project({ password: 0 }).toArray()
-    console.log(user)
   res.json(user);
 });
 
@@ -346,7 +345,14 @@ app.get("/playlist/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   var pwmClient = await new mongoClient(uri).connect();
-  res.json(favorites);
+  var playlist = await pwmClient
+    .db("spotify")
+    .collection("users").aggregate([
+      { $unwind: "$my_playlists" },
+      { $match: { "my_playlists.id": id } },
+      { $project: { my_playlists: 1, _id: 0 } }
+    ]).toArray();
+    res.json(playlist);
 });
 app.post("/favorites/:id", async (req, res) => {
   // Ricerca nel database

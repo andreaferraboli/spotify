@@ -16,7 +16,7 @@ const Home = (props) => {
       <h2>Le mie PLAYLIST</h2>
       <Box display="flex" justifyContent="space-between">
         {props.user.my_playlists.map((playlist) => (
-          <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} />
+          <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
         ))}
       </Box>
     </div><div  className='home-section'>

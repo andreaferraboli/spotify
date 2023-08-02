@@ -35,7 +35,6 @@ function App() {
     fetchUser();
   }, []);
   const handlePlaylistClick = (playlistId) => {
-    console.log(playlistId)
     setSelectedPlaylistId(playlistId);
   };
 
@@ -53,7 +52,7 @@ function App() {
           <Navbar user={user}/>
           {selectedPlaylistId ? (
               // Se un'id di playlist è stato selezionato, renderizza il componente Playlist
-              <Playlist playlistId={selectedPlaylistId} onBack={handleBackToHome} />
+              <Playlist user={user} playlistId={selectedPlaylistId} onBack={handleBackToHome} />
             ) : (
               // Altrimenti, renderizza il componente Home
               <Home user={user} onPlaylistClick={handlePlaylistClick} />
