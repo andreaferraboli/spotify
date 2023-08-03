@@ -3,13 +3,15 @@ import SideBar from './components/Sidebar'
 import Navbar from './components/navbar'
 import Home from '../src/pages/Home';
 import Playlist from '../src/pages/Playlist';
+import Artist from '../src/pages/Artist';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import "./style/home.css";
 
 function App() {
-  const [user, setUser] = useState({ my_playlists: [], favourite_artists:[]  });
+  const [user, setUser] = useState({ my_playlists: [], favourite_artists: [] });
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null); // Stato per l'id della playlist selezionata
+  const [selectedArtistId, setSelectedArtistId] = useState(null); // Stato per l'id della playlist selezionata
 
   useEffect(() => {
     // Funzione per ottenere le playlist dall'API del database
@@ -38,29 +40,36 @@ function App() {
     setSelectedPlaylistId(playlistId);
   };
 
+  const handleArtistClick = (artistId) => {
+    setSelectedArtistId(artistId);
+  };
   // Funzione per reimpostare l'id della playlist selezionata quando si ritorna alla pagina Home
   const handleBackToHome = () => {
     setSelectedPlaylistId(null);
+    setSelectedArtistId(null);
   };
   return (
     <><Box className="home-box">
       <Grid container spacing={0}>
         <Grid item xs={0} md={2} lg={2} >
-          <SideBar playlists={user.my_playlists}/>
+          <SideBar playlists={user.my_playlists} />
         </Grid>
         <Grid direction="column" item xs={12} md={10} lg={10}>
-          <Navbar user={user}/>
+          <Navbar user={user} />
           {selectedPlaylistId ? (
-              // Se un'id di playlist è stato selezionato, renderizza il componente Playlist
-              <Playlist user={user} playlistId={selectedPlaylistId} onBack={handleBackToHome} />
-            ) : (
-              // Altrimenti, renderizza il componente Home
-              <Home user={user} onPlaylistClick={handlePlaylistClick} />
-            )}
+            // Se è stato selezionato un id di playlist, renderizza il componente Playlist
+            <Playlist user={user} playlistId={selectedPlaylistId} onBack={handleBackToHome} />
+          ) : selectedArtistId ? (
+            // Se è stato selezionato un artistId, renderizza il componente Artist
+            <Artist user={user} artistId={selectedArtistId} onBack={handleBackToHome} />
+          ) : (
+            // Altrimenti, renderizza il componente Home
+            <Home user={user} onPlaylistClick={handlePlaylistClick} onArtistClick={handleArtistClick} />
+          )}
         </Grid>
       </Grid>
     </Box>
-    {/* <BrowserRouter>
+      {/* <BrowserRouter>
         <Routes>
           <Route exact path="/" Component={Home}>
           </Route>
@@ -70,7 +79,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter> */}
-      </>
+    </>
   );
 }
 

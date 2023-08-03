@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PlaylistCard from "../components/PlaylistCard"
 import ArtistCard from "../components/ArtistCard"
 import Box from "@mui/material/Box";
 import "../style/home.css";
 
 const Home = (props) => {
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
-
-  const handlePlaylistClick = (playlistId) => {
-    props.onPlaylistClick(playlistId);
-  };
   return (
     
     <><div className='home-section'>
@@ -23,7 +18,7 @@ const Home = (props) => {
         <h2>I miei ARTISTI</h2>
         <Box display="flex" justifyContent="space-between">
           {props.user.favourite_artists.map((artist) => (
-            <ArtistCard key={artist.id} name={artist.name} image={artist.images} />
+            <ArtistCard key={artist.id} artist={artist} selectedArtistId={props.onArtistClick} />
           ))}
         </Box>
       </div></>

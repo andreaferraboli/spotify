@@ -1,0 +1,1020 @@
+{
+    "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP/albums?include_groups=album,single,compilation,appears_on&offset=0&limit=20&market=it&locale=it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+    "items": [
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/65bhPTCdqbC37RhICrkUUu"
+        },
+        "href": "https://api.spotify.com/v1/albums/65bhPTCdqbC37RhICrkUUu",
+        "id": "65bhPTCdqbC37RhICrkUUu",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2733ef2a3a6b21706009003a72b",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e023ef2a3a6b21706009003a72b",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048513ef2a3a6b21706009003a72b",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "OUTSIDER",
+        "release_date": "2023-04-07",
+        "release_date_precision": "day",
+        "total_tracks": 14,
+        "type": "album",
+        "uri": "spotify:album:65bhPTCdqbC37RhICrkUUu"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/5o5QRBFg2JnD8FbMVSBWdO"
+        },
+        "href": "https://api.spotify.com/v1/albums/5o5QRBFg2JnD8FbMVSBWdO",
+        "id": "5o5QRBFg2JnD8FbMVSBWdO",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b27326da63a778ad157808ed3de1",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e0226da63a778ad157808ed3de1",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d0000485126da63a778ad157808ed3de1",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "GarbAge Evilution",
+        "release_date": "2021-02-12",
+        "release_date_precision": "day",
+        "total_tracks": 20,
+        "type": "album",
+        "uri": "spotify:album:5o5QRBFg2JnD8FbMVSBWdO"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/6NRJbBeifDCOBu03G2btOJ"
+        },
+        "href": "https://api.spotify.com/v1/albums/6NRJbBeifDCOBu03G2btOJ",
+        "id": "6NRJbBeifDCOBu03G2btOJ",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273c7933f48859058e888db5d7b",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02c7933f48859058e888db5d7b",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851c7933f48859058e888db5d7b",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "GarbAge",
+        "release_date": "2020-03-06",
+        "release_date_precision": "day",
+        "total_tracks": 15,
+        "type": "album",
+        "uri": "spotify:album:6NRJbBeifDCOBu03G2btOJ"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/2eDz2HN7gs3WGthy1AELW5"
+        },
+        "href": "https://api.spotify.com/v1/albums/2eDz2HN7gs3WGthy1AELW5",
+        "id": "2eDz2HN7gs3WGthy1AELW5",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273cce85e43f603851933a7f9b7",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02cce85e43f603851933a7f9b7",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851cce85e43f603851933a7f9b7",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "No Comment",
+        "release_date": "2018-01-12",
+        "release_date_precision": "day",
+        "total_tracks": 13,
+        "type": "album",
+        "uri": "spotify:album:2eDz2HN7gs3WGthy1AELW5"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/1w9VtygzVP1NbyTaDkxfYt"
+        },
+        "href": "https://api.spotify.com/v1/albums/1w9VtygzVP1NbyTaDkxfYt",
+        "id": "1w9VtygzVP1NbyTaDkxfYt",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b27300d0a859c3e938713f0dc9b8",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e0200d0a859c3e938713f0dc9b8",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d0000485100d0a859c3e938713f0dc9b8",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Suicidol Post Mortem",
+        "release_date": "2016-06-03",
+        "release_date_precision": "day",
+        "total_tracks": 20,
+        "type": "album",
+        "uri": "spotify:album:1w9VtygzVP1NbyTaDkxfYt"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/2eLcG0rEYCIvG9yKdE18e6"
+        },
+        "href": "https://api.spotify.com/v1/albums/2eLcG0rEYCIvG9yKdE18e6",
+        "id": "2eLcG0rEYCIvG9yKdE18e6",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273ce55fd2b670596c28b47b3fe",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02ce55fd2b670596c28b47b3fe",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851ce55fd2b670596c28b47b3fe",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Suicidol",
+        "release_date": "2015-05-26",
+        "release_date_precision": "day",
+        "total_tracks": 15,
+        "type": "album",
+        "uri": "spotify:album:2eLcG0rEYCIvG9yKdE18e6"
+      },
+      {
+        "album_group": "album",
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/1mUWGsGFMCyMJrltclVvHr"
+        },
+        "href": "https://api.spotify.com/v1/albums/1mUWGsGFMCyMJrltclVvHr",
+        "id": "1mUWGsGFMCyMJrltclVvHr",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273901a644495ebb61291e8ea38",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02901a644495ebb61291e8ea38",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851901a644495ebb61291e8ea38",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Danger",
+        "release_date": "2013-07-16",
+        "release_date_precision": "day",
+        "total_tracks": 11,
+        "type": "album",
+        "uri": "spotify:album:1mUWGsGFMCyMJrltclVvHr"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/0Y6y87L7QxjYMd9AotKayf"
+        },
+        "href": "https://api.spotify.com/v1/albums/0Y6y87L7QxjYMd9AotKayf",
+        "id": "0Y6y87L7QxjYMd9AotKayf",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273de1cc7adfac6adb00ce63b3b",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02de1cc7adfac6adb00ce63b3b",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851de1cc7adfac6adb00ce63b3b",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "OUTSIDER",
+        "release_date": "2023-03-24",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:0Y6y87L7QxjYMd9AotKayf"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/3eiLSLT9OvnTjCgqUQrh4K"
+        },
+        "href": "https://api.spotify.com/v1/albums/3eiLSLT9OvnTjCgqUQrh4K",
+        "id": "3eiLSLT9OvnTjCgqUQrh4K",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2736fe6a4ac5464723510ea319c",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e026fe6a4ac5464723510ea319c",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048516fe6a4ac5464723510ea319c",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "CONTROL",
+        "release_date": "2023-03-03",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:3eiLSLT9OvnTjCgqUQrh4K"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/4b3MWJACM6T1QwGKoFe7pp"
+            },
+            "href": "https://api.spotify.com/v1/artists/4b3MWJACM6T1QwGKoFe7pp",
+            "id": "4b3MWJACM6T1QwGKoFe7pp",
+            "name": "Vegas Jones",
+            "type": "artist",
+            "uri": "spotify:artist:4b3MWJACM6T1QwGKoFe7pp"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/7tmTvmqgTBcX88ZrSHByrD"
+            },
+            "href": "https://api.spotify.com/v1/artists/7tmTvmqgTBcX88ZrSHByrD",
+            "id": "7tmTvmqgTBcX88ZrSHByrD",
+            "name": "Nayt",
+            "type": "artist",
+            "uri": "spotify:artist:7tmTvmqgTBcX88ZrSHByrD"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/3TNK4YfObvW4VpTdJRCpkV"
+        },
+        "href": "https://api.spotify.com/v1/albums/3TNK4YfObvW4VpTdJRCpkV",
+        "id": "3TNK4YfObvW4VpTdJRCpkV",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273b8f5d3c7b40425be7071c340",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02b8f5d3c7b40425be7071c340",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851b8f5d3c7b40425be7071c340",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Da Solo (feat. Nitro & Nayt)",
+        "release_date": "2023-01-03",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:3TNK4YfObvW4VpTdJRCpkV"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/1eznSku2RY9VSvkhWxXdmx"
+            },
+            "href": "https://api.spotify.com/v1/artists/1eznSku2RY9VSvkhWxXdmx",
+            "id": "1eznSku2RY9VSvkhWxXdmx",
+            "name": "2nd Roof",
+            "type": "artist",
+            "uri": "spotify:artist:1eznSku2RY9VSvkhWxXdmx"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6JFRI91YaCXREGQYzHSnUH"
+            },
+            "href": "https://api.spotify.com/v1/artists/6JFRI91YaCXREGQYzHSnUH",
+            "id": "6JFRI91YaCXREGQYzHSnUH",
+            "name": "Jake La Furia",
+            "type": "artist",
+            "uri": "spotify:artist:6JFRI91YaCXREGQYzHSnUH"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/1QI3xcXVVXXS54LJkoiHyx"
+        },
+        "href": "https://api.spotify.com/v1/albums/1QI3xcXVVXXS54LJkoiHyx",
+        "id": "1QI3xcXVVXXS54LJkoiHyx",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273b4590742fe532fea51cc5bb3",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02b4590742fe532fea51cc5bb3",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851b4590742fe532fea51cc5bb3",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Berlusconi (feat. Jake La Furia, Nitro & Speranza)",
+        "release_date": "2021-12-03",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:1QI3xcXVVXXS54LJkoiHyx"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/26KX0MBUc2cvGSIg1u2U7P"
+            },
+            "href": "https://api.spotify.com/v1/artists/26KX0MBUc2cvGSIg1u2U7P",
+            "id": "26KX0MBUc2cvGSIg1u2U7P",
+            "name": "ICON808",
+            "type": "artist",
+            "uri": "spotify:artist:26KX0MBUc2cvGSIg1u2U7P"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/0q0CTttRdwiuDFmDiN7jAt"
+            },
+            "href": "https://api.spotify.com/v1/artists/0q0CTttRdwiuDFmDiN7jAt",
+            "id": "0q0CTttRdwiuDFmDiN7jAt",
+            "name": "Nicola Siciliano",
+            "type": "artist",
+            "uri": "spotify:artist:0q0CTttRdwiuDFmDiN7jAt"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/0nuti6Z4EveTtL0Iuhg5mu"
+        },
+        "href": "https://api.spotify.com/v1/albums/0nuti6Z4EveTtL0Iuhg5mu",
+        "id": "0nuti6Z4EveTtL0Iuhg5mu",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273e3ef23c54f80f52a515ec884",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02e3ef23c54f80f52a515ec884",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851e3ef23c54f80f52a515ec884",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "NO STICK (feat. Braco)",
+        "release_date": "2021-04-09",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:0nuti6Z4EveTtL0Iuhg5mu"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/4b3MWJACM6T1QwGKoFe7pp"
+            },
+            "href": "https://api.spotify.com/v1/artists/4b3MWJACM6T1QwGKoFe7pp",
+            "id": "4b3MWJACM6T1QwGKoFe7pp",
+            "name": "Vegas Jones",
+            "type": "artist",
+            "uri": "spotify:artist:4b3MWJACM6T1QwGKoFe7pp"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/0Rzrag6eCHt4V6wJJJu8z8"
+        },
+        "href": "https://api.spotify.com/v1/albums/0Rzrag6eCHt4V6wJJJu8z8",
+        "id": "0Rzrag6eCHt4V6wJJJu8z8",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273a6ba84ffffccdd3fe8944481",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02a6ba84ffffccdd3fe8944481",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851a6ba84ffffccdd3fe8944481",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Ossigeno (feat. Vegas Jones)",
+        "release_date": "2020-12-11",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:0Rzrag6eCHt4V6wJJJu8z8"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6fWVd57NKTalqvmjRd2t8Z"
+            },
+            "href": "https://api.spotify.com/v1/artists/6fWVd57NKTalqvmjRd2t8Z",
+            "id": "6fWVd57NKTalqvmjRd2t8Z",
+            "name": "24kGoldn",
+            "type": "artist",
+            "uri": "spotify:artist:6fWVd57NKTalqvmjRd2t8Z"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/057UBrNgJikNx3YpWde9mT"
+        },
+        "href": "https://api.spotify.com/v1/albums/057UBrNgJikNx3YpWde9mT",
+        "id": "057UBrNgJikNx3YpWde9mT",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273ab2a4c78a5356e4463091711",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02ab2a4c78a5356e4463091711",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851ab2a4c78a5356e4463091711",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "CITY OF ANGELS (Nitro Remix)",
+        "release_date": "2020-06-29",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:057UBrNgJikNx3YpWde9mT"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/5zRmtoBOCk7JaYHI78Y5b5"
+            },
+            "href": "https://api.spotify.com/v1/artists/5zRmtoBOCk7JaYHI78Y5b5",
+            "id": "5zRmtoBOCk7JaYHI78Y5b5",
+            "name": "Nina Zilli",
+            "type": "artist",
+            "uri": "spotify:artist:5zRmtoBOCk7JaYHI78Y5b5"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/3BbJDga2sFvoqVLVfPCBo0"
+        },
+        "href": "https://api.spotify.com/v1/albums/3BbJDga2sFvoqVLVfPCBo0",
+        "id": "3BbJDga2sFvoqVLVfPCBo0",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b27350d1210a4bac22ea7eb59b4c",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e0250d1210a4bac22ea7eb59b4c",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d0000485150d1210a4bac22ea7eb59b4c",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Schiacciacuore",
+        "release_date": "2020-06-05",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:3BbJDga2sFvoqVLVfPCBo0"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/7MAmAdNJ8JLL7JCHzIJkoo"
+            },
+            "href": "https://api.spotify.com/v1/artists/7MAmAdNJ8JLL7JCHzIJkoo",
+            "id": "7MAmAdNJ8JLL7JCHzIJkoo",
+            "name": "Big Fish",
+            "type": "artist",
+            "uri": "spotify:artist:7MAmAdNJ8JLL7JCHzIJkoo"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          },
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/7kG6A2lZMXeaD5YkubF5Kn"
+            },
+            "href": "https://api.spotify.com/v1/artists/7kG6A2lZMXeaD5YkubF5Kn",
+            "id": "7kG6A2lZMXeaD5YkubF5Kn",
+            "name": "Nerone",
+            "type": "artist",
+            "uri": "spotify:artist:7kG6A2lZMXeaD5YkubF5Kn"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/6tiUeW9xyxSnKR1SmqVeHQ"
+        },
+        "href": "https://api.spotify.com/v1/albums/6tiUeW9xyxSnKR1SmqVeHQ",
+        "id": "6tiUeW9xyxSnKR1SmqVeHQ",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b27321e1895d01dc547dd03c6e7b",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e0221e1895d01dc547dd03c6e7b",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d0000485121e1895d01dc547dd03c6e7b",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Fuck'd Up (feat. Tormento)",
+        "release_date": "2019-04-26",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:6tiUeW9xyxSnKR1SmqVeHQ"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/4FRzJEC6SQOkU0IpnptlBY"
+        },
+        "href": "https://api.spotify.com/v1/albums/4FRzJEC6SQOkU0IpnptlBY",
+        "id": "4FRzJEC6SQOkU0IpnptlBY",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2739f591d236b5fc8ef1a0d0971",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e029f591d236b5fc8ef1a0d0971",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048519f591d236b5fc8ef1a0d0971",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Lucifero (prod. Yazee)",
+        "release_date": "2018-10-24",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:4FRzJEC6SQOkU0IpnptlBY"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/4JAhdRHNKHa6KtuozMHEzS"
+        },
+        "href": "https://api.spotify.com/v1/albums/4JAhdRHNKHa6KtuozMHEzS",
+        "id": "4JAhdRHNKHa6KtuozMHEzS",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273b69f77e402d8f1abef73b8c0",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02b69f77e402d8f1abef73b8c0",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851b69f77e402d8f1abef73b8c0",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Passepartout & Lucifero - A COLORS SHOW",
+        "release_date": "2018-10-22",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:4JAhdRHNKHa6KtuozMHEzS"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/4xFa23ldne3IDVOaD7ZPNH"
+        },
+        "href": "https://api.spotify.com/v1/albums/4xFa23ldne3IDVOaD7ZPNH",
+        "id": "4xFa23ldne3IDVOaD7ZPNH",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2733b6fc052cbf6359ae1166655",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e023b6fc052cbf6359ae1166655",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048513b6fc052cbf6359ae1166655",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Infamity Show",
+        "release_date": "2018-01-08",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:4xFa23ldne3IDVOaD7ZPNH"
+      },
+      {
+        "album_group": "single",
+        "album_type": "single",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/6jQZzWW3JlEtcRDSzFVKSP"
+            },
+            "href": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP",
+            "id": "6jQZzWW3JlEtcRDSzFVKSP",
+            "name": "Nitro",
+            "type": "artist",
+            "uri": "spotify:artist:6jQZzWW3JlEtcRDSzFVKSP"
+          }
+        ],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/2Sen5PFAtfaEUqKzG0EGqD"
+        },
+        "href": "https://api.spotify.com/v1/albums/2Sen5PFAtfaEUqKzG0EGqD",
+        "id": "2Sen5PFAtfaEUqKzG0EGqD",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b27366f910c163658805fa6b5e84",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e0266f910c163658805fa6b5e84",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d0000485166f910c163658805fa6b5e84",
+            "width": 64
+          }
+        ],
+        "is_playable": true,
+        "name": "Buio Omega",
+        "release_date": "2017-12-04",
+        "release_date_precision": "day",
+        "total_tracks": 1,
+        "type": "album",
+        "uri": "spotify:album:2Sen5PFAtfaEUqKzG0EGqD"
+      }
+    ],
+    "limit": 20,
+    "next": "https://api.spotify.com/v1/artists/6jQZzWW3JlEtcRDSzFVKSP/albums?include_groups=album,single,compilation,appears_on&offset=20&limit=20&market=it&locale=it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+    "offset": 0,
+    "previous": null,
+    "total": 94
+  }

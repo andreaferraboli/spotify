@@ -1,0 +1,6 @@
+@import url("palette.css");
+.track{
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    height: 10% !important;
+}

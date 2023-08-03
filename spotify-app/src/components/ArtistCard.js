@@ -3,22 +3,19 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import { CardActionArea,Avatar } from '@mui/material';
 import "../style/card.css";
 
-export default function PlaylistCard(props) {
+export default function ArtistCard(props) {
   return (
-    <Card sx={{ maxWidth: 345 }} className='circular-card'>
+    <Card sx={{ maxWidth: 345 }} className='circular-card' onClick={()=> {
+      props.selectedArtistId(props.artist.id)
+      }} >
       <CardActionArea>
-        <CardMedia
-          component="img"
-          className='circular-image'
-          image={props.image}
-          alt={props.name}
-        />
+      <Avatar src={props.artist.images} alt={props.artist.name} sx={{ width: "100%", height: "10rem" }} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" className='artist-name'>
-            {props.name}
+            {props.artist.name}
           </Typography>
         </CardContent>
       </CardActionArea>

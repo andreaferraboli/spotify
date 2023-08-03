@@ -30,7 +30,7 @@ fetch(url, {
   body: new URLSearchParams({ grant_type: "client_credentials" }),
 })
   .then((response) => response.json())
-  .then((tokenResponse) => {
+  .then(async (tokenResponse) => {
     //Sarebbe opportuno salvare il token nel local storage
     my_access_token = tokenResponse.access_token;
     spotifyApi = new SpotifyWebApi({
@@ -63,19 +63,41 @@ fetch(url, {
 async function getTrack(id_track) {
   try {
     const data = await spotifyApi.getTrack(`${id_track}`);
-    const track = {
-      id_track: data.body.id,
-      name: data.body.name,
-      artist: data.body.artists.map((artist) => artist.id),
-      album: data.body.album.name,
-      image: data.body.album.images[0].url,
-      duration: ms_to_minute(data.body.duration_ms),
-    };
-    return track;
+    return filterTrack(data.body);
   } catch (err) {
     console.error(err);
     throw err;
   }
+}
+function filterTrack(track){
+  const filteredTrack = {
+    id_track: track.id,
+    name: track.name,
+    artist: track.artists.map((artist) => artist.name),
+    album: track.album.name,
+    image: track.album.images[0].url,
+    duration: track.duration_ms,
+  };
+  return filteredTrack;
+}
+function filterAlbum(album){
+  const filteredAlbum = {
+    id: album.id,
+    name: album.name,
+    year: album.release_date.slice(0,4),
+    image: album.images[0].url
+  };
+  return filteredAlbum;
+}
+function filterArtist(artist){
+  const filteredArtist = {
+    id: artist.id,
+    name: artist.name,
+    image: artist.images[0].url,
+    popularity:artist.popularity,
+    followers:artist.followers.total
+  };
+  return filteredArtist;
 }
 async function getArtistNameFromId(id_artist) {
   try {
@@ -103,30 +125,28 @@ function getPlaylist(id_playlist) {
     }
   );
 }
-function getAlbum(id_album) {
-  spotifyApi.getArtistAlbums(`${id_album}`).then(
-    function (data) {
-      console.log("Artist albums", data.body);
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
+async function getAlbum(id_album) {
+  let album=await spotifyApi.getAlbum(id_album);
+  return album.body
+}
+
+async function getArtist(id_artist){
+  let artist=await spotifyApi.getArtist(id_artist)
+  return filterArtist(artist.body);
+}
+async function getArtistAlbums(id_artist){
+  let albums=await spotifyApi.getArtistAlbums(id_artist,{album_type : 'album'});
+  return albums.body.items.map((album)=>filterAlbum(album));
+}
+
+async function getArtistTopTracks(id_artist){
+  let top_tracks=await spotifyApi.getArtistTopTracks(id_artist, 'IT');
+  return top_tracks.body.tracks.map((track)=>filterTrack(track));
+
 }
 function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
-app.get("/user/:id", auth, async function (req, res) {
-  // Ricerca nel database
-  var id = req.params.id;
-  var pwmClient = await new mongoClient(uri).connect();
-  var user = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .find({ _id: new ObjectId(id) })
-    .project({ password: 0 }).toArray()
-  res.json(user);
-});
 
 async function addUser(res, user) {
   if (user.name == undefined) {
@@ -149,16 +169,16 @@ async function addUser(res, user) {
     res.status(400).send("Date is missing or too short");
     return;
   }
-
+  
   user.password = hash(user.password);
-
+  
   var pwmClient = await new mongoClient(uri).connect();
   try {
     var items = await pwmClient
-      .db("pwm")
-      .collection("spotify")
-      .collection("users")
-      .insertOne(user);
+    .db("pwm")
+    .collection("spotify")
+    .collection("users")
+    .insertOne(user);
     // res.json(items)
     console.log(items);
   } catch (e) {
@@ -177,7 +197,7 @@ function deleteUser(res, id) {
     return;
   }
   users = users.filter((user) => user.id != id);
-
+  
   res.json(users);
 }
 async function updateUser(res, id, updatedUser) {
@@ -200,69 +220,69 @@ async function updateUser(res, id, updatedUser) {
   updatedUser.password = hash(updatedUser.password);
   try {
     var pwmClient = await new mongoClient(uri).connect();
-
+    
     var filter = { _id: new ObjectId(id) };
-
+    
     var updatedUserToInsert = {
       $set: updatedUser,
     };
-
+    
     var item = await pwmClient
-      .db("pwm")
-      .collection("users")
+    .db("pwm")
+    .collection("users")
       .updateOne(filter, updatedUserToInsert);
 
-    res.send(item);
-  } catch (e) {
-    console.log("catch in test");
-    if (e.code == 11000) {
-      res.status(400).send("Utente già presente");
-      return;
+      res.send(item);
+    } catch (e) {
+      console.log("catch in test");
+      if (e.code == 11000) {
+        res.status(400).send("Utente già presente");
+        return;
+      }
+      res.status(500).send(`Errore generico: ${e}`);
     }
-    res.status(500).send(`Errore generico: ${e}`);
   }
-}
-
-async function addFavorites(res, id, movie_id) {
-  try {
-    var pwmClient = await new mongoClient(uri).connect();
-
-    var filter = { user_id: new ObjectId(id) };
-
-    var favorite = {
-      $push: { movie_ids: movie_id },
-    };
-    console.log(filter);
-    console.log(favorite);
-
-    var item = await pwmClient
+  
+  async function addFavorites(res, id, movie_id) {
+    try {
+      var pwmClient = await new mongoClient(uri).connect();
+      
+      var filter = { user_id: new ObjectId(id) };
+      
+      var favorite = {
+        $push: { movie_ids: movie_id },
+      };
+      console.log(filter);
+      console.log(favorite);
+      
+      var item = await pwmClient
       .db("pwm")
       .collection("preferiti")
       .updateOne(filter, favorite);
-
-    res.send(item);
-  } catch (e) {
-    res.status(500).send(`Errore generico: ${e}`);
+      
+      res.send(item);
+    } catch (e) {
+      res.status(500).send(`Errore generico: ${e}`);
   }
 }
 
 async function removeFavorites(res, id, movie_id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
-
+    
     var filter = { user_id: new ObjectId(id) };
-
+    
     var favorite = {
       $pull: { movie_ids: movie_id },
     };
     console.log(filter);
     console.log(favorite);
-
+    
     var item = await pwmClient
-      .db("pwm")
-      .collection("preferiti")
-      .updateOne(filter, favorite);
-
+    .db("pwm")
+    .collection("preferiti")
+    .updateOne(filter, favorite);
+    
     res.send(item);
   } catch (e) {
     res.status(500).send(`Errore generico: ${e}`);
@@ -272,11 +292,11 @@ async function removeFavorites(res, id, movie_id) {
 app.get("/users", auth, async function (req, res) {
   var pwmClient = await new mongoClient(uri).connect();
   var users = await pwmClient
-    .db("pwm")
-    .collection("users")
-    .find()
-    .project({ password: 0 })
-    .toArray();
+  .db("pwm")
+  .collection("users")
+  .find()
+  .project({ password: 0 })
+  .toArray();
   res.json(users);
 });
 
@@ -284,12 +304,23 @@ app.post("/users", auth, function (req, res) {
   addUser(res, req.body);
 });
 
+app.get("/user/:id", auth, async function (req, res) {
+  // Ricerca nel database
+  var id = req.params.id;
+  var pwmClient = await new mongoClient(uri).connect();
+  var user = await pwmClient
+    .db("spotify")
+    .collection("users")
+    .find({ _id: new ObjectId(id) })
+    .project({ password: 0 }).toArray()
+  res.json(user);
+});
 app.get("/login", async function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/login.html"));
 });
 app.post("/login", async (req, res) => {
   login = req.body;
-
+  
   if (login.email == undefined) {
     res.status(400).send("Missing Email");
     return;
@@ -340,7 +371,15 @@ app.get("/favorites/:id", async (req, res) => {
     .findOne({ user_id: new ObjectId(id) });
   res.json(favorites);
 });
-
+app.get("/artist/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  let artist=await getArtist(id);
+  let top_tracks=await getArtistTopTracks(id);
+  let albums=await getArtistAlbums(id);
+  let response={"info":[artist,top_tracks,albums]};
+    res.json(response);
+} )
 app.get("/playlist/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
