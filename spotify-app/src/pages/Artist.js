@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardHeader, Box, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
+import "../style/artist.css";
 import Album from "../components/Album"
 import Track from "../components/track"
 const Artist = ({ user, artistId, onBack }) => {
@@ -23,34 +24,36 @@ const Artist = ({ user, artistId, onBack }) => {
 
     fetchArtist();
   }, []);
+  function addDotsToNumberString(str) {
+    return new String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
   return (
     <>
-      <h1>Artista {artistId}</h1>
       {artist ? (
 
-        <><Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h3">{artist[0].name}</Typography>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Avatar src={artist[0].image} alt={artist[0].name} sx={{ width: "100%", height: "auto" }} />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <Typography variant="h5">Popolarità: {artist[0].popularity}</Typography>
-            <Typography variant="h5">Followers: {artist[0].followers}</Typography>
-          </Grid>
-        </Grid>
+        <>
 
-          <div>
-            <Typography variant="h4">Top Tracks</Typography>
-            <Grid container spacing={2} style={{width:"100%"}}>
-              {artist[1]?.map((track,index) => (
-                <Track key={track.id} track={track} index={index+1}></Track>
+          <div className="artist-section" style={{ backgroundImage: `url(${artist[0].image})` }}>
+          
+            <Avatar src={artist[0].image} alt={artist[0].name} className="artist-avatar" />
+            <Grid container spacing={3} className="artist-div">
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h3">{artist[0].name}</Typography>
+                <Typography variant="h5">Popolarità: {artist[0].popularity}</Typography>
+                <Typography variant="h5">Followers: {addDotsToNumberString(artist[0].followers)}</Typography>
+              </Grid>
+            </Grid>
+          </div> 
+          <div className="top-tracks-section">
+            <Grid container spacing={2} >
+          <Typography variant="h4" style={{margin:"4%"}}>Top Tracks</Typography>
+              {artist[1]?.map((track, index) => (
+                <Track key={track.id} track={track} index={index + 1}></Track>
               ))}
             </Grid>
           </div>
-          <div>
-            <Typography variant="h4">Albums</Typography>
+          <div className="top-tracks-section">
+            <Typography variant="h4" style={{margin:"4%"}}>Albums</Typography>
             <Box display="flex" justifyContent="space-between">
               {artist[2]?.map((album) => (
                 <Album key={album.id} album={album} />
