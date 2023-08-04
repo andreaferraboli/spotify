@@ -21,10 +21,10 @@ const Track = (props) => {
       <Grid xs={8} item >
       <Typography variant="h6">{props.track.name}</Typography>
             <Typography  variant="subtitle2">
-              {props.track.artist.map((artist, index) => (
-              <span key={index}>
-                {artist}
-                {index !== props.track.artist.length - 1 && ", "}
+              {props.track.artists.map((artist, int) => (
+              <span key={artist.id}>
+                {artist.name}
+                {int !== props.track.artists.length - 1 && ", "}
               </span>
             ))}
             </Typography>

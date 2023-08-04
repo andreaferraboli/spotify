@@ -73,7 +73,7 @@ function filterTrack(track){
   const filteredTrack = {
     id_track: track.id,
     name: track.name,
-    artist: track.artists.map((artist) => artist.name),
+    artists: track.artists.map((artist) => ({name:artist.name,id:artist.id})),
     album: track.album.name,
     image: track.album.images[0].url,
     duration: track.duration_ms,
@@ -116,7 +116,6 @@ function getPlaylist(id_playlist) {
         let track = await getTrack(item.track.id);
         track.artist.forEach(async (artist) => {
           const artistName = await getArtistNameFromId(artist);
-          console.log("nome_artista:" + artistName);
         });
       });
     },
