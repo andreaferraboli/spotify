@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Card, CardHeader, Box, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
 import "../style/artist.css";
+import ColorThief from "colorthief";
 import Album from "../components/Album"
 import Track from "../components/track"
-const Artist = ({ user, artistId, onBack }) => {
+const Artist = ({ user, onBack }) => {
+  const { artistId } = useParams(); // Ottieni l'id dell'artista dall'URL della pagina
   const [artist, setArtist] = useState([{}]);
+  const [artistColors, setArtistColors] = useState([]); 
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -14,6 +18,17 @@ const Artist = ({ user, artistId, onBack }) => {
           const data = await response.json();
           console.log(data)
           setArtist(data.info);
+          if (data.info[0]?.image) {
+            const image = new Image();
+            image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
+            image.src = data.info[0].image;
+
+            image.onload = () => {
+              const colorThief = new ColorThief();
+              const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
+              setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
+            };
+          }
         } else {
           console.log("Errore nella richiesta");
         }
@@ -33,7 +48,8 @@ const Artist = ({ user, artistId, onBack }) => {
 
         <>
 
-          <div className="artist-section" style={{ backgroundImage: `url(${artist[0].image})` }}>
+          {/* <div className="artist-section" style={{ backgroundImage: `url(${artist[0].image})` }}> */}
+          <div className="artist-section" style={{background: `conic-gradient(from 90deg at bottom right, ${artistColors[0]}, ${artistColors[1]}, ${artistColors[2]})`}}>
           
             <Avatar src={artist[0].image} alt={artist[0].name} className="artist-avatar" />
             <Grid container spacing={3} className="artist-div">

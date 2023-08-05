@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Track from "../components/track"
 import { Card, CardHeader, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
-const Playlist = ({ user, playlistId, onBack }) => {
+const Playlist = ({ user, onBack }) => {
+  const playlistId=useParams();
   // Qui implementi il codice per visualizzare la pagina della playlist utilizzando l'id ricevuto
   const [playlist, setPlaylist] = useState();
   useEffect(() => {
@@ -9,12 +11,11 @@ const Playlist = ({ user, playlistId, onBack }) => {
     const fetchPlaylist = async () => {
 
       try {
-        const response = await fetch(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
+        const response = await fetch(`http://localhost:3100/playlist/${playlistId.playlistId}?apikey=123456`);
         if (response.ok) {
           const data = await response.json();
-          if (data.length > 0) {
             setPlaylist(data[0].my_playlists);
-          }
+          
         } else {
           console.log('Errore nella richiesta');
         }

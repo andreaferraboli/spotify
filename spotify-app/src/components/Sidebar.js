@@ -22,7 +22,7 @@ function Sidebar(props) {
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
       {playlists.map((playlist) => (
-        <SidebarOption key={playlist.id} option={playlist.name} />
+        <SidebarOption key={playlist.id} onClick={() => props.onPlaylistClick(playlist.id)} option={playlist.name} />
       ))}
     </div>
   );
