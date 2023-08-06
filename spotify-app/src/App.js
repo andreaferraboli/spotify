@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-route
 import SideBar from './components/Sidebar';
 import Navbar from './components/navbar';
 import Home from '../src/pages/Home';
+import Login from '../src/pages/Login';
+import Register from '../src/pages/Register';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Box from '@mui/material/Box';
@@ -57,6 +59,12 @@ function App() {
       setSelectedArtistId(null);
       navigate(`/`);
     };
+
+    const handleLogin = (user) => {
+      setUser(user);
+      navigate(`/`);
+    };
+
   
     return (
         <Box className="home-box">
@@ -66,7 +74,10 @@ function App() {
             </Grid>
             <Grid direction="column" item xs={12} md={10} lg={10}>
               <Navbar user={user} />
+
               <Routes>
+              <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+        <Route path="/register" element={<Register />} />
                 <Route
                   path="/playlist/:playlistId"
                   element={

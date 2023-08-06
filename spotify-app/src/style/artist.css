@@ -1,22 +1,50 @@
 @import url("palette.css");
-.artist-section {
-    width: 100%;
-    height: 25%;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden !important; /* Nasconde eventuali contenuti che si estendono oltre le dimensioni del div */
-  }
-.artist-div{
-    color: var(--text-color) !important;
-    
+.artist-container {
+  width: 100%;
+  height: 30%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
 }
-  .artist-avatar {
-     width: auto !important;
-    height: 50% !important;
-  }
+
+.artist-avatar-info {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Imposta l'opacità del colore nero come sfondo per l'avatar e le informazioni */
+}
+
+.artist-avatar {
+  margin: 20px;
+width: 20% !important;
+  height: auto !important;
+}
+
+.artist-info {
+  padding-left: 5%; /* Spazio tra l'avatar e le informazioni */
+  color: white; /* Testo bianco per contrastare con lo sfondo scuro */
+}
+.playlist-image {
+  width: 100%;
+  height: auto;
+}
+
+.playlist-info-container {
+  color: var(--text-color) !important;
+  height: 33.3%;
+  margin-left:5%;
+  display: flex;
+  align-items: center;
+}
+
+
+
+
 
 .top-tracks-section{
     width: 100%;

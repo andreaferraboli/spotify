@@ -7,13 +7,12 @@ const express = require("express");
 const path = require("path");
 var SpotifyWebApi = require("spotify-web-api-node");
 const app = express();
+const cors = require('cors'); 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-  next();
-});
+app.use(cors());
+
 //connect spotify api
 const uri =
   "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
@@ -330,13 +329,13 @@ app.post("/login", async (req, res) => {
   }
 
   login.password = hash(login.password);
-
+  console.log(login.password)
   var pwmClient = await new mongoClient(uri).connect();
   var filter = {
     $and: [{ email: login.email }, { password: login.password }],
   };
   var loggedUser = await pwmClient
-    .db("pwm")
+  .db("spotify")
     .collection("users")
     .findOne(filter);
   console.log(loggedUser);
@@ -345,6 +344,36 @@ app.post("/login", async (req, res) => {
     res.status(401).send("Unauthorized");
   } else {
     res.json(loggedUser);
+  }
+});
+
+app.post("/register", async (req, res) => {
+  
+  register = req.body;
+  console.log(register)
+  if (register.email == undefined) {
+    res.status(400).send("Missing Email");
+    return;
+  }
+  if (register.password == undefined) {
+    res.status(400).send("Missing Password");
+    return;
+  }
+
+  register.password = hash(register.password);
+  var pwmClient = await new mongoClient(uri).connect();
+  try {
+    var items = await pwmClient
+    .db("spotify")
+    .collection("users")
+    .insertOne(register);
+    res.status(201).send(items)
+  } catch (e) {
+    if (e.code == 11000) {
+      res.status(400).send("Utente già presente");
+      return;
+    }
+    res.status(500).send(`Errore generico: ${e}`);
   }
 });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -69,11 +70,14 @@ export default function PrimarySearchAppBar(props) {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box item >
-            <Chip
-              avatar={<Avatar alt={profile.profile_name} src={profile.image} />}
-              label={profile.profile_name}
-              variant="outlined" className="customLabel"/>
-              
+          <Link to="/login" style={{ textDecoration: 'none' }}>
+                <Chip
+                  avatar={<Avatar alt={profile.profile_name} src={profile.image} />}
+                  label={profile.profile_name}
+                  variant="outlined"
+                  className="customLabel"
+                />
+              </Link>
           </Box>
 
         </Toolbar>
