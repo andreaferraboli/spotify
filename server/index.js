@@ -178,9 +178,7 @@ async function addUser(res, user) {
     .collection("users")
     .insertOne(user);
     // res.json(items)
-    console.log(items);
   } catch (e) {
-    console.log("catch in test");
     if (e.code == 11000) {
       res.status(400).send("Utente già presente");
       return;
@@ -232,7 +230,6 @@ async function updateUser(res, id, updatedUser) {
 
       res.send(item);
     } catch (e) {
-      console.log("catch in test");
       if (e.code == 11000) {
         res.status(400).send("Utente già presente");
         return;
@@ -250,8 +247,6 @@ async function updateUser(res, id, updatedUser) {
       var favorite = {
         $push: { movie_ids: movie_id },
       };
-      console.log(filter);
-      console.log(favorite);
       
       var item = await pwmClient
       .db("pwm")
@@ -273,8 +268,6 @@ async function removeFavorites(res, id, movie_id) {
     var favorite = {
       $pull: { movie_ids: movie_id },
     };
-    console.log(filter);
-    console.log(favorite);
     
     var item = await pwmClient
     .db("pwm")
@@ -329,7 +322,6 @@ app.post("/login", async (req, res) => {
   }
 
   login.password = hash(login.password);
-  console.log(login.password)
   var pwmClient = await new mongoClient(uri).connect();
   var filter = {
     $and: [{ email: login.email }, { password: login.password }],
@@ -338,7 +330,6 @@ app.post("/login", async (req, res) => {
   .db("spotify")
     .collection("users")
     .findOne(filter);
-  console.log(loggedUser);
 
   if (loggedUser == null) {
     res.status(401).send("Unauthorized");
@@ -350,7 +341,6 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   
   register = req.body;
-  console.log(register)
   if (register.email == undefined) {
     res.status(400).send("Missing Email");
     return;
@@ -425,16 +415,12 @@ app.post("/favorites/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   movie_id = req.body.movie_id;
-  console.log(movie_id);
-  console.log(id);
   addFavorites(res, id, movie_id);
 });
 app.delete("/favorites/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   movie_id = req.body.movie_id;
-  console.log(movie_id);
-  console.log(id);
   removeFavorites(res, id, movie_id);
 });
 function ms_to_minute(milliseconds) {
