@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Paper, TextField, Button, Typography } from '@mui/material';
+import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
+import LoadArtist from "../components/LoadArtist"
+import LoadGenres from "../components/LoadGenres"
+
 import "../style/login.css"; // Importa il file CSS con gli stili personalizzati
 
 const RegisterPage = () => {
@@ -11,7 +14,10 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [favouriteGenres,setFavouriteGenres]=useState([]);
+  const [favouriteArtist,setFavouriteArtist]=useState([]);
+  const [loadGenres,setLoadGenres]=useState(false);
+  const [loadArtist,setLoadArtist]=useState(false);
   const handleRegister = async () => {
     try {
       // Verifica se le password corrispondono prima di inviare la richiesta
@@ -45,10 +51,25 @@ const RegisterPage = () => {
     }
   };
 
+  const loadedGenres=()=>{
+    setLoadGenres(true);
+    setLoadArtist(false)
+  }
+  const loadedArtist=()=>{
+    setLoadArtist(true);
+    setLoadGenres(false);
+  }
   return (
     <div className='background'>
-
-      <Grid container direction="column" alignItems="center" spacing={3} className="container">
+      {loadGenres ? (
+    // Contenuto se loadedGenres è true
+    <LoadGenres loadArtist={loadedArtist()}/>
+  ) : loadArtist ? (
+    // Contenuto se loadedGenres è false e loadArtist è true
+    <LoadArtist register={handleRegister()}></LoadArtist>
+  ) : (
+    // Contenuto se sia loadedGenres che loadArtist sono false
+    <Grid container direction="column" alignItems="center" spacing={3} className="container">
         <Grid item>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/800px-Spotify_logo_with_text.svg.png" alt="Spotify Logo" className="logo" />
         </Grid>
@@ -110,10 +131,10 @@ const RegisterPage = () => {
           <Button
             variant="contained"
             fullWidth
-            onClick={handleRegister}
+            onClick={loadedGenres()}
             className="button"
           >
-            Registrati
+            Avanti
           </Button>
         </Grid>
         <Grid item>
@@ -122,6 +143,8 @@ const RegisterPage = () => {
           </Typography>
         </Grid>
       </Grid>
+  )}
+      
     </div>
 
   );
