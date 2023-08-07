@@ -1,16 +1,30 @@
 /* Stili personalizzati per la pagina di login */
 
 @import url("palette.css");
-  
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
   .container {
-    text-align: center;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: 300px;
+    background-color: black;
+    color: var(--text-color);
+    row-gap: normal;
+    border-radius: 8px;
+    margin-left: 25% !important;
+    margin-right: 25% !important;
+    margin-top: 0% !important;
+    width: 50% !important;
+    height:100vh !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
-  
+  .background{
+    width: 100%;
+    height:100vh;
+    margin: 0;
+    background-color: var(--background-color) !important;
+  }
   .logo {
     width: 150px;
     margin-bottom: 20px;
@@ -23,21 +37,47 @@
   }
   
   .input {
-    width: 100%;
+    width: 80% !important;
     padding: 10px;
+    margin: 1% 10% 1% 10%!important;
     margin-bottom: 10px;
-    border: 1px solid #888888;
-    border-radius: 3px;
     font-size: 14px;
+    background-color: var(--background-color);
+    
   }
-  
+  .input {
+    & input {
+      color: var(--text-color); /* Cambia il colore del testo all'interno dell'input */
+    }
+    & label {
+      color: var(--text-color); /* Cambia il colore del testo di default (label) */
+      &.MuiInputLabel-shrink {
+        color: var(--text-color); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+      }
+    }
+    & .MuiOutlinedInput-notchedOutline {
+      border-color: var(--text-color); /* Cambia il colore del bordo dell'input */
+    }
+    & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: var(--text-color); /* Cambia il colore del bordo quando l'input è in hover */
+    }
+    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: var(--text-color); /* Cambia il colore del bordo quando l'input ha il focus */
+    }
+    & .MuiFormHelperText-root {
+      color: var(--text-color); /* Cambia il colore del testo dell'helper text (se presente) */
+    }
+  }
+  .MuiGrid-item{
+    padding-left: 0 !important;
+  }
   .button {
-    width: 100%;
-    padding: 10px;
+    margin: 1% 20% 1% 20%!important;
+    width: 60% !important;
     background-color: #1db954 !important;
-    color: #ffffff;
+    color: var(--text-color) !important;
     border: none;
-    border-radius: 3px;
+    border-radius: 50px !important;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
