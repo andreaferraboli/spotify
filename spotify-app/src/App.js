@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     // Funzione per ottenere le playlist dall'API del database
     const fetchUser = async () => {
-      const user_id = "64ce1a3a831ac534ca7695f9";
+      const user_id = "64d22a8c6b6f0c5f086a149c";
 
       try {
         const response = await fetch(`http://localhost:3100/user/${user_id}?apikey=123456`);

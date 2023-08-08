@@ -1,63 +1,82 @@
-import React, { useState } from 'react';
-import { Slider, Avatar, TextField, Grid } from '@mui/material';
-
+import React, { useState, useEffect } from 'react';
+import { TextField, Grid, Container, Typography } from '@mui/material';
+import axios from 'axios';
+import ArtistCard from "./ArtistCard"
 const LoadArtist = () => {
-  // Stato per memorizzare gli artisti selezionati
   const [selectedAvatars, setSelectedAvatars] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [query, setQuery] = useState('');
 
-  // Mock degli artisti. Sostituisci questo con i tuoi dati reali.
-  const artists = [
-    { id: 1, name: 'Artist 1', avatarUrl: 'url/to/avatar1.jpg' },
-    { id: 2, name: 'Artist 2', avatarUrl: 'url/to/avatar2.jpg' },
-    { id: 3, name: 'Artist 3', avatarUrl: 'url/to/avatar3.jpg' },
-    // Aggiungi altri artisti qui
-  ];
+  useEffect(() => {
+    // Effettua la chiamata al server quando la query cambia
+    axios.get(`http://localhost:3100/artists/${query}`)
+      .then(response => {
+        console.log('Data from server:', response.data);
+        const sortedArtists = response.data.sort((a, b) => {
+          if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
+            return -1; // a viene prima di b
+          } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
+            return 1; // b viene prima di a
+          } else {
+            // Se la query è contenuta in entrambi o in nessuno, ordina per popolarità
+            return b.popularity - a.popularity; // ordinamento decrescente per popolarità
+          }
+        });
+        setArtists(sortedArtists);
+      setArtists(sortedArtists);
+      })
+      .catch(error => console.error(error));
+  }, [query]);
 
-  // Funzione per gestire la selezione degli artisti
-  const handleAvatarSelect = (artistId) => {
-    // Verifica se l'ID dell'artista è già presente nell'array selectedAvatars
-    if (!selectedAvatars.includes(artistId)) {
-      setSelectedAvatars((prevSelectedAvatars) => [
-        ...prevSelectedAvatars,
-        artistId,
-      ]);
+  const handleAvatarSelect = (artist) => {
+    if (artist != null && artist != undefined) {
+      if (!selectedAvatars?.some(a => a.id === artist.id)) {
+        setSelectedAvatars(prevSelectedAvatars => [...prevSelectedAvatars, artist]);
+      } else {
+        setSelectedAvatars(prevSelectedAvatars =>
+          prevSelectedAvatars.filter(a => a.id !== artist.id)
+        );
+      }
     }
+
   };
 
+  
   return (
-    <div>
-      {/* Barra di ricerca */}
-      <TextField label="Cerca artisti" fullWidth />
+    <Container>
+      <Typography variant="h6" gutterBottom>
+        Benvenuto<br />
+        Scegli i tuoi artisti per consigli più personalizzati!
+      </Typography>
+      <TextField
+        label="Cerca artisti"
+        fullWidth
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
 
-      {/* Slider verticale con gli avatar degli artisti */}
-      <Slider
-        orientation="vertical"
-        defaultValue={0}
-        aria-labelledby="discrete-slider"
-        step={1}
-        marks
-        min={0}
-        max={artists.length - 1}
-        valueLabelDisplay="auto"
-        onChange={(event, value) => handleAvatarSelect(artists[value].id)}
-      >
-        {artists.map((artist) => (
-          <Avatar key={artist.id} alt={artist.name} src={artist.avatarUrl} />
-        ))}
-      </Slider>
-
-      {/* Visualizza gli artisti selezionati */}
-      <Grid container spacing={1}>
-        {selectedAvatars.map((artistId) => {
-          const artist = artists.find((artist) => artist.id === artistId);
-          return (
-            <Grid item key={artistId}>
-              <Avatar alt={artist.name} src={artist.avatarUrl} />
-            </Grid>
-          );
-        })}
+      <h2>Artisti</h2>
+      <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
+  <Grid container justifyContent="space-around" >
+    {artists?.map((artist) => (
+      <Grid item xs={2} key={artist.id}>
+        <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
       </Grid>
-    </div>
+    ))}
+  </Grid>
+</div>
+
+      <h2>Artisti Selezionati</h2>
+      <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
+        <Grid container justifyContent="space-around">
+          {selectedAvatars?.map((artist) => (
+            <Grid xs={2} item key={artist.id}>
+              <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </Container>
   );
 };
 

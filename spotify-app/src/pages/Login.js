@@ -17,7 +17,6 @@ const LoginPage = (props) => {
         password,
       });
 
-      console.log(response.data)
 
       // Controlla la risposta del server
       if (response.status === 200) {

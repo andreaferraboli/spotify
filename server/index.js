@@ -92,7 +92,7 @@ function filterArtist(artist){
   const filteredArtist = {
     id: artist.id,
     name: artist.name,
-    image: artist.images[0].url,
+    image: artist.images[0]?.url,
     popularity:artist.popularity,
     followers:artist.followers.total
   };
@@ -379,15 +379,16 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
 });
 
-app.get("/favorites/:id", async (req, res) => {
+app.get("/artists/:query", async (req, res) => {
   // Ricerca nel database
-  var id = req.params.id;
-  var pwmClient = await new mongoClient(uri).connect();
-  var favorites = await pwmClient
-    .db("pwm")
-    .collection("preferiti")
-    .findOne({ user_id: new ObjectId(id) });
-  res.json(favorites);
+  query=req.params.query
+  spotifyApi.searchArtists(query)
+  .then(function(data) {
+    console.log(data.body.artists.items[0])
+    res.send(data.body.artists.items.map((artist)=>filterArtist(artist)));
+  }, function(err) {
+    console.error(err);
+  });
 });
 app.get("/artist/:id", async (req, res) => {
   // Ricerca nel database

@@ -9,14 +9,14 @@ const Home = (props) => {
     
     <><div className='home-section'>
       <h2>Le mie PLAYLIST</h2>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-around">
         {props.user.my_playlists?.map((playlist) => (
           <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
         ))}
       </Box>
     </div><div  className='home-section'>
         <h2>I miei ARTISTI</h2>
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-around">
           {props.user.favourite_artists?.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} selectedArtistId={props.onArtistClick} />
           ))}

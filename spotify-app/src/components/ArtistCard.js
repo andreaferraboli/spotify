@@ -3,16 +3,19 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea,Avatar } from '@mui/material';
+import { CardActionArea, Avatar } from '@mui/material';
 import "../style/card.css";
 
 export default function ArtistCard(props) {
   return (
-    <Card sx={{ maxWidth: 345 }} className='circular-card' onClick={()=> {
-      props.selectedArtistId(props.artist.id)
-      }} >
+    <Card sx={{ maxWidth: 345 }} className='circular-card' onClick={() => {
+      if (props.selectedArtistId == null)
+        props.handleAvatarSelect(props.artist)
+      else
+        props.selectedArtistId(props.artist.id)
+    }} >
       <CardActionArea>
-      <Avatar src={props.artist.images} alt={props.artist.name} sx={{ width: "100%", height: "10rem" }} />
+        <Avatar src={props.artist.image} alt={props.artist.name} sx={{ width: "100%", height: "10rem" }} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" className='artist-name'>
             {props.artist.name}

@@ -84,7 +84,7 @@ const Artist = ({ user, onBack }) => {
           </div>
           <div className="top-tracks-section">
             <Typography variant="h4" style={{ margin: "4%" }}>Albums</Typography>
-            <Box display="flex" justifyContent="space-between">
+            <Box display="flex" justifyContent="space-around">
               {artist[2]?.map((album) => (
                 <Album key={album.id} album={album} />
               ))}
