@@ -3,11 +3,13 @@ const mongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const auth = require("./auth").auth;
 const crypto = require("crypto");
+const fs = require('fs');
 const express = require("express");
 const path = require("path");
 var SpotifyWebApi = require("spotify-web-api-node");
 const app = express();
-const cors = require('cors'); 
+const axios = require('axios');
+const cors = require('cors');
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
@@ -37,9 +39,10 @@ fetch(url, {
       clientSecret: client_secret,
     });
     spotifyApi.setAccessToken(my_access_token);
+
     // getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
   });
-  
+
 // function getTrack(id_track) {
 //     let track
 //     spotifyApi.getTrack(`${id_track}`).then(
@@ -68,33 +71,33 @@ async function getTrack(id_track) {
     throw err;
   }
 }
-function filterTrack(track){
+function filterTrack(track) {
   const filteredTrack = {
     id_track: track.id,
     name: track.name,
-    artists: track.artists.map((artist) => ({name:artist.name,id:artist.id})),
+    artists: track.artists.map((artist) => ({ name: artist.name, id: artist.id })),
     album: track.album.name,
     image: track.album.images[0].url,
     duration: track.duration_ms,
   };
   return filteredTrack;
 }
-function filterAlbum(album){
+function filterAlbum(album) {
   const filteredAlbum = {
     id: album.id,
     name: album.name,
-    year: album.release_date.slice(0,4),
+    year: album.release_date.slice(0, 4),
     image: album.images[0].url
   };
   return filteredAlbum;
 }
-function filterArtist(artist){
+function filterArtist(artist) {
   const filteredArtist = {
     id: artist.id,
     name: artist.name,
     image: artist.images[0]?.url,
-    popularity:artist.popularity,
-    followers:artist.followers.total
+    popularity: artist.popularity,
+    followers: artist.followers.total
   };
   return filteredArtist;
 }
@@ -124,22 +127,22 @@ function getPlaylist(id_playlist) {
   );
 }
 async function getAlbum(id_album) {
-  let album=await spotifyApi.getAlbum(id_album);
+  let album = await spotifyApi.getAlbum(id_album);
   return album.body
 }
 
-async function getArtist(id_artist){
-  let artist=await spotifyApi.getArtist(id_artist)
+async function getArtist(id_artist) {
+  let artist = await spotifyApi.getArtist(id_artist)
   return filterArtist(artist.body);
 }
-async function getArtistAlbums(id_artist){
-  let albums=await spotifyApi.getArtistAlbums(id_artist,{album_type : 'album'});
-  return albums.body.items.map((album)=>filterAlbum(album));
+async function getArtistAlbums(id_artist) {
+  let albums = await spotifyApi.getArtistAlbums(id_artist, { album_type: 'album' });
+  return albums.body.items.map((album) => filterAlbum(album));
 }
 
-async function getArtistTopTracks(id_artist){
-  let top_tracks=await spotifyApi.getArtistTopTracks(id_artist, 'IT');
-  return top_tracks.body.tracks.map((track)=>filterTrack(track));
+async function getArtistTopTracks(id_artist) {
+  let top_tracks = await spotifyApi.getArtistTopTracks(id_artist, 'IT');
+  return top_tracks.body.tracks.map((track) => filterTrack(track));
 
 }
 function hash(input) {
@@ -167,16 +170,16 @@ async function addUser(res, user) {
     res.status(400).send("Date is missing or too short");
     return;
   }
-  
+
   user.password = hash(user.password);
-  
+
   var pwmClient = await new mongoClient(uri).connect();
   try {
     var items = await pwmClient
-    .db("pwm")
-    .collection("spotify")
-    .collection("users")
-    .insertOne(user);
+      .db("pwm")
+      .collection("spotify")
+      .collection("users")
+      .insertOne(user);
     // res.json(items)
   } catch (e) {
     if (e.code == 11000) {
@@ -193,7 +196,7 @@ function deleteUser(res, id) {
     return;
   }
   users = users.filter((user) => user.id != id);
-  
+
   res.json(users);
 }
 async function updateUser(res, id, updatedUser) {
@@ -216,64 +219,64 @@ async function updateUser(res, id, updatedUser) {
   updatedUser.password = hash(updatedUser.password);
   try {
     var pwmClient = await new mongoClient(uri).connect();
-    
+
     var filter = { _id: new ObjectId(id) };
-    
+
     var updatedUserToInsert = {
       $set: updatedUser,
     };
-    
+
     var item = await pwmClient
-    .db("pwm")
-    .collection("users")
+      .db("pwm")
+      .collection("users")
       .updateOne(filter, updatedUserToInsert);
 
-      res.send(item);
-    } catch (e) {
-      if (e.code == 11000) {
-        res.status(400).send("Utente già presente");
-        return;
-      }
-      res.status(500).send(`Errore generico: ${e}`);
+    res.send(item);
+  } catch (e) {
+    if (e.code == 11000) {
+      res.status(400).send("Utente già presente");
+      return;
     }
+    res.status(500).send(`Errore generico: ${e}`);
   }
-  
-  async function addFavorites(res, id, movie_id) {
-    try {
-      var pwmClient = await new mongoClient(uri).connect();
-      
-      var filter = { user_id: new ObjectId(id) };
-      
-      var favorite = {
-        $push: { movie_ids: movie_id },
-      };
-      
-      var item = await pwmClient
+}
+
+async function addFavorites(res, id, movie_id) {
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
+
+    var filter = { user_id: new ObjectId(id) };
+
+    var favorite = {
+      $push: { movie_ids: movie_id },
+    };
+
+    var item = await pwmClient
       .db("pwm")
       .collection("preferiti")
       .updateOne(filter, favorite);
-      
-      res.send(item);
-    } catch (e) {
-      res.status(500).send(`Errore generico: ${e}`);
+
+    res.send(item);
+  } catch (e) {
+    res.status(500).send(`Errore generico: ${e}`);
   }
 }
 
 async function removeFavorites(res, id, movie_id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
-    
+
     var filter = { user_id: new ObjectId(id) };
-    
+
     var favorite = {
       $pull: { movie_ids: movie_id },
     };
-    
+
     var item = await pwmClient
-    .db("pwm")
-    .collection("preferiti")
-    .updateOne(filter, favorite);
-    
+      .db("pwm")
+      .collection("preferiti")
+      .updateOne(filter, favorite);
+
     res.send(item);
   } catch (e) {
     res.status(500).send(`Errore generico: ${e}`);
@@ -283,11 +286,11 @@ async function removeFavorites(res, id, movie_id) {
 app.get("/users", auth, async function (req, res) {
   var pwmClient = await new mongoClient(uri).connect();
   var users = await pwmClient
-  .db("pwm")
-  .collection("users")
-  .find()
-  .project({ password: 0 })
-  .toArray();
+    .db("pwm")
+    .collection("users")
+    .find()
+    .project({ password: 0 })
+    .toArray();
   res.json(users);
 });
 
@@ -311,7 +314,7 @@ app.get("/login", async function (req, res) {
 });
 app.post("/login", async (req, res) => {
   login = req.body;
-  
+
   if (login.email == undefined) {
     res.status(400).send("Missing Email");
     return;
@@ -327,7 +330,7 @@ app.post("/login", async (req, res) => {
     $and: [{ email: login.email }, { password: login.password }],
   };
   var loggedUser = await pwmClient
-  .db("spotify")
+    .db("spotify")
     .collection("users")
     .findOne(filter);
 
@@ -339,7 +342,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  
+
   register = req.body;
   if (register.email == undefined) {
     res.status(400).send("Missing Email");
@@ -354,9 +357,9 @@ app.post("/register", async (req, res) => {
   var pwmClient = await new mongoClient(uri).connect();
   try {
     var items = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .insertOne(register);
+      .db("spotify")
+      .collection("users")
+      .insertOne(register);
     res.status(201).send(items)
   } catch (e) {
     if (e.code == 11000) {
@@ -381,24 +384,24 @@ app.get("/", function (req, res) {
 
 app.get("/artists/:query", async (req, res) => {
   // Ricerca nel database
-  query=req.params.query
+  query = req.params.query
   spotifyApi.searchArtists(query)
-  .then(function(data) {
-    console.log(data.body.artists.items[0])
-    res.send(data.body.artists.items.map((artist)=>filterArtist(artist)));
-  }, function(err) {
-    console.error(err);
-  });
+    .then(function (data) {
+      console.log(data.body.artists.items[0])
+      res.send(data.body.artists.items.map((artist) => filterArtist(artist)));
+    }, function (err) {
+      console.error(err);
+    });
 });
 app.get("/artist/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
-  let artist=await getArtist(id);
-  let top_tracks=await getArtistTopTracks(id);
-  let albums=await getArtistAlbums(id);
-  let response={"info":[artist,top_tracks,albums]};
-    res.json(response);
-} )
+  let artist = await getArtist(id);
+  let top_tracks = await getArtistTopTracks(id);
+  let albums = await getArtistAlbums(id);
+  let response = { "info": [artist, top_tracks, albums] };
+  res.json(response);
+})
 app.get("/playlist/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
@@ -410,7 +413,54 @@ app.get("/playlist/:id", async (req, res) => {
       { $match: { "my_playlists.id": id } },
       { $project: { my_playlists: 1, _id: 0 } }
     ]).toArray();
-    res.json(playlist);
+  res.json(playlist);
+});
+app.get("/genres", async (req, res) => {
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/recommendations/available-genre-seeds`, {
+      headers: {
+        Authorization: `Bearer ${my_access_token}`,
+      },
+    });
+
+    // const artists = response.data.tracks.map(track => track.artists[0].name);
+    res.send(response.data.genres.map((genre,index)=>({"id":index,"name":genre})));
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+});
+
+app.post("/genre", async (req, res) => {
+  const genres = req.body.genres; // Replace with your desired genres array
+  const limit = req.body.limit; // Limit the number of results
+  let artists = [];
+  console.log("genres received", genres);
+  console.log("limit received", limit);
+  const fetchPromises = genres.map(async genre => {
+    try {
+      const response = await axios.get(`https://api.spotify.com/v1/recommendations?type=artist&seed_genres=${genre}&limit=${limit}`, {
+        headers: {
+          Authorization: `Bearer ${my_access_token}`,
+        },
+      });
+
+      const artistIds = response.data.tracks.map(track => track.artists[0].id);
+      artists.push(...artistIds);
+    } catch (error) {
+      console.error('Error fetching artists:', error);
+    }
+  });
+
+  // Wait for all API requests to finish
+  Promise.all(fetchPromises)
+    .then(async () => {
+      const detailedArtists = await Promise.all(artists.map(artist => getArtist(artist)));
+      res.send(detailedArtists);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      res.status(500).send('An error occurred.');
+    });
 });
 app.post("/favorites/:id", async (req, res) => {
   // Ricerca nel database
