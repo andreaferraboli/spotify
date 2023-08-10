@@ -387,7 +387,6 @@ app.get("/artists/:query", async (req, res) => {
   query = req.params.query
   spotifyApi.searchArtists(query)
     .then(function (data) {
-      console.log(data.body.artists.items[0])
       res.send(data.body.artists.items.map((artist) => filterArtist(artist)));
     }, function (err) {
       console.error(err);
@@ -434,8 +433,6 @@ app.post("/genre", async (req, res) => {
   const genres = req.body.genres; // Replace with your desired genres array
   const limit = req.body.limit; // Limit the number of results
   let artists = [];
-  console.log("genres received", genres);
-  console.log("limit received", limit);
   const fetchPromises = genres.map(async genre => {
     try {
       const response = await axios.get(`https://api.spotify.com/v1/recommendations?type=artist&seed_genres=${genre}&limit=${limit}`, {

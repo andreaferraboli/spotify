@@ -6,56 +6,52 @@ const LoadArtist = (props) => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [artists, setArtists] = useState([]);
   const [query, setQuery] = useState('');
-
-  useEffect(async () => {
-    let isMounted = true;
-    // Effettua la chiamata al server quando la query cambia
-    if (query !== '') {
-      axios.get(`http://localhost:3100/artists/${query}`)
-        .then(response => {
-          if (isMounted) {
-            console.log('Data from server:', response.data);
-            const sortedArtists = response.data.sort((a, b) => {
-              if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
-                return -1; // a viene prima di b
-              } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
-                return 1; // b viene prima di a
-              } else {
-                // Se la query è contenuta in entrambi o in nessuno, ordina per popolarità
-                return b.popularity - a.popularity; // ordinamento decrescente per popolarità
-              }
-            });
-            setArtists(sortedArtists);
-          }
-
-        })
-        .catch(error => {
-          if (isMounted) {
-            console.error(error);
+  const [error, setError] = useState(null);
+  const [noResults, setNoResults] = useState(false);
+  const fetchData = async () => {
+    try {
+      setError(null);
+      setNoResults(false);
+      if (query !== '') {
+        const response = await axios.get(`http://localhost:3100/artists/${query}`);
+        console.log('Data from server:', response.data);
+        const sortedArtists = response.data.sort((a, b) => {
+          if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
+            return -1; // a comes before b
+          } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
+            return 1; // b comes before a
+          } else {
+            // If query is present in both or in neither, sort by popularity
+            return b.popularity - a.popularity; // descending popularity order
           }
         });
-        return () => {
-          isMounted = false; // Set the mounted status to false when the component unmounts
-        };
-    } else {
-      const genres = props.favouriteGenres.map(genre => genre.name); // Replace with your desired genre
-      const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));// Limit the number of results
-      console.log("genres:", genres);
-      console.log("limit:", limit);
-      try {
+        if (sortedArtists.length === 0) {
+          setNoResults(true); // Set noResults state if no artists match the query
+        }
+        setArtists(sortedArtists);
+      } else {
+        const genres = props.favouriteGenres.map(genre => genre.name);
+        const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));
+        console.log("genres:", genres);
+        console.log("limit:", limit);
         const response = await axios.post('http://localhost:3100/genre', {
           genres: genres,
           limit: limit
         });
-
-        // Handle the response data here
         setArtists(response.data);
-      } catch (error) {
-        console.error('An error occurred:', error);
+        if (response.data.length === 0) {
+          setNoResults(true); // Set noResults state if no artists are available
+        }
       }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      setError('An error occurred while fetching data. Please try again later.');
     }
-  }, [query]);
+  };
 
+  useEffect(() => {
+    fetchData();
+  }, [query]);
 
   const handleAvatarSelect = (artist) => {
     if (artist !== null && artist !== undefined) {
@@ -67,9 +63,34 @@ const LoadArtist = (props) => {
         );
       }
     }
+
   };
+  const arraysAreEqual = (array1, array2) => {
+    if (array1.length !== array2.length) {
+      return false;
+    }
 
+    for (let i = 0; i < array1.length; i++) {
+      if (array1[i].id !== array2[i].id) {
+        return false;
+      }
+      // Aggiungi altri controlli qui se necessario
+    }
 
+    return true;
+  };
+  const handleRegisterClick =  () => {
+    // Wait for setFavouriteArtists to complete
+    setTimeout(() => {
+      // Questo codice verrà eseguito dopo 1000 millisecondi (1 secondo)
+      if (selectedAvatars.length === props.getFavouriteArtists()) {
+        props.register();
+      } else {
+        handleRegisterClick()
+      }
+    }, 1000);
+
+  };
   return (
     <Container>
       <Typography variant="h6" gutterBottom>
@@ -108,12 +129,14 @@ const LoadArtist = (props) => {
         <Button
           variant="contained"
           fullWidth
-          onClick={() => { props.setFavouriteArtist(selectedAvatars); props.register() }}
+          onClick={() => { props.setFavouriteArtists(selectedAvatars); handleRegisterClick() }}
           className="button"
         >
           Avanti
         </Button>
       </div>
+      {noResults && <p>No artists match your search or no artists are available.</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </Container>
   );
 };

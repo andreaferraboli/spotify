@@ -15,16 +15,18 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [favouriteGenres, setFavouriteGenres] = useState([]);
-  const [favouriteArtist, setFavouriteArtist] = useState([]);
+  const [favouriteArtists, setFavouriteArtists] = useState([]);
   const [loadGenres, setLoadGenres] = useState(false);
   const [loadArtist, setLoadArtist] = useState(false);
+  
+  const getFavouriteArtists = () => {
+    return favouriteArtists.length;
+  };
+
   const handleRegister = async () => {
     try {
       // Verifica se le password corrispondono prima di inviare la richiesta
-      if (password !== confirmPassword) {
-        console.log('Le password non corrispondono.');
-        return;
-      }
+      
 
       // Effettua la richiesta POST al server Node
       const response = await axios.post('http://localhost:3100/register',
@@ -34,12 +36,15 @@ const RegisterPage = () => {
           "profile_name": username,
           "email": email,
           "password": password,
+          "favourite_genres":favouriteGenres,
+          "favourite_artists": favouriteArtists
         }
       );
 
       // Controlla la risposta del server
       if (response.status === 201) {
         console.log('Registrazione effettuata con successo!');
+        window.location.href = "/login";
         // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
         console.log('Errore durante la registrazione');
@@ -52,6 +57,10 @@ const RegisterPage = () => {
   };
 
   const loadedGenres = () => {
+    if (password !== confirmPassword) {
+      console.log('Le password non corrispondono.');
+      return;
+    }
     setLoadGenres(true);
     setLoadArtist(false)
   }
@@ -64,7 +73,7 @@ const RegisterPage = () => {
       {loadGenres ? (
         <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} />
       ) : loadArtist ? (
-        <LoadArtist favouriteGenres={favouriteGenres} setFavouriteArtist={setFavouriteArtist} register={handleRegister}></LoadArtist>
+        <LoadArtist favouriteGenres={favouriteGenres} getFavouriteArtists={getFavouriteArtists} setFavouriteArtists={setFavouriteArtists} register={handleRegister}></LoadArtist>
       ) : (
         <Grid container direction="column" alignItems="center" spacing={3} className="container">
           <Grid item>
