@@ -74,8 +74,8 @@ html, body, #root {
   .button {
     margin: 1% 20% 1% 20%!important;
     width: 60% !important;
-    background-color: #1db954 ;
-    color: var(--text-color) ;
+    background-color: #1db954 !important;
+    color: var(--text-color) !important;
     border: none;
     border-radius: 50px !important;
     font-size: 16px;

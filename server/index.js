@@ -459,6 +459,16 @@ app.post("/genre", async (req, res) => {
       res.status(500).send('An error occurred.');
     });
 });
+
+app.get("/searchTracks/:query", async (req, res) => {
+  query = req.params.query
+  spotifyApi.searchTracks(query)
+    .then(function (data) {
+      res.send(data.body.tracks.items.map((track) => filterTrack(track)));
+    }, function (err) {
+      console.error(err);
+    });
+})
 app.post("/favorites/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;

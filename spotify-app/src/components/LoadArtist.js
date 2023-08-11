@@ -79,16 +79,18 @@ const LoadArtist = (props) => {
 
     return true;
   };
-  const handleRegisterClick =  () => {
+  const handleRegisterClick = () => {
     // Wait for setFavouriteArtists to complete
-    setTimeout(() => {
-      // Questo codice verrà eseguito dopo 1000 millisecondi (1 secondo)
-      if (selectedAvatars.length === props.getFavouriteArtists()) {
-        props.register();
-      } else {
+
+    // Questo codice verrà eseguito dopo 1000 millisecondi (1 secondo)
+    if (selectedAvatars.length === props.getFavouriteArtists()) {
+      props.register();
+    } else {
+      setTimeout(() => {
         handleRegisterClick()
-      }
-    }, 1000);
+      }, 1000);
+    }
+
 
   };
   return (

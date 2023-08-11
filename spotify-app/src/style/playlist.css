@@ -1,0 +1,22 @@
+@import url("palette.css");
+.icon-button{
+    color: var(--text-color) !important;
+    font-size: xx-large !important;
+    
+}
+.icon-section{
+    height: 10% !important;
+}
+.top-tracks-section{
+    background-color: var(--background-color);
+}
+.MuiGrid-item {
+    padding-top: 24px !important;
+}
+.delete-icon{
+    color: rgb(131, 17, 17) !important;
+}
+.title-section{
+    margin:4% !important;
+    color: var(--text-color)
+}

@@ -1,9 +1,10 @@
+@import url("palette.css");
 .sidebar {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  color: white;
-  background-color: #121212;
+  color: var(--text-color);
+  background-color: var(--primary-color);
 }
 
 .sidebar__title {
