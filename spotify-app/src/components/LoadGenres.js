@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Grid, Container, Typography, useThemeProps, Button } from '@mui/material';
-import axios, { all } from 'axios';
-
+import { TextField, Grid, Container, Typography, Button } from '@mui/material';
+import axios from 'axios';
+import "../style/login.css";
 const LoadGenres = (props) => {
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [genres, setGenres] = useState([]);
@@ -18,7 +18,7 @@ const LoadGenres = (props) => {
     }, []); // Array di dipendenze vuoto
 
     const handleGenreSelect = (genre) => {
-        if (genre != null && genre != undefined) {
+        if (genre !== null && genre !== undefined) {
             if (!selectedGenres?.some(g => g.id === genre.id)) {
                 setSelectedGenres(prevSelectedGenres => [...prevSelectedGenres, genre]);
             } else {
@@ -30,7 +30,7 @@ const LoadGenres = (props) => {
     };
 
     const updateGenres = (query) => {
-        if (query != "") {
+        if (query !== "") {
             let newList = [];
             for (let i in allGenres)
                 if (allGenres[i].name.toLowerCase().includes(query.toLowerCase()))
@@ -41,23 +41,29 @@ const LoadGenres = (props) => {
     }
     return (
         <Container>
-            <Typography variant="h6" gutterBottom>
-                Benvenuto<br />
+            <div style={{height:"20vh"}}>
+                <Typography variant="h6" gutterBottom className='title'>
+                Benvenuto
+                </Typography >
+                <Typography className='title' paragraph>
                 Scegli i tuoi generi musicali preferiti per consigli più personalizzati!
             </Typography>
             <TextField
                 label="Cerca generi musicali"
                 fullWidth
+                className='input'
                 onChange={(event) =>{
                     updateGenres(event.target.value)}
                 }  />
-            <h2>Generi Musicali</h2>
+            </div>
+            
+            <h2 className='subtitle'>Generi Musicali</h2>
             <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
                         <Grid xs={2} item key={genre.id}>
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div style={{ border: '1px solid gray', padding: '8px', borderRadius: '4px', backgroundColor: selectedGenres.some(g => g.id === genre.id) ? 'lightblue' : 'white' }}>
+                                <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
                                     {genre.name}
                                 </div>
                             </div>
@@ -66,13 +72,13 @@ const LoadGenres = (props) => {
                 </Grid>
             </div>
 
-            <h2>Generi Musicali Selezionati</h2>
-            <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
+            <h2 className='subtitle'>Generi Musicali Selezionati</h2>
+            <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '25vh' }}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
                         <Grid xs={2} item key={genre.id}>
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div style={{ border: '1px solid gray', padding: '8px', borderRadius: '4px', backgroundColor: selectedGenres.some(g => g.id === genre.id) ? 'lightblue' : 'white' }}>
+                                <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
                                     {genre.name}
                                 </div>
                             </div>

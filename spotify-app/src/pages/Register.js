@@ -145,7 +145,7 @@ const RegisterPage = () => {
           </Grid>
           <Grid item>
             <Typography variant="body2">
-              Hai già un account? <Link to="/login">Accedi qui</Link>
+              Hai già un account? <Link to="/login" className='link'>Accedi qui</Link>
             </Typography>
           </Grid>
         </Grid>

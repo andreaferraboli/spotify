@@ -76,7 +76,7 @@ const LoginPage = (props) => {
         </Grid>
         <Grid item>
           <Typography variant="body2">
-            Non hai un account? <Link to="/register">Registrati</Link>
+            Non hai un account? <Link to="/register" className='link'>Registrati</Link>
           </Typography>
         </Grid>
       </Grid>

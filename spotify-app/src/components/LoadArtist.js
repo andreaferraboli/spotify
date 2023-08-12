@@ -95,18 +95,24 @@ const LoadArtist = (props) => {
   };
   return (
     <Container>
-      <Typography variant="h6" gutterBottom>
-        Benvenuto<br />
+      <div style={{height:"17vh"}}>
+      <Typography variant="h6" gutterBottom className='title'>
+        Benvenuto
+        </Typography>
+        <Typography className='title' style={{marginBottom:"2%"}}>
         Scegli i tuoi artisti per consigli più personalizzati!
       </Typography>
       <TextField
         label="Cerca artisti"
         fullWidth
+        className='input'
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
 
-      <h2>Artisti</h2>
+      </div>
+
+      <h2 className='subtitle'>Artisti</h2>
       <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
         <Grid container justifyContent="space-around" >
           {artists?.map((artist) => (
@@ -117,7 +123,7 @@ const LoadArtist = (props) => {
         </Grid>
       </div>
 
-      <h2>Artisti Selezionati</h2>
+      <h2 className='subtitle'>Artisti Selezionati</h2>
       <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
         <Grid container justifyContent="space-around">
           {selectedAvatars?.map((artist) => (
