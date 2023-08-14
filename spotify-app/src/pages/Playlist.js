@@ -2,20 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Track from "../components/track";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardMedia,
   Typography,
   Avatar,
   Grid,
   IconButton, Button
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import UpdatePlaylist from '../components/UpdatePlaylist';
+import axios from 'axios';
 import "../style/playlist.css";
 export function formatDuration(milliseconds) {
   const hours = Math.floor(milliseconds / 3600000);
@@ -35,15 +30,10 @@ const Playlist = ({ user, onBack }) => {
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3100/playlist/${playlistId}?apikey=123456`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setPlaylist(data[0].my_playlists);
-        } else {
-          console.log("Errore nella richiesta");
-        }
+        const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
+        
+          setPlaylist(response.data[0].my_playlists);
+        
       } catch (error) {
         console.log(error);
       }
@@ -61,12 +51,21 @@ const Playlist = ({ user, onBack }) => {
       setPlaylist((prevPlaylist) => ({ ...prevPlaylist, name: newName }));
     }
   };
-
+  const handleDeletePlaylist = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
+      console.log('Playlist deleted:', response.data);
+      window.location.href="/"
+      // Redirect to a specific page after successful deletion
+    } catch (error) {
+      console.error('Error deleting playlist:', error);
+    }
+  };
 
   
   return (
     <>
-      <Grid container spacing={1}>
+      <Grid container style={{margin:0}} spacing={1}>
         <Grid item xs={12} sm={3}>
           <img src={playlist?.image} alt="Playlist" className="playlist-image" />
         </Grid>
@@ -77,10 +76,16 @@ const Playlist = ({ user, onBack }) => {
           <div className="playlist-info-container">
             <Typography variant="h3">
               {playlist?.name}
-              <IconButton onClick={handleEditName}>
-                <EditIcon className="icon-button" />
-              </IconButton>
+              
+
             </Typography>
+            <IconButton onClick={handleEditName}>
+          <EditIcon className="icon-button" />
+        </IconButton>
+        <IconButton onClick={handleDeletePlaylist}>
+          <DeleteIcon className="icon-button" />
+        </IconButton>
+
           </div>
           <div className="playlist-info-container">
             <Avatar
@@ -117,7 +122,7 @@ const Playlist = ({ user, onBack }) => {
             )}
           </Typography>
         </Grid>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{margin:0}}>
           {editing ? (
             <UpdatePlaylist playlist={playlist} onClose={() => setEditing(false)} />
           ) : (

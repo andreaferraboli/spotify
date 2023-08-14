@@ -63,24 +63,29 @@ function NewPlaylist({ user, onBack }) {
     };
     const handleMoveTrackUp = (currentIndex) => {
         if (currentIndex > 0) {
-            const updatedTracks = [...localPlaylist.tracks];
-            const temp = updatedTracks[currentIndex - 1];
-            updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
-            updatedTracks[currentIndex] = temp;
-            // Esegui qui l'aggiornamento dello stato o dell'array delle tracce nella playlist
+          const updatedTracks = [...localPlaylist.tracks];
+          const temp = updatedTracks[currentIndex - 1];
+          updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
+          updatedTracks[currentIndex] = temp;
+          setLocalPlaylist((prevPlaylist) => ({
+            ...prevPlaylist,
+            tracks: updatedTracks,
+          }));
         }
-    };
-
-    // Funzione per spostare una traccia in basso nell'array
-    const handleMoveTrackDown = (currentIndex) => {
+      };
+      
+      const handleMoveTrackDown = (currentIndex) => {
         if (currentIndex < localPlaylist.tracks.length - 1) {
-            const updatedTracks = [...localPlaylist.tracks];
-            const temp = updatedTracks[currentIndex + 1];
-            updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
-            updatedTracks[currentIndex] = temp;
-            // Esegui qui l'aggiornamento dello stato o dell'array delle tracce nella localPlaylist
+          const updatedTracks = [...localPlaylist.tracks];
+          const temp = updatedTracks[currentIndex + 1];
+          updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
+          updatedTracks[currentIndex] = temp;
+          setLocalPlaylist((prevPlaylist) => ({
+            ...prevPlaylist,
+            tracks: updatedTracks,
+          }));
         }
-    };
+      };
     const handleRemoveTrack = (trackId) => {
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
@@ -95,7 +100,8 @@ function NewPlaylist({ user, onBack }) {
         }));
         setSearchValue('');
         setSearchResults([]);
-        console.log(generatePlaylistImage(localPlaylist));
+        console.log(localPlaylist)
+        console.log(generatePlaylistImage(localPlaylist.tracks));
     };
 
     const handleSavePlaylist = async () => {
@@ -111,7 +117,7 @@ function NewPlaylist({ user, onBack }) {
             console.error('Error saving playlist:', error);
         }
     };
-
+//TODO:fix function
     function generatePlaylistImage(playlist) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -121,11 +127,10 @@ function NewPlaylist({ user, onBack }) {
       
         ctx.fillStyle = '#0f0'; // Colore di sfondo
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        console.log(playlist)
         if (playlist.length > 0) {
           const imagesToUse = playlist.slice(0, 4); // Prendi fino a 4 immagini
-      
-          if (imagesToUse.length === 1) {
+            console.log("imageTouse",imagesToUse)
+          if (imagesToUse.length <4 ) {
             const image = new Image();
             image.src = imagesToUse[0].image;
             console.log(image)

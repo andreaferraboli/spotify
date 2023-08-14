@@ -3,10 +3,9 @@ import {
     TextField,
     Grid,
     IconButton,
-    Button, // Aggiunto il componente Button
+    Button
 } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -38,39 +37,33 @@ function UpdatePlaylist({ playlist }) {
         }));
     };
 
-    const handleReorderTracks = (startIndex, endIndex) => {
-        const newTracks = Array.from(playlist.tracks);
-        const [movedTrack] = newTracks.splice(startIndex, 1);
-        newTracks.splice(endIndex, 0, movedTrack);
-        setLocalPlaylist((prevPlaylist) => ({
-            ...prevPlaylist,
-            tracks: newTracks,
-        }));
-    };
     // Funzione per spostare una traccia in alto nell'array
     const handleMoveTrackUp = (currentIndex) => {
         if (currentIndex > 0) {
-            const updatedTracks = [...playlist.tracks];
-            const temp = updatedTracks[currentIndex - 1];
-            updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
-            updatedTracks[currentIndex] = temp;
-            // Esegui qui l'aggiornamento dello stato o dell'array delle tracce nella playlist
+          const updatedTracks = [...localPlaylist.tracks];
+          const temp = updatedTracks[currentIndex - 1];
+          updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
+          updatedTracks[currentIndex] = temp;
+          setLocalPlaylist((prevPlaylist) => ({
+            ...prevPlaylist,
+            tracks: updatedTracks,
+          }));
         }
-    };
-
-    // Funzione per spostare una traccia in basso nell'array
-    const handleMoveTrackDown = (currentIndex) => {
-        if (currentIndex < playlist.tracks.length - 1) {
-            const updatedTracks = [...playlist.tracks];
-            const temp = updatedTracks[currentIndex + 1];
-            updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
-            updatedTracks[currentIndex] = temp;
-            // Esegui qui l'aggiornamento dello stato o dell'array delle tracce nella playlist
+      };
+      
+      const handleMoveTrackDown = (currentIndex) => {
+        if (currentIndex < localPlaylist.tracks.length - 1) {
+          const updatedTracks = [...localPlaylist.tracks];
+          const temp = updatedTracks[currentIndex + 1];
+          updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
+          updatedTracks[currentIndex] = temp;
+          setLocalPlaylist((prevPlaylist) => ({
+            ...prevPlaylist,
+            tracks: updatedTracks,
+          }));
         }
-    };
+      };
     const handleAddTrackToPlaylist = async (track) => {
-        console.log("track",track)
-        console.log("prevPlaylist prima dell'aggiunta:", localPlaylist);
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
             tracks: [...prevPlaylist.tracks, track]
@@ -83,8 +76,7 @@ function UpdatePlaylist({ playlist }) {
         try {
             const response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
             console.log('Changes saved:', response.data);
-            // Esegui qui l'azione per reindirizzare l'utente alla pagina della playlist
-            // Ad esempio: history.push(`/playlist/${playlist.id}`);
+            window.location.href="/playlist/"+ localPlaylist.id;
         } catch (error) {
             console.error('Error saving changes:', error);
         }
@@ -102,9 +94,10 @@ function UpdatePlaylist({ playlist }) {
         setSearchValue(e.target.value);
         handleSearch(e.target.value); // Chiama la funzione handleSearch con il nuovo valore
     }}
-            /><Button className='save-changes' variant="contained" color="primary" onClick={handleSaveChanges}>
-            Salva modifiche
-        </Button>
+            />
+            <Button className='save-changes' variant="contained" color="primary" onClick={handleSaveChanges}>
+              Salva modifiche
+            </Button>
             </div>
             
             {searchResults.length > 0 ? (
@@ -133,8 +126,7 @@ function UpdatePlaylist({ playlist }) {
                             <div className="track-item">
                                 <Track
                                     track={track}
-                                    index={index + 1}
-                                    onReorder={(startIndex, endIndex) => handleReorderTracks(startIndex, endIndex)} />
+                                    index={index + 1} />
                             </div>
                         </Grid><Grid item xs={1} className="icon-section">
                                 <DeleteIcon

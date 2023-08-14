@@ -74,7 +74,7 @@ async function getTrack(id_track) {
 }
 function filterTrack(track) {
   const filteredTrack = {
-    id_track: track.id,
+    id: track.id,
     name: track.name,
     artists: track.artists.map((artist) => ({ name: artist.name, id: artist.id })),
     album: track.album.name,
@@ -451,13 +451,33 @@ app.get("/newId", async (req, res) => {
   return res.status(200).send({ 'id': newId })
 
 })
+app.put("/playlist/:id", async (req, res) => {
+  const playlistId = req.params.id;
+  const updatedPlaylist = req.body;
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let result = await pwmClient
+      .db("spotify")
+      .collection("users").updateOne(
+        { 'my_playlists.id': playlistId },
+        { $set: { 'my_playlists.$': updatedPlaylist } }
+      );
+
+    if (result.matchedCount === 1) {
+      res.status(200).json({ message: 'Playlist updated successfully' });
+    } else {
+      res.status(404).json({ message: 'Playlist not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
 app.post("/playlist", async (req, res) => {
   // Ricerca nel database
 
   const playlist = req.body.playlist; // Replace with your desired genres array
   const userId = req.body.userId;
-  console.log("playlist", playlist)
-  console.log("userId", userId)
   var pwmClient = await new mongoClient(uri).connect();
   var result = await pwmClient
     .db("spotify")
@@ -465,10 +485,29 @@ app.post("/playlist", async (req, res) => {
       { _id: new ObjectId(userId) }, // Qui inserisci il criterio per individuare l'utente corretto
       { $push: { my_playlists: playlist } }
     );
-
-  console.log('New playlist inserted:', result);
-
   res.json(playlist);
+});
+app.delete('/playlist/:id', async (req, res) => {
+  const playlistId = req.params.id;
+
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
+    var result = await pwmClient
+      .db("spotify")
+      .collection("users").updateOne(
+        { "my_playlists.id": playlistId },
+        { $pull: { my_playlists: { id: playlistId } } }
+      );
+
+    if (result.modifiedCount === 1) {
+      res.status(200).json({ message: 'Playlist deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Playlist not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 app.get("/genres", async (req, res) => {
   try {

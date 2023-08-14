@@ -5,7 +5,7 @@ const Track = (props) => {
     
   return (
     <>
-    <Grid container spacing={3} className="track">
+    <Grid container spacing={3} style={{margin:0}} className="track">
 
     
       <Grid item xs={1}>
