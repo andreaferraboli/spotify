@@ -96,12 +96,13 @@ function UpdatePlaylist({ playlist }) {
                 label="Search Track"
                 variant="outlined"
                 fullWidth
+                className='input-playlist'
                 value={searchValue}
                 onChange={(e) => {
         setSearchValue(e.target.value);
         handleSearch(e.target.value); // Chiama la funzione handleSearch con il nuovo valore
     }}
-            /><Button variant="contained" color="primary" onClick={handleSaveChanges}>
+            /><Button className='save-changes' variant="contained" color="primary" onClick={handleSaveChanges}>
             Salva modifiche
         </Button>
             </div>

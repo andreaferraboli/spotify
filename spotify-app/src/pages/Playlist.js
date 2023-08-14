@@ -17,7 +17,15 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import "../style/playlist.css";
+export function formatDuration(milliseconds) {
+  const hours = Math.floor(milliseconds / 3600000);
+  const minutes = Math.floor((milliseconds % 3600000) / 60000);
+  if (hours === 0) {
+    return `${minutes} minuti`;
+  }
 
+  return `${hours} ore e ${minutes} minuti`;
+}
 const Playlist = ({ user, onBack }) => {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
@@ -55,15 +63,7 @@ const Playlist = ({ user, onBack }) => {
   };
 
 
-  function formatDuration(milliseconds) {
-    const hours = Math.floor(milliseconds / 3600000);
-    const minutes = Math.floor((milliseconds % 3600000) / 60000);
-    if (hours === 0) {
-      return `${minutes} minuti`;
-    }
-
-    return `${hours} ore e ${minutes} minuti`;
-  }
+  
   return (
     <>
       <Grid container spacing={1}>

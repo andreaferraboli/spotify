@@ -20,3 +20,57 @@
     margin:4% !important;
     color: var(--text-color)
 }
+.save-changes{
+    padding: 15px !important;
+    margin: 1% 0% 1% 5% !important;
+    margin-bottom: 10px !important;
+    border-radius: 500px !important;
+    height: 50%;
+    background-color: var(--secondary-color) !important;
+}
+.input-playlist {
+    width: 70% !important;
+    padding: 10px;
+    margin: 1% 0% 1% 0% !important;
+    margin-bottom: 10px;
+    font-size: 14px;
+    border-radius: 500px;
+    
+  }
+  .input-new-playlist{
+    width: 40% !important;
+  }
+  .input-playlist,.input-new-playlist {
+    & input {
+      color: var(--text-color);
+      border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
+    }
+    & label {
+      color: var(--text-color);
+      border-radius: 500px; /* Cambia il colore del testo di default (label) */
+      &.MuiInputLabel-shrink {
+        color: var(
+          --text-color
+        ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+      }
+    }
+    & .MuiOutlinedInput-notchedOutline {
+      border-color: var(--text-color);
+      border-radius: 500px; /* Cambia il colore del bordo dell'input */
+    }
+    & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: var(
+        --text-color
+      ); /* Cambia il colore del bordo quando l'input è in hover */
+    }
+    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: var(
+        --text-color
+      ); /* Cambia il colore del bordo quando l'input ha il focus */
+    }
+    & .MuiFormHelperText-root {
+      color: var(
+        --text-color
+      ); /* Cambia il colore del testo dell'helper text (se presente) */
+    }
+  }

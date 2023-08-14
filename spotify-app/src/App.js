@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import SideBar from './components/Sidebar';
 import Navbar from './components/navbar';
+import NewPlaylist from './components/NewPlaylist';
 import Home from '../src/pages/Home';
 import Login from '../src/pages/Login';
 import Register from '../src/pages/Register';
@@ -84,6 +85,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login handleLogin={handleLogin} />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} />} />
               <Route
                 path="/playlist/:playlistId"
                 element={

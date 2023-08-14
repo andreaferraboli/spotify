@@ -7,6 +7,7 @@ const fs = require('fs');
 const express = require("express");
 const path = require("path");
 var SpotifyWebApi = require("spotify-web-api-node");
+const { v4: uuidv4 } = require('uuid');
 const app = express();
 const axios = require('axios');
 const cors = require('cors');
@@ -382,6 +383,24 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
 });
 
+app.get('/check-email/:email', async (req, res) => {
+  const email = req.params.email;
+
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
+    var user = await pwmClient
+      .db("spotify")
+      .collection("users").findOne({ "email": email });
+    if (user !== null) {
+      res.status(200).json({ exists: true });
+    } else {
+      res.status(200).json({ exists: false });
+    }
+  } catch (error) {
+    console.error('Errore durante la verifica dell\'email:', error);
+    res.status(500).json({ error: 'Errore interno del server' });
+  }
+});
 app.get("/artists/:query", async (req, res) => {
   // Ricerca nel database
   query = req.params.query
@@ -410,8 +429,45 @@ app.get("/playlist/:id", async (req, res) => {
     .collection("users").aggregate([
       { $unwind: "$my_playlists" },
       { $match: { "my_playlists.id": id } },
-      { $project: { my_playlists: 1, _id: 0 } }
+      { $project: { my_playlists: 1 } }
     ]).toArray();
+  res.json(playlist);
+});
+app.get("/newId", async (req, res) => {
+  let newId;
+  let pwmClient, playlist;
+  do {
+    newId = uuidv4();
+    pwmClient = await new mongoClient(uri).connect();
+    playlist = await pwmClient
+      .db("spotify")
+      .collection("users").aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": newId } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+  } while (playlist.length !== 0)
+
+  return res.status(200).send({ 'id': newId })
+
+})
+app.post("/playlist", async (req, res) => {
+  // Ricerca nel database
+
+  const playlist = req.body.playlist; // Replace with your desired genres array
+  const userId = req.body.userId;
+  console.log("playlist", playlist)
+  console.log("userId", userId)
+  var pwmClient = await new mongoClient(uri).connect();
+  var result = await pwmClient
+    .db("spotify")
+    .collection("users").updateOne(
+      { _id: new ObjectId(userId) }, // Qui inserisci il criterio per individuare l'utente corretto
+      { $push: { my_playlists: playlist } }
+    );
+
+  console.log('New playlist inserted:', result);
+
   res.json(playlist);
 });
 app.get("/genres", async (req, res) => {
@@ -423,7 +479,7 @@ app.get("/genres", async (req, res) => {
     });
 
     // const artists = response.data.tracks.map(track => track.artists[0].name);
-    res.send(response.data.genres.map((genre,index)=>({"id":index,"name":genre})));
+    res.send(response.data.genres.map((genre, index) => ({ "id": index, "name": genre })));
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -469,18 +525,6 @@ app.get("/searchTracks/:query", async (req, res) => {
       console.error(err);
     });
 })
-app.post("/favorites/:id", async (req, res) => {
-  // Ricerca nel database
-  var id = req.params.id;
-  movie_id = req.body.movie_id;
-  addFavorites(res, id, movie_id);
-});
-app.delete("/favorites/:id", async (req, res) => {
-  // Ricerca nel database
-  var id = req.params.id;
-  movie_id = req.body.movie_id;
-  removeFavorites(res, id, movie_id);
-});
 function ms_to_minute(milliseconds) {
   // Convert milliseconds to minutes and seconds
   const minutes = Math.floor(milliseconds / 60000);
