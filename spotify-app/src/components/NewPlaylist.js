@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     TextField,
     Grid,
     Button, Typography,
     Avatar,
 } from '@mui/material';
+
 import { AddCircleOutline } from '@mui/icons-material';
 import Track from "./track";
 import "../style/playlist.css";
@@ -19,7 +20,7 @@ function NewPlaylist({ user, onBack }) {
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
         name: "",
-        image: "https://is3-ssl.mzstatic.com/image/thumb/Purple116/v4/03/3f/2f/033f2ffa-2747-96c6-39f1-3b577fea0ba5/source/512x512bb.jpg", // Aggiungi altre proprietà della playlist se necessario
+        image: "", // Aggiungi altre proprietà della playlist se necessario
         tracks: [],
     });
     const [searchValue, setSearchValue] = useState('');
@@ -48,13 +49,16 @@ function NewPlaylist({ user, onBack }) {
             console.error('Error found new id:', error);
         }
     }
+    useEffect(() => {
+        createImageCollage(localPlaylist.tracks.map((track) => track.image));
+    }, [localPlaylist.tracks]);
     const handleSearch = async (query) => {
         try {
             if (query.trim() === '') {
                 setSearchResults([]);
                 return;
             }
-    
+
             const response = await axios.get(`http://localhost:3100/searchTracks/${query}`);
             setSearchResults(response.data);
         } catch (error) {
@@ -63,109 +67,171 @@ function NewPlaylist({ user, onBack }) {
     };
     const handleMoveTrackUp = (currentIndex) => {
         if (currentIndex > 0) {
-          const updatedTracks = [...localPlaylist.tracks];
-          const temp = updatedTracks[currentIndex - 1];
-          updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
-          updatedTracks[currentIndex] = temp;
-          setLocalPlaylist((prevPlaylist) => ({
-            ...prevPlaylist,
-            tracks: updatedTracks,
-          }));
+            const updatedTracks = [...localPlaylist.tracks];
+            const temp = updatedTracks[currentIndex - 1];
+            updatedTracks[currentIndex - 1] = updatedTracks[currentIndex];
+            updatedTracks[currentIndex] = temp;
+            setLocalPlaylist((prevPlaylist) => ({
+                ...prevPlaylist,
+                tracks: updatedTracks,
+            }));
         }
-      };
-      
-      const handleMoveTrackDown = (currentIndex) => {
+    };
+
+    const handleMoveTrackDown = (currentIndex) => {
         if (currentIndex < localPlaylist.tracks.length - 1) {
-          const updatedTracks = [...localPlaylist.tracks];
-          const temp = updatedTracks[currentIndex + 1];
-          updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
-          updatedTracks[currentIndex] = temp;
-          setLocalPlaylist((prevPlaylist) => ({
-            ...prevPlaylist,
-            tracks: updatedTracks,
-          }));
+            const updatedTracks = [...localPlaylist.tracks];
+            const temp = updatedTracks[currentIndex + 1];
+            updatedTracks[currentIndex + 1] = updatedTracks[currentIndex];
+            updatedTracks[currentIndex] = temp;
+            setLocalPlaylist((prevPlaylist) => ({
+                ...prevPlaylist,
+                tracks: updatedTracks,
+            }));
         }
-      };
+    };
     const handleRemoveTrack = (trackId) => {
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
             tracks: prevPlaylist.tracks.filter((track) => track.id !== trackId),
         }));
-        console.log(generatePlaylistImage(localPlaylist.tracks));
     };
-    const handleAddTrackToPlaylist = async (track) => {
+    const handleAddTrackToPlaylist = (track) => {
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
             tracks: [...prevPlaylist.tracks, track]
         }));
         setSearchValue('');
         setSearchResults([]);
-        console.log(localPlaylist)
-        console.log(generatePlaylistImage(localPlaylist.tracks));
     };
 
     const handleSavePlaylist = async () => {
         try {
-            localPlaylist.id=playlistId
-            const response = await axios.post(`http://localhost:3100/playlist`, {
+           
+            let response=await axios.post("http://localhost:3100/upload",{
+                "id":playlistId
+            } )
+            console.log(response,"res")
+            localPlaylist.id = playlistId
+            // localPlaylist.image = response.data.imageUrl
+            response = await axios.post(`http://localhost:3100/playlist`, {
                 "playlist": localPlaylist,
                 "userId": user._id
             });
-
-            window.location.href="/playlist/"+playlistId;
+            window.location.href = "/playlist/" + playlistId;
         } catch (error) {
             console.error('Error saving playlist:', error);
         }
     };
-//TODO:fix function
-    function generatePlaylistImage(playlist) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const imageSize = 300; // Dimensione dell'immagine (px)
-        canvas.width = imageSize;
-        canvas.height = imageSize;
-      
-        ctx.fillStyle = '#0f0'; // Colore di sfondo
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (playlist.length > 0) {
-          const imagesToUse = playlist.slice(0, 4); // Prendi fino a 4 immagini
-            console.log("imageTouse",imagesToUse)
-          if (imagesToUse.length <4 ) {
-            const image = new Image();
-            image.src = imagesToUse[0].image;
-            console.log(image)
-            image.onload = () => {
-              ctx.drawImage(image, 0, 0, imageSize, imageSize);
-            };
-          } else {
-            const quadrantSize = imageSize / 2;
-            imagesToUse.forEach((song, index) => {
-              if (index < 2) {
+
+    function createImageCollage(imageUrls) {
+        if (imageUrls.length !== 0) {
+            const uniqueImageUrls = [...new Set(imageUrls)];
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const collageSize = 400; // Dimensione del collage (px)
+            canvas.width = collageSize;
+            canvas.height = collageSize;
+
+            const imagesToUse = uniqueImageUrls.length > 3 ? uniqueImageUrls.slice(0, 4) : uniqueImageUrls.slice(0, 1); // Prendi fino a 4 immagini
+            console.log("imageTouse", imagesToUse)
+            const quadrantSize = imagesToUse.length === 1 ? collageSize : collageSize / 2;
+
+            const imagesLoaded = [];
+            let imagesToLoad = imagesToUse.length < 4 ? 1 : 4;
+
+            imagesToUse.forEach((imageUrl, index) => {
                 const image = new Image();
-                image.src = song.image;
-                console.log(image)
+                image.crossOrigin = 'Anonymous'; // Enable CORS for cross-origin images
+                image.src = imageUrl;
+                let dataURL;
                 image.onload = () => {
-                  ctx.drawImage(image, index * quadrantSize, 0, quadrantSize, quadrantSize);
+                    if (imagesToUse.length === 4) {
+                        imagesLoaded[index] = image;
+                        imagesToLoad--;
+
+                        if (imagesToLoad === 0) {
+                            imagesLoaded.forEach((img, imgIndex) => {
+                                const row = Math.floor(imgIndex / 2);
+                                const col = imgIndex % 2;
+                                const offsetX = col * quadrantSize;
+                                const offsetY = row * quadrantSize;
+                                ctx.drawImage(img, offsetX, offsetY, quadrantSize, quadrantSize);
+                            });
+                            dataURL = canvas.toDataURL('image/png');
+                            document.getElementById("playlist_image").src = dataURL; // Append the collage image to the document
+                        }
+
+                    }
+                    else {
+                        ctx.drawImage(image, 0, 0, quadrantSize, quadrantSize);
+                        dataURL = canvas.toDataURL('image/png');
+                        
+                        
+                        document.getElementById("playlist_image").src = dataURL;
+                    }
                 };
-              } else {
-                const image = new Image();
-                image.src = song.image;
-                console.log(image)
-                image.onload = () => {
-                  ctx.drawImage(image, (index - 2) * quadrantSize, quadrantSize, quadrantSize, quadrantSize);
-                };
-              }
             });
-          }
+        } else {
+            document.getElementById("playlist_image").src = "https://is3-ssl.mzstatic.com/image/thumb/Purple116/v4/03/3f/2f/033f2ffa-2747-96c6-39f1-3b577fea0ba5/source/512x512bb.jpg"
         }
-      
-        return canvas.toDataURL(); // Restituisci l'immagine come data URL
+        // Remove duplicate image URLs
+
+    }
+    const base64ToBlob = (dataurl) => {
+          const arr = dataurl.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1]
+          const sliceSize = 1024;
+          const byteChars = window.atob(arr[1]);
+          const byteArrays = [];
+    
+          for (let offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+            let slice = byteChars.slice(offset, offset + sliceSize);
+    
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
+    
+            const byteArray = new Uint8Array(byteNumbers);
+    
+            byteArrays.push(byteArray);
+          }
+    
+          return new Blob(byteArrays, {type: mime});
+        }
+        const getFilename = (dataUrl) => {
+          const arr = dataUrl.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+    
+          return Math.round(+new Date()/1000) + '.' + mime.split('/').pop();
+        }
+    function getExportFile (dataUrl) {
+        const blob = base64ToBlob(dataUrl);
+        blob.name = getFilename(dataUrl);
+    
+        // generate file from base64 string
+        return blob;
       }
+    function convertDataURLToBlob(dataURL) {
+        const byteString = atob(dataURL.split(',')[1]); // Rimuovi il prefisso "data:image/png;base64,"
+        const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]; // Ottieni il tipo MIME dell'immagine
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    }
+
     return (
         <>
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={3}>
-                    <img src={localPlaylist?.image} alt="Playlist" className="playlist-image" />
+                    <img id='playlist_image' src={localPlaylist?.image} alt="Playlist" className="playlist-image" />
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
                     <div className="playlist-info-container">

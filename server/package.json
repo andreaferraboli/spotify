@@ -3,9 +3,11 @@
     "start": "nodemon index.js"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.0.1",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "firebase-admin": "^11.10.1",
     "mongodb": "^5.4.0",
     "nodemon": "^2.0.22",
     "spotify-web-api-node": "^5.0.2",
