@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
     TextField,
     Grid,
@@ -37,6 +37,9 @@ function UpdatePlaylist({ playlist }) {
         }));
     };
 
+    useEffect(() => {
+        createImageCollage(localPlaylist.tracks.map((track) => track.image));
+    }, [localPlaylist.tracks]);
     // Funzione per spostare una traccia in alto nell'array
     const handleMoveTrackUp = (currentIndex) => {
         if (currentIndex > 0) {
@@ -74,13 +77,72 @@ function UpdatePlaylist({ playlist }) {
 
     const handleSaveChanges = async () => {
         try {
-            const response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
-            console.log('Changes saved:', response.data);
+            let response=await axios.post("http://localhost:3100/upload",{
+                dataUrl:document.getElementById("playlist_image").src,
+                id:localPlaylist.id
+            })
+            localPlaylist.image = response.data.imageUrl
+            response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
             window.location.href="/playlist/"+ localPlaylist.id;
         } catch (error) {
             console.error('Error saving changes:', error);
         }
     };
+    function createImageCollage(imageUrls) {
+        if (imageUrls.length !== 0) {
+            const uniqueImageUrls = [...new Set(imageUrls)];
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const collageSize = 400; // Dimensione del collage (px)
+            canvas.width = collageSize;
+            canvas.height = collageSize;
+
+            const imagesToUse = uniqueImageUrls.length > 3 ? uniqueImageUrls.slice(0, 4) : uniqueImageUrls.slice(0, 1); // Prendi fino a 4 immagini
+            console.log("imageTouse", imagesToUse)
+            const quadrantSize = imagesToUse.length === 1 ? collageSize : collageSize / 2;
+
+            const imagesLoaded = [];
+            let imagesToLoad = imagesToUse.length < 4 ? 1 : 4;
+
+            imagesToUse.forEach((imageUrl, index) => {
+                const image = new Image();
+                image.crossOrigin = 'Anonymous'; // Enable CORS for cross-origin images
+                image.src = imageUrl;
+                let dataURL;
+                image.onload = () => {
+                    if (imagesToUse.length === 4) {
+                        imagesLoaded[index] = image;
+                        imagesToLoad--;
+
+                        if (imagesToLoad === 0) {
+                            imagesLoaded.forEach((img, imgIndex) => {
+                                const row = Math.floor(imgIndex / 2);
+                                const col = imgIndex % 2;
+                                const offsetX = col * quadrantSize;
+                                const offsetY = row * quadrantSize;
+                                ctx.drawImage(img, offsetX, offsetY, quadrantSize, quadrantSize);
+                            });
+                            dataURL = canvas.toDataURL('image/png');
+                            document.getElementById("playlist_image").src = dataURL; // Append the collage image to the document
+                        }
+
+                    }
+                    else {
+                        ctx.drawImage(image, 0, 0, quadrantSize, quadrantSize);
+                        dataURL = canvas.toDataURL('image/png');
+                        
+                        
+                        document.getElementById("playlist_image").src = dataURL;
+                    }
+                };
+            });
+        } else {
+            document.getElementById("playlist_image").src = "https://is3-ssl.mzstatic.com/image/thumb/Purple116/v4/03/3f/2f/033f2ffa-2747-96c6-39f1-3b577fea0ba5/source/512x512bb.jpg"
+        }
+        // Remove duplicate image URLs
+
+    }
     return (
         <div>
             <div style={{marginBottom:"4%",backgroundColor:"inherit"}}>

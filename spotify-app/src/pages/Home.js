@@ -11,14 +11,14 @@ const Home = (props) => {
       <h2>Le mie PLAYLIST</h2>
       <Box display="flex" justifyContent="space-around">
         {props.user.my_playlists?.map((playlist) => (
-          <PlaylistCard playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
+          <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
         ))}
       </Box>
     </div><div  className='home-section'>
         <h2>I miei ARTISTI</h2>
         <Box display="flex" justifyContent="space-around">
           {props.user.favourite_artists?.map((artist) => (
-            <ArtistCard artist={artist} selectedArtistId={props.onArtistClick} />
+            <ArtistCard key={artist.id} artist={artist} selectedArtistId={props.onArtistClick} />
           ))}
         </Box>
       </div></>

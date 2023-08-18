@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../style/Sidebar.css";
 import SidebarOption from "./SidebarOption";
 import HomeIcon from "@mui/icons-material/Home";
@@ -28,7 +28,7 @@ function Sidebar(props) {
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
       {playlists?.map((playlist) => (
-        <SidebarOption key={playlist.id} onClick={() => props.onPlaylistClick(playlist.id)} option={playlist.name} />
+        <SidebarOption key={playlist.id} link={"/playlist/"+playlist.id} option={playlist.name} />
       ))}
     </div>
   );

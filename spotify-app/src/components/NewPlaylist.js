@@ -109,11 +109,11 @@ function NewPlaylist({ user, onBack }) {
         try {
            
             let response=await axios.post("http://localhost:3100/upload",{
-                "id":playlistId
-            } )
-            console.log(response,"res")
+                dataUrl:document.getElementById("playlist_image").src,
+                id:playlistId
+            })
             localPlaylist.id = playlistId
-            // localPlaylist.image = response.data.imageUrl
+            localPlaylist.image = response.data.imageUrl
             response = await axios.post(`http://localhost:3100/playlist`, {
                 "playlist": localPlaylist,
                 "userId": user._id
@@ -179,53 +179,7 @@ function NewPlaylist({ user, onBack }) {
         // Remove duplicate image URLs
 
     }
-    const base64ToBlob = (dataurl) => {
-          const arr = dataurl.split(',');
-          const mime = arr[0].match(/:(.*?);/)[1]
-          const sliceSize = 1024;
-          const byteChars = window.atob(arr[1]);
-          const byteArrays = [];
     
-          for (let offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
-            let slice = byteChars.slice(offset, offset + sliceSize);
-    
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-              byteNumbers[i] = slice.charCodeAt(i);
-            }
-    
-            const byteArray = new Uint8Array(byteNumbers);
-    
-            byteArrays.push(byteArray);
-          }
-    
-          return new Blob(byteArrays, {type: mime});
-        }
-        const getFilename = (dataUrl) => {
-          const arr = dataUrl.split(',');
-          const mime = arr[0].match(/:(.*?);/)[1];
-    
-          return Math.round(+new Date()/1000) + '.' + mime.split('/').pop();
-        }
-    function getExportFile (dataUrl) {
-        const blob = base64ToBlob(dataUrl);
-        blob.name = getFilename(dataUrl);
-    
-        // generate file from base64 string
-        return blob;
-      }
-    function convertDataURLToBlob(dataURL) {
-        const byteString = atob(dataURL.split(',')[1]); // Rimuovi il prefisso "data:image/png;base64,"
-        const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]; // Ottieni il tipo MIME dell'immagine
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-
-        return new Blob([ab], { type: mimeString });
-    }
 
     return (
         <>

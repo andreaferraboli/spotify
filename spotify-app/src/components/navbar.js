@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
@@ -58,19 +58,21 @@ export default function PrimarySearchAppBar(props) {
   return (
     <>
       <AppBar position="static">
-      <div className="myAppBar">
-        <Toolbar>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }} />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box item >
-          <Link to="/login" style={{ textDecoration: 'none' }}>
+        <div className="myAppBar">
+          <Toolbar>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+                onChange={(event) => props.setQuery(event.target.value)} // Aggiungi questa riga
+              />
+            </Search>
+            <Box sx={{ flexGrow: 1 }} />
+            <Box >
+              <Link to="/login" style={{ textDecoration: 'none' }}>
                 <Chip
                   avatar={<Avatar alt={profile.profile_name} src={profile.image} />}
                   label={profile.profile_name}
@@ -78,9 +80,9 @@ export default function PrimarySearchAppBar(props) {
                   className="customLabel"
                 />
               </Link>
-          </Box>
+            </Box>
 
-        </Toolbar>
+          </Toolbar>
         </div>
       </AppBar>
     </>

@@ -39,7 +39,7 @@ const Playlist = ({ user, onBack }) => {
       }
     };
     fetchPlaylist();
-  }, []);
+  }, [playlistId]);
 
   const handleEditPlaylist = () => {
     setEditing(true);
@@ -67,7 +67,7 @@ const Playlist = ({ user, onBack }) => {
     <>
       <Grid container style={{margin:0}} spacing={1}>
         <Grid item xs={12} sm={3}>
-          <img src={playlist?.image} alt="Playlist" className="playlist-image" />
+          <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image" />
         </Grid>
         <Grid item xs={12} sm={9} className="info-section">
           <div className="playlist-info-container">

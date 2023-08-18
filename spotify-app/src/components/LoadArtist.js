@@ -116,7 +116,7 @@ const LoadArtist = (props) => {
       <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
         <Grid container justifyContent="space-around" >
           {artists?.map((artist) => (
-            <Grid item xs={2} key={artist.id}>
+            <Grid item xs={2} >
               <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
             </Grid>
           ))}
@@ -127,7 +127,7 @@ const LoadArtist = (props) => {
       <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
         <Grid container justifyContent="space-around">
           {selectedAvatars?.map((artist) => (
-            <Grid xs={2} item key={artist.id}>
+            <Grid xs={2} item >
               <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
             </Grid>
           ))}

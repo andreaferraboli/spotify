@@ -61,7 +61,7 @@ const LoadGenres = (props) => {
             <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
-                        <Grid xs={2} item key={genre.id}>
+                        <Grid xs={2} item >
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
                                 <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
                                     {genre.name}
@@ -76,7 +76,7 @@ const LoadGenres = (props) => {
             <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '25vh' }}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
-                        <Grid xs={2} item key={genre.id}>
+                        <Grid xs={2} item >
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
                                 <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
                                     {genre.name}
