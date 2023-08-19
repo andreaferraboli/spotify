@@ -1,39 +1,75 @@
-import React from "react";
-import { Grid, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Grid, Typography, Menu, MenuItem } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import axios from 'axios';
 import "../style/track.css";
 const Track = (props) => {
-    
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handlePlaylistSelect = (playlistId) => {
+    // Implement logic to add the track to the selected playlist
+    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, props.track)
+  .then(response => {
+    console.log(response.data.message);
+  })
+  .catch(error => {
+    console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
+  });
+    handleMenuClose();
+  };
   return (
     <>
-    <Grid container spacing={3} style={{margin:0}} className="track">
-
-    
-      <Grid item xs={1}>
-        <Typography variant="body1">{props.index}</Typography>
-      </Grid>
-      <Grid xs={1} item >
-        <img
-          src={props.track.image}
-          alt={props.track.name}
-          style={{width:"auto", height: "100px" }}
-        />
-      </Grid>
-      <Grid xs={8} item >
-      <Typography variant="h6">{props.track.name}</Typography>
-            <Typography  variant="subtitle2">
-              {props.track.artists.map((artist, int) => (
-              <span key={artist.id}>
-                {artist.name}
-                {int !== props.track.artists.length - 1 && ", "}
-              </span>
-            ))}
+      <Grid container spacing={1} style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }} className="track">
+        <Grid item xs={12} sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Typography variant="body1">{props.index}</Typography>
+        </Grid>
+        <Grid xs={12} sm={1} item>
+          <div
+            className="image-container"
+            style={{ backgroundImage: `url(${props.track.image})` }}
+          ></div>
+        </Grid>
+        <Grid style={{paddingLeft:"3%"}} xs={12} sm={7} >
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+            <Typography variant="h6" style={{ marginBottom: "8px" }}>
+              {props.track.name}
             </Typography>
-           
-      </Grid>
-      <Grid item xs={2}>
-        <Typography variant="body2">
-           {formatDuration(props.track.duration)}
-        </Typography>
+            <Typography variant="subtitle2">
+              {props.track.artists.map((artist, index) => (
+                <span key={artist.id}>
+                  {artist.name}
+                  {index !== props.track.artists.length - 1 && ", "}
+                </span>
+              ))}
+            </Typography>
+          </div>
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Typography variant="body2">{formatDuration(props.track.duration)}</Typography>
+        </Grid>
+        <Grid item xs={1}>
+        <MoreVertIcon onClick={handleMenuOpen} />
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          
+        >
+          <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
+          {props.userPlaylists?.map((playlist) => (
+            <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id)}>
+              {playlist.name}
+            </MenuItem>
+          ))}
+        </Menu>
       </Grid>
       </Grid>
     </>

@@ -17,18 +17,18 @@ function Sidebar(props) {
         alt=""
       />
       <br />
-      <SidebarOption Icon={HomeIcon} option="Home" link="/"/>
+      <SidebarOption Icon={HomeIcon} option="Home" navigateTo="/"/>
       <br />
-      <SidebarOption Icon={SearchIcon} option="Search" link="/search" />
+      <SidebarOption Icon={SearchIcon} option="Search" navigateTo="/search" />
       <br />
-      <SidebarOption Icon={LibraryMusicIcon} option="Your Library" link="/myLibrary" />
+      <SidebarOption Icon={LibraryMusicIcon} option="Your Library" navigateTo="/myLibrary" />
       <br />
-      <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" link="/newPlaylist"/>
+      <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" navigateTo="/newPlaylist"/>
       <br />
       <strong className="sidebar__title">PLAYLISTS</strong>
       <hr />
       {playlists?.map((playlist) => (
-        <SidebarOption key={playlist.id} link={"/playlist/"+playlist.id} option={playlist.name} />
+        <SidebarOption key={playlist.id} navigateTo={"/playlist/"+playlist.id} option={playlist.name} />
       ))}
     </div>
   );

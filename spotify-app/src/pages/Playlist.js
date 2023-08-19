@@ -124,12 +124,12 @@ const Playlist = ({ user, onBack }) => {
         </Grid>
         <Grid container spacing={2} style={{margin:0}}>
           {editing ? (
-            <UpdatePlaylist playlist={playlist} onClose={() => setEditing(false)} />
+            <UpdatePlaylist user={user} playlist={playlist} onClose={() => setEditing(false)} />
           ) : (
             <div className="top-tracks-section">
               <Grid container spacing={2} >
                 {playlist?.tracks.map((track, index) => (
-                  <Track key={track.id} track={track} index={index + 1}></Track>
+                  <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1}></Track>
 
                 ))}
               </Grid>

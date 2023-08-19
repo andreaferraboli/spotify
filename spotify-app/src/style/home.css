@@ -10,6 +10,9 @@
     margin:0;
     height: 100% !important;
 }
+.carousel-item {
+    margin-right: 20px; /* Aggiusta il valore per ottenere lo spazio desiderato */
+  }
 body{
     margin:0;
 }

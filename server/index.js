@@ -93,6 +93,7 @@ function filterTrack(track) {
     album: track.album.name,
     image: track.album.images[0].url,
     duration: track.duration_ms,
+    popularity: track.popularity
   };
   return filteredTrack;
 }
@@ -419,7 +420,7 @@ app.get('/check-email/:email', async (req, res) => {
 app.get("/artists/:query", async (req, res) => {
   // Ricerca nel database
   query = req.params.query
-  res.send(searchArtists(query))
+  res.send(await searchArtists(query))
 });
 app.get("/artist/:id", async (req, res) => {
   // Ricerca nel database
@@ -519,6 +520,30 @@ app.delete('/playlist/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+app.post('/playlists/:playlistId/add-track', async (req, res) => {
+  const playlistId = req.params.playlistId;
+  const trackData = req.body;
+
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let result = await pwmClient
+      .db("spotify")
+      .collection("users").updateOne(
+        { 'my_playlists.id': playlistId },
+        { $addToSet: { 'my_playlists.$.tracks': trackData } }
+      );
+
+      if (result.modifiedCount === 0) {
+        // Nessun documento è stato modificato, quindi la playlist non è stata trovata
+        return res.status(404).send('Traccia già presente');
+      }
+      res.status(200).send( 'Traccia aggiunta alla playlist con successo');
+    } catch (error) {
+      console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
+      res.status(500).send( 'Si è verificato un errore interno');
+    }
+});
 app.get("/genres", async (req, res) => {
   try {
     const response = await axios.get(`https://api.spotify.com/v1/recommendations/available-genre-seeds`, {
@@ -580,7 +605,16 @@ async function searchArtists(query) {
 }
 async function searchTracks(query) {
   let tracks = await spotifyApi.searchTracks(query)
-  return tracks.body.tracks.items.map((track) => filterTrack(track));
+  return tracks.body.tracks.items.map((track) => filterTrack(track)).sort((a, b) => {
+    if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
+      return -1; // a comes before b
+    } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
+      return 1; // b comes before a
+    } else {
+      // If query is present in both or in neither, sort by popularity
+      return b.popularity - a.popularity; // descending popularity order
+    }
+  });;
 
 }
 async function searchAlbums(query) {
@@ -624,7 +658,7 @@ async function searchUsers(query) {
 }
 app.get("/searchTracks/:query", async (req, res) => {
   query = req.params.query
-  res.send(searchTracks(query));
+  res.send(await searchTracks(query));
 })
 app.get("/search/:query", async (req, res) => {
   let query = req.params.query

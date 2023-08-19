@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { Card, CardHeader, Box, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
 import "../style/artist.css";
 import ColorThief from "colorthief";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import { responsive } from "./Search"
 import Album from "../components/Album"
 import Track from "../components/track"
 const Artist = ({ user, onBack }) => {
@@ -18,21 +21,21 @@ const Artist = ({ user, onBack }) => {
           const data = await response.json();
           console.log(data)
           setArtist(data.info);
-          const artistSection = document.getElementById('myArtistSection');
+          // const artistSection = document.getElementById('myArtistSection');
 
-          // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
-          artistSection.style.backgroundImage = `url(${data.info[0].image})`;
-          if (data.info[0]?.image) {
-            const image = new Image();
-            image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
-            image.src = data.info[0].image;
+          // // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
+          // artistSection.style.backgroundImage = `url(${data.info[0].image})`;
+          // if (data.info[0]?.image) {
+          //   const image = new Image();
+          //   image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
+          //   image.src = data.info[0].image;
 
-            image.onload = () => {
-              const colorThief = new ColorThief();
-              const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
-              setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
-            };
-          }
+          //   image.onload = () => {
+          //     const colorThief = new ColorThief();
+          //     const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
+          //     setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
+          //   };
+          // }
         } else {
           console.log("Errore nella richiesta");
         }
@@ -51,19 +54,6 @@ const Artist = ({ user, onBack }) => {
       {artist ? (
 
         <>
-
-          {/* <div className="artist-section" id="myArtistSection" style={{ backgroundImage: `url(${artist[0].image})` }}> */}
-          {/* <div className="artist-section" style={{background: `conic-gradient(from 90deg at bottom right, ${artistColors[0]}, ${artistColors[1]}, ${artistColors[2]})`}}> */}
-
-          {/* <Avatar src={artist[0].image} alt={artist[0].name} className="artist-avatar" />
-            <Grid container spacing={3} className="artist-div">
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h3">{artist[0].name}</Typography>
-                <Typography variant="h5">Popolarità: {artist[0].popularity}</Typography>
-                <Typography variant="h5">Followers: {addDotsToNumberString(artist[0].followers)}</Typography>
-              </Grid>
-            </Grid>
-          </div>  */}
           <div className="artist-container" style={{ backgroundImage: `url(${artist[0].image})` }}>
             <div className="artist-avatar-info">
               <Avatar src={artist[0].image} alt={artist[0].name} className="artist-avatar" />
@@ -78,17 +68,27 @@ const Artist = ({ user, onBack }) => {
             <Grid container spacing={2} >
               <Typography variant="h4" style={{ margin: "4%" }}>Top Tracks</Typography>
               {artist[1]?.map((track, index) => (
-                <Track key={track.id} track={track} index={index + 1}></Track>
+                <Track userPlaylists={user.my_playlists} key={track.id} track={track} index={index + 1}></Track>
               ))}
             </Grid>
           </div>
           <div className="top-tracks-section">
             <Typography variant="h4" style={{ margin: "4%" }}>Albums</Typography>
-            <Box display="flex" justifyContent="space-around">
-              {artist[2]?.map((album) => (
-                <Album key={album.id} album={album} />
-              ))}
-            </Box>
+            {artist[2]?.length > 0 ? ( // Controlla se c'è almeno un elemento nell'array
+              <Carousel
+                showDots={true}
+                centerMode={true}
+                itemClass="carousel-item"
+                containerClass="carousel-container"
+                responsive={responsive}
+              >
+                {artist[2].map((album) => (
+                  <Album key={album.id} album={album} />
+                ))}
+              </Carousel>
+            ) : (
+              <p>Nessun album da mostrare.</p>
+            )}
           </div>
         </>
       ) : (

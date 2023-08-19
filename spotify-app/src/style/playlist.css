@@ -4,15 +4,10 @@
     font-size: xx-large !important;
     
 }
-.icon-section{
-    height: 10% !important;
-}
 .top-tracks-section{
     background-color: var(--background-color);
 }
-.MuiGrid-item {
-    padding-top: 24px !important;
-}
+
 .delete-icon{
     color: rgb(131, 17, 17) !important;
 }
@@ -74,3 +69,13 @@
       ); /* Cambia il colore del testo dell'helper text (se presente) */
     }
   }
+
+  .css-mhc70k-MuiGrid-root {
+    margin-top: 0px !important; 
+     margin-left: 0px !important;
+     width: 100% !important;
+}
+
+.css-a5rdam-MuiGrid-root {
+  width: 100% !important;
+}

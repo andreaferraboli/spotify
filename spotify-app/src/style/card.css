@@ -1,27 +1,25 @@
 @import url("palette.css");
 .circular-image {
-    width: 150px; /* Imposta la larghezza dell'area circolare */
-    height: 150px; /* Imposta l'altezza dell'area circolare */
-    border-radius: 50%; /* Rende l'immagine circolare */
-    overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
-    width: 90% !important;
-    margin: 5% 5% 5% 5%;
-  }
-  
-  .circular-image img {
-    width: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
-    height: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
-  }
+  width: 15rem; /* Imposta la larghezza dell'area circolare */
+  height: 15rem; /* Imposta l'altezza dell'area circolare */
+  border-radius: 50%; /* Rende l'immagine circolare */
+  overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
+  margin: 0 auto; /* Centra l'immagine orizzontalmente */
+}
 
-  .circular-card{
-    width: 150px; /* Imposta la larghezza dell'area circolare */
-    height: 200px; /* Imposta l'altezza dell'area circolare */
-    border-radius: 30%; /* Rende l'immagine circolare */
-    overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
-    background-color: var(--background-color) !important;
-  }
+.circular-image img {
+  width: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
+  height: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
+}
+
+.circular-card {
+  width: 100%;
+  border-radius: 50%; /* Rende l'intera card circolare */
+  overflow: hidden; /* Nasconde eventuali parti della card che escono dall'area circolare */
+  background-color: var(--background-color) !important;
+}
   .artist-name{
-    font-size: 1rem !important;
+    font-size: 1.5rem !important;
     text-align: center;
     color: var(--text-color);
   }

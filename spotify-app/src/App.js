@@ -11,6 +11,8 @@ import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import "./style/home.css";
 
 function App() {
@@ -88,7 +90,7 @@ function App() {
                 <SideBar playlists={user.my_playlists} onPlaylistClick={handlePlaylistClick} />
               </Grid>
             )}
-            <Grid item xs={12} md={10} lg={10}>
+            <Grid style={{height:"100%"}} item xs={12} md={10} lg={10}>
               {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} />}
               <Routes>
                 <Route path="/login" element={<Login handleLogin={handleLogin} />} />
