@@ -14,21 +14,11 @@ const LoadArtist = (props) => {
       setNoResults(false);
       if (query !== '') {
         const response = await axios.get(`http://localhost:3100/artists/${query}`);
-        console.log('Data from server:', response.data);
-        const sortedArtists = response.data.sort((a, b) => {
-          if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
-            return -1; // a comes before b
-          } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
-            return 1; // b comes before a
-          } else {
-            // If query is present in both or in neither, sort by popularity
-            return b.popularity - a.popularity; // descending popularity order
-          }
-        });
-        if (sortedArtists.length === 0) {
+        const artistsReceived = response.data
+        if (artistsReceived.length === 0) {
           setNoResults(true); // Set noResults state if no artists match the query
         }
-        setArtists(sortedArtists);
+        setArtists(artistsReceived);
       } else {
         const genres = props.favouriteGenres.map(genre => genre.name);
         const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));

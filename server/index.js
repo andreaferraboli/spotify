@@ -567,7 +567,16 @@ app.post("/genre", async (req, res) => {
 
 async function searchArtists(query) {
   let artists = await spotifyApi.searchArtists(query)
-  return artists.body.artists.items.map((artist) => filterArtist(artist));
+  return artists.body.artists.items.map((artist) => filterArtist(artist)).sort((a, b) => {
+    if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
+      return -1; // a comes before b
+    } else if (!a.name.toLowerCase().includes(query.toLowerCase()) && b.name.toLowerCase().includes(query.toLowerCase())) {
+      return 1; // b comes before a
+    } else {
+      // If query is present in both or in neither, sort by popularity
+      return b.popularity - a.popularity; // descending popularity order
+    }
+  });
 }
 async function searchTracks(query) {
   let tracks = await spotifyApi.searchTracks(query)

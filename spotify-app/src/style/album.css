@@ -1,16 +1,22 @@
 @import url("palette.css");
 .album-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
-    background-color: var(--background-color) !important;
-    color: var(--text-color) !important;
-  }
-  
-  .album-image {
-    width: 180px;
-    height: 180px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  margin: 1%;
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+.album-image {
+  width: 180px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.album-name{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}

@@ -34,6 +34,8 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
   const { query } = useParams(); // Preleva la query dall'URL
   const [searchResults, setSearchResults] = useState(null);
 
+  
+  
   useEffect(() => {
     // Invia la richiesta al server
     axios.get(`http://localhost:3100/search/${query}`)
@@ -61,8 +63,7 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
 
         {/* Sezione Album */}
         <h2>Album</h2>
-
-        <Carousel showDots={true} responsive={responsive}>
+        <Carousel showDots={true} centerMode={true} containerClass="carousel-container"  responsive={responsive}>
         {searchResults.albums?.map(album => (
               <Album key={album.id} album={album} />
           ))}
