@@ -9,10 +9,13 @@ import "../style/card.css";
 export default function ArtistCard(props) {
   return (
     <Card className='circular-card' onClick={() => {
-      if (props.selectedArtistId == null)
-        props.handleAvatarSelect(props.artist)
-      else
-        props.selectedArtistId(props.artist.id)
+      if (props.selectedArtistId === "") {
+        // Fai qualcosa quando selectedArtistId è "undefined"
+      } else if (props.selectedArtistId === null) {
+        props.handleAvatarSelect(props.artist);
+      } else {
+        props.selectedArtistId(props.artist.id); // Assumi che selectedArtistId sia una funzione
+      }
     }}>
       <CardActionArea>
         <div className="circular-image">

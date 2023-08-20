@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Container, Typography, Button } from '@mui/material';
 import axios from 'axios';
+import Scrollbar from "react-scrollbars-custom";
 import "../style/login.css";
 const LoadGenres = (props) => {
     const [selectedGenres, setSelectedGenres] = useState([]);
@@ -58,7 +59,7 @@ const LoadGenres = (props) => {
             </div>
             
             <h2 className='subtitle'>Generi Musicali</h2>
-            <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
+            <Scrollbar style={{  height: '30vh' }}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
                         <Grid xs={2} item >
@@ -70,10 +71,10 @@ const LoadGenres = (props) => {
                         </Grid>
                     ))}
                 </Grid>
-            </div>
+            </Scrollbar>
 
             <h2 className='subtitle'>Generi Musicali Selezionati</h2>
-            <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '25vh' }}>
+            <Scrollbar style={{ height: '25vh' }}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
                         <Grid xs={2} item >
@@ -85,7 +86,7 @@ const LoadGenres = (props) => {
                         </Grid>
                     ))}
                 </Grid>
-            </div>
+            </Scrollbar>
             <div style={{ height: '10vh' }}>
             <Button
               variant="contained"

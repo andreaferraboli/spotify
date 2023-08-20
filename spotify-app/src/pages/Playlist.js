@@ -31,9 +31,9 @@ const Playlist = ({ user, onBack }) => {
     const fetchPlaylist = async () => {
       try {
         const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
-        
-          setPlaylist(response.data[0].my_playlists);
-        
+
+        setPlaylist(response.data[0].my_playlists);
+
       } catch (error) {
         console.log(error);
       }
@@ -55,17 +55,29 @@ const Playlist = ({ user, onBack }) => {
     try {
       const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
       console.log('Playlist deleted:', response.data);
-      window.location.href="/"
+      window.location.href = "/"
       // Redirect to a specific page after successful deletion
     } catch (error) {
       console.error('Error deleting playlist:', error);
     }
   };
-
+  async function publishPlaylist() {
+    const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
+    const requestData = { user_id: user._id };
   
+    try {
+      const response = await axios.put(url, requestData);
+      return response.data;
+    } catch (error) {
+      console.error("Errore durante la pubblicazione della playlist:", error);
+      throw error;
+    }
+  }
+
+
   return (
     <>
-      <Grid container style={{margin:0}} spacing={1}>
+      <Grid container style={{ margin: 0 }} spacing={1}>
         <Grid item xs={12} sm={3}>
           <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image" />
         </Grid>
@@ -76,15 +88,15 @@ const Playlist = ({ user, onBack }) => {
           <div className="playlist-info-container">
             <Typography variant="h3">
               {playlist?.name}
-              
+
 
             </Typography>
             <IconButton onClick={handleEditName}>
-          <EditIcon className="icon-button" />
-        </IconButton>
-        <IconButton onClick={handleDeletePlaylist}>
-          <DeleteIcon className="icon-button" />
-        </IconButton>
+              <EditIcon className="icon-button" />
+            </IconButton>
+            <IconButton onClick={handleDeletePlaylist}>
+              <DeleteIcon className="icon-button" />
+            </IconButton>
 
           </div>
           <div className="playlist-info-container">
@@ -108,10 +120,13 @@ const Playlist = ({ user, onBack }) => {
         </Grid>
       </Grid>
       <div >
-        <Grid item xs={12}>
+        <Grid style={{ justifyContent: "flex-start", display: "flex" }} xs={12}>
           <Typography variant="h4" className="title-section">
             Tracks
-            {!editing && (
+          </Typography>
+          {!editing && (
+            <>
+            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
               <Button
                 variant="outlined"
                 className="edit-button"
@@ -119,10 +134,29 @@ const Playlist = ({ user, onBack }) => {
               >
                 Modifica
               </Button>
-            )}
-          </Typography>
+            </div>
+            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                <Button
+                  variant="outlined"
+                  className="edit-button"
+                  onClick={() => publishPlaylist(playlist.id,user._id)}
+                >
+                  Pubblica Playlist 
+                </Button>
+              </div>
+              <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                <Button
+                  variant="outlined"
+                  className="edit-button"
+                  onClick={() => handleEditPlaylist()}
+                >
+                  Rendi Collaborativa
+                </Button>
+              </div></>
+
+          )}
         </Grid>
-        <Grid container spacing={2} style={{margin:0}}>
+        <Grid container spacing={2} style={{ margin: 0 }}>
           {editing ? (
             <UpdatePlaylist user={user} playlist={playlist} onClose={() => setEditing(false)} />
           ) : (

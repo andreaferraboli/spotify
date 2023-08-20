@@ -4,6 +4,7 @@ import axios from 'axios';
 import ArtistCard from "./ArtistCard"
 import Carousel from "react-multi-carousel";
 import { responsive } from "../pages/Search"
+import Scrollbar from "react-scrollbars-custom";
 import "react-multi-carousel/lib/styles.css";
 import '../style/artist.css';
 const LoadArtist = (props) => {
@@ -93,7 +94,7 @@ const LoadArtist = (props) => {
       </div>
 
       <h2 className='subtitle'>Artisti</h2>
-      <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
+      <Scrollbar style={{  height: '30vh' }}>
         <Grid container justifyContent="space-around" >
           {artists?.map((artist) => (
             <Grid item xs={3} >
@@ -101,7 +102,7 @@ const LoadArtist = (props) => {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </Scrollbar>
 
       <h2 className='subtitle'>Artisti Selezionati</h2>
       <div style={{ height: '30vh' }}>

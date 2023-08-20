@@ -57,25 +57,6 @@ fetch(url, {
     // getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
   });
 
-// function getTrack(id_track) {
-//     let track
-//     spotifyApi.getTrack(`${id_track}`).then(
-//         function (data) {
-//             track = {
-//                 "id_track": data.body.id,
-//                 "name": data.body.name,
-//                 "artist": data.body.artists.map(artist => artist.id),
-//                 "album": data.body.album.name,
-//                 "image": data.body.album.images[0].url,
-//                 "duration": ms_to_minute(data.body.duration_ms)
-//             }
-//         },
-//         function (err) {
-//             console.error(err);
-//         }
-//     );
-//     return track
-// }
 async function getTrack(id_track) {
   try {
     const data = await spotifyApi.getTrack(`${id_track}`);
@@ -103,6 +84,22 @@ function filterAlbum(album) {
     name: album.name,
     year: album.release_date.slice(0, 4),
     image: album.images[0].url
+  };
+  return filteredAlbum;
+}
+
+async function filterFullAlbum(album) {
+  const filteredAlbum = {
+    id: album.id,
+    name: album.name,
+    artists: album.artists.map(artist => ({ id: artist.id, name: artist.name })),
+    release_date: album.release_date,
+    image: album.images[0].url,
+    tracks: await Promise.all(
+      album.tracks.items.map(async track => {
+        const detailedTrack = await getTrack(track.id);
+        return detailedTrack;
+      }))
   };
   return filteredAlbum;
 }
@@ -422,6 +419,14 @@ app.get("/artists/:query", async (req, res) => {
   query = req.params.query
   res.send(await searchArtists(query))
 });
+
+app.get("/album/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  let album = await getAlbum(id);
+  console.log("album:", album.tracks.items)
+  res.json(await filterFullAlbum(album));
+})
 app.get("/artist/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
@@ -619,7 +624,7 @@ async function searchTracks(query) {
 }
 async function searchAlbums(query) {
   let albums = await spotifyApi.searchAlbums(query)
-  return albums.body.albums.items.map((album) => filterAlbum(album));
+  return albums.body.albums.items.filter(album => album.album_type === "album").map((album) => filterAlbum(album));
 }
 async function searchPlaylists(query) {
   try {
@@ -677,14 +682,57 @@ app.get("/search/:query", async (req, res) => {
   res.status(200).send(result)
 
 })
+
+app.put("/movePlaylist/:id", async (req, res) => {
+  const playlistId = req.params.id;
+  const userId = req.body.user_id
+  console.log(playlistId, userId)
+  try {
+    const pwmClient = await new mongoClient(uri).connect();
+
+    // Trova e rimuovi la playlist dalla collezione "users"
+    const playlistToRemove = await pwmClient.db("spotify").collection("users").aggregate([
+      { $unwind: "$my_playlists" },
+      { $match: { "my_playlists.id": playlistId } },
+      { $project: { my_playlists: 1 } }
+    ]).toArray();
+    let playlist=playlistToRemove[0].my_playlists
+    if (playlist.id !== null) {
+      // Rimuovi la playlist dalla collezione "users"
+      let response=await pwmClient.db("spotify").collection("users").updateOne(
+        { _id:new ObjectId(userId) },
+        { $pull: { my_playlists: { id: playlistId } } }
+      );
+      // Inserisci la playlist nella collezione "public_playlist"
+      const insertedPlaylist = await pwmClient.db("spotify").collection("public_playlists").insertOne({
+        id: playlist.id,
+        name: playlist.name,
+        image: playlist.image,
+        tracks: playlist.tracks,
+        owner: userId,
+        followers: [],
+        collaborative: false
+      });
+      if (insertedPlaylist.insertedId !== null) {
+        res.status(200).json({ message: "Playlist spostata con successo." });
+      } else {
+        res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
+      }
+    } else {
+      res.status(404).json({ message: "Playlist non trovata." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
+  }
+});
 app.post("/updateInfo", async (req, res) => {
   let id = req.body.id;
-  let  name = req.body.name;
-  let   surname = req.body.surname;
-  let   profile_name  = req.body.profile_name;
+  let name = req.body.name;
+  let surname = req.body.surname;
+  let profile_name = req.body.profile_name;
   try {
     let pwmClient = await new mongoClient(uri).connect();
-    let update=await pwmClient.db("spotify").collection('users').updateOne(
+    let update = await pwmClient.db("spotify").collection('users').updateOne(
       { _id: new ObjectId(id) },
       { $set: { name, surname, profile_name } }
     )
@@ -709,9 +757,9 @@ app.post("/changePassword", async (req, res) => {
       .db("spotify").collection('users').findOne({ _id: new ObjectId(id) });
     if (user.password === hash(oldPassword)) {
       user.password = hash(newPassword);
-      let update=await pwmClient.db("spotify").collection('users').updateOne(
+      let update = await pwmClient.db("spotify").collection('users').updateOne(
         { _id: new ObjectId(id) },
-        { $set: { password:user.password } }
+        { $set: { password: user.password } }
       )
       res.json({ message: "Password cambiata con successo." });
     } else {

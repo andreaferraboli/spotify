@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,Link } from 'react-router-dom';
 import axios from 'axios';
 import { Grid } from '@mui/material';
 import Track from '../components/track';
@@ -70,8 +70,11 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
             <h2>Album</h2>
           )}
           <Carousel showDots={true} centerMode={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
+
             {searchResults.albums?.map(album => (
-              <Album key={album.id} album={album} />
+              <Link key={album.id} to={`/album/${album.id}`}>
+                <Album album={album} />
+              </Link>
             ))}
           </Carousel>
 
@@ -80,13 +83,16 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           {searchResults.playlists && searchResults.playlists.length > 0 && (
             <h2>Playlist</h2>
           )}
-          <Carousel showDots={true} centerMode={true}itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.playlists?.map(playlist => (
-              <PlaylistCard
+              <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                <PlaylistCard
                 playlist={playlist}
                 owner={playlist.owner}
-                selectedPlaylistId={onPlaylistClick}
+                selectedPlaylistId={null}
               />
+              </Link>
+              
             ))}
           </Carousel>
 
@@ -96,10 +102,13 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           )}
           <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.artists?.map(artist => (
+              <Link key={artist.id} to={`/artist/${artist.id}`}>
                 <ArtistCard
-                  artist={artist}
-                  selectedArtistId={onArtistClick}
-                />
+                artist={artist}
+                selectedArtistId={""}
+              />
+              </Link>
+              
             ))}
           </Carousel>
 
@@ -109,9 +118,12 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           )}
           <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.users?.map(user => (
+              <Link key={user.id} to={`/user/${user.id}`}>
                 <UserCard
-                  user={user}
-                />
+                user={user}
+              />
+              </Link>
+              
             ))}
           </Carousel>
         </div>

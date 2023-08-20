@@ -7,7 +7,10 @@ import { CardActionArea } from '@mui/material';
 import "../style/card.css";
 export default function PlaylistCard(props) {
   return (
-    <Card sx={{ maxWidth: 345 }} className='card-playlist' onClick={()=> props.selectedPlaylistId(props.playlist.id)} >
+    <Card sx={{ maxWidth: 345 }} className='card-playlist' onClick={()=> {
+      if(props.selectedPlaylistId!==null)
+        props.selectedPlaylistId(props.playlist.id)
+      }} >
       <CardActionArea>
         <CardMedia
           component="img"
@@ -16,7 +19,7 @@ export default function PlaylistCard(props) {
           alt={props.playlist.name}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography style={{overflow:"hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}} gutterBottom variant="h5" component="div">
             {props.playlist.name}
           </Typography>
           <Typography variant="h7" >

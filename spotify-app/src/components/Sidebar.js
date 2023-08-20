@@ -5,9 +5,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-
-
+import Scrollbar from "react-scrollbars-custom";
 function Sidebar(props) {
+
   let playlists = props.playlists;
   return (
     <div className="sidebar">
@@ -18,7 +18,7 @@ function Sidebar(props) {
       /> </div>
       <div>  </div>
       <div>  </div>
-      
+
       <div className="div-icons">
         <br />
         <SidebarOption Icon={HomeIcon} option="Home" navigateTo="/" />
@@ -29,15 +29,17 @@ function Sidebar(props) {
         <br />
         <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" navigateTo="/newPlaylist" />
         <br />
-        
+
       </div>
-      <div className="div-text"> 
+      <div className="div-text">
         <strong className="sidebar__title">PLAYLISTS</strong>
-         </div>
+      </div>
       <div className="div-playlists">
-        {playlists?.map((playlist) => (
-          <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id} option={playlist.name} />
-        ))}
+        <Scrollbar>
+          {playlists?.map((playlist) => (
+            <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id} option={playlist.name} />
+          ))}
+        </Scrollbar>
       </div>
     </div>
   );
