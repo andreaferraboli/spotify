@@ -19,3 +19,16 @@
   height: auto;
   width: 100%;
 }
+
+.div-playlists{
+  height: 45vh;
+}
+.div-icons{
+  height: 40vh;
+}
+.div-img{
+  height: 10vh;
+}
+.div.text{
+  height: 5vh;
+}

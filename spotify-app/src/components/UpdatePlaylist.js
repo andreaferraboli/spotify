@@ -13,7 +13,7 @@ import Track from "./track";
 import "../style/playlist.css";
 import axios from 'axios'; // Assicurati di aver importato correttamente Axios
 
-function UpdatePlaylist({ playlist,user }) {
+function UpdatePlaylist({ playlist, user }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
@@ -171,12 +171,15 @@ function UpdatePlaylist({ playlist,user }) {
                                     <Track track={track} />
                                 </div>
                             </Grid>
-                            <Grid item xs={2}>
-                                <IconButton
+                            <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Button
+                                    variant="contained"
+                                    className='add-button'
                                     onClick={() => handleAddTrackToPlaylist(track)}
+                                    startIcon={<AddCircleOutline />}
                                 >
-                                    <AddCircleOutline /> {/* Icona "Add" per aggiungere alla playlist */}
-                                </IconButton>
+                                    Aggiungi
+                                </Button>
                             </Grid>
                         </React.Fragment>
                     ))}

@@ -99,7 +99,7 @@ body,
   cursor: pointer;
 }
 .link {
-  color: var(--secondary-color);
+  color: var(--secondary-color) !important;
 }
 .button:hover {
   background-color: var(--secondary-color) !important;

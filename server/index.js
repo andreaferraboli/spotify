@@ -534,15 +534,15 @@ app.post('/playlists/:playlistId/add-track', async (req, res) => {
         { $addToSet: { 'my_playlists.$.tracks': trackData } }
       );
 
-      if (result.modifiedCount === 0) {
-        // Nessun documento è stato modificato, quindi la playlist non è stata trovata
-        return res.status(404).send('Traccia già presente');
-      }
-      res.status(200).send( 'Traccia aggiunta alla playlist con successo');
-    } catch (error) {
-      console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
-      res.status(500).send( 'Si è verificato un errore interno');
+    if (result.modifiedCount === 0) {
+      // Nessun documento è stato modificato, quindi la playlist non è stata trovata
+      return res.status(404).send('Traccia già presente');
     }
+    res.status(200).send('Traccia aggiunta alla playlist con successo');
+  } catch (error) {
+    console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
+    res.status(500).send('Si è verificato un errore interno');
+  }
 });
 app.get("/genres", async (req, res) => {
   try {
@@ -619,7 +619,7 @@ async function searchTracks(query) {
 }
 async function searchAlbums(query) {
   let albums = await spotifyApi.searchAlbums(query)
-  return albums.body.albums.items.map((album)=>filterAlbum(album));
+  return albums.body.albums.items.map((album) => filterAlbum(album));
 }
 async function searchPlaylists(query) {
   try {
@@ -663,7 +663,7 @@ app.get("/searchTracks/:query", async (req, res) => {
 app.get("/search/:query", async (req, res) => {
   let query = req.params.query
   let tracks = await searchTracks(query);
-  let artists =await searchArtists(query)
+  let artists = await searchArtists(query)
   let albums = await searchAlbums(query);
   let playlists = await searchPlaylists(query);
   let users = await searchUsers(query);
@@ -677,6 +677,65 @@ app.get("/search/:query", async (req, res) => {
   res.status(200).send(result)
 
 })
+app.post("/updateInfo", async (req, res) => {
+  let id = req.body.id;
+  let  name = req.body.name;
+  let   surname = req.body.surname;
+  let   profile_name  = req.body.profile_name;
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let update=await pwmClient.db("spotify").collection('users').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { name, surname, profile_name } }
+    )
+    if (update.modifiedCount === 1) {
+      res.status(200).json({ message: "Informazioni utente aggiornate con successo." });
+    } else {
+      res.status(404).json({ message: "Utente non trovato." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Errore durante l'aggiornamento delle informazioni utente." });
+  }
+});
+
+// Cambia la password dell'utente
+app.post("/changePassword", async (req, res) => {
+  let id = req.body.id;
+  let oldPassword = req.body.oldPassword;
+  let newPassword = req.body.newPassword;
+  try {
+    const pwmClient = await new mongoClient(uri).connect();
+    const user = await pwmClient
+      .db("spotify").collection('users').findOne({ _id: new ObjectId(id) });
+    if (user.password === hash(oldPassword)) {
+      user.password = hash(newPassword);
+      let update=await pwmClient.db("spotify").collection('users').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { password:user.password } }
+      )
+      res.json({ message: "Password cambiata con successo." });
+    } else {
+      res.status(400).json({ message: "Vecchia password errata." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Errore durante il cambio password." });
+  }
+});
+
+// Elimina il profilo dell'utente
+app.delete("/deleteProfile/:id", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const pwmClient = await new mongoClient(uri).connect();
+    const user = await pwmClient
+      .db("spotify").collection('users').findOneAndDelete({
+        _id: new ObjectId(userId),
+      });
+    res.status(200).json({ message: "Profilo eliminato con successo." });
+  } catch (error) {
+    res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });
+  }
+});
 function ms_to_minute(milliseconds) {
   // Convert milliseconds to minutes and seconds
   const minutes = Math.floor(milliseconds / 60000);

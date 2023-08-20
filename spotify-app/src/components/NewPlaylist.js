@@ -247,10 +247,10 @@ function NewPlaylist({ user, onBack }) {
                                         <Track track={track} />
                                     </div>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={2}  style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     <Button
                                         variant="contained"
-                                        color="primary"
+                                        className='add-button'
                                         onClick={() => handleAddTrackToPlaylist(track)}
                                         startIcon={<AddCircleOutline />}
                                     >
@@ -270,23 +270,23 @@ function NewPlaylist({ user, onBack }) {
                                         index={index + 1} />
                                 </div>
                             </Grid>
-                                <Grid item xs={1} className="icon-section">
-                                    <DeleteIcon
-                                        className="icon-button delete-icon"
-                                        onClick={() => handleRemoveTrack(track.id)} />
-                                </Grid>
-                                <Grid item xs={1} className="icon-section">
-                                    {index !== 0 && (
-                                        <KeyboardArrowUpIcon
-                                            className="icon-button"
-                                            onClick={() => handleMoveTrackUp(index)} />
-                                    )}
-                                    {index !== localPlaylist.tracks.length - 1 && (
-                                        <KeyboardArrowDownIcon
-                                            className="icon-button"
-                                            onClick={() => handleMoveTrackDown(index)} />
-                                    )}
-                                </Grid>
+                            <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                                <DeleteIcon
+                                    className="icon-button delete-icon"
+                                    onClick={() => handleRemoveTrack(track.id)} />
+                            </Grid>
+                            <Grid style={{ display: "flex", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                                {index !== 0 && (
+                                    <KeyboardArrowUpIcon
+                                        className="icon-button"
+                                        onClick={() => handleMoveTrackUp(index)} />
+                                )}
+                                {index !== localPlaylist.tracks.length - 1 && (
+                                    <KeyboardArrowDownIcon
+                                        className="icon-button"
+                                        onClick={() => handleMoveTrackDown(index)} />
+                                )}
+                            </Grid>
                             </>
                         ))}
                     </Grid>

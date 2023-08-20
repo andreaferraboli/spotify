@@ -9,6 +9,7 @@ import Register from '../src/pages/Register';
 import Search from '../src/pages/Search';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
+import Account from '../src/pages/Account';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import "./style/home.css";
@@ -21,29 +22,29 @@ function App() {
 
 
   // Funzione per ottenere le playlist dall'API del database
-  useEffect(() => {
-    // Funzione per ottenere le playlist dall'API del database
-    const fetchUser = async () => {
-      const user_id = "64d22a8c6b6f0c5f086a149c";
+  // useEffect(() => {
+  //   // Funzione per ottenere le playlist dall'API del database
+  //   const fetchUser = async () => {
+  //     const user_id = "64d22a8c6b6f0c5f086a149c";
 
-      try {
-        const response = await fetch(`http://localhost:3100/user/${user_id}?apikey=123456`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.length > 0) {
-            setUser(data[0]);
-          }
-        } else {
-          console.log('Errore nella richiesta');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //     try {
+  //       const response = await fetch(`http://localhost:3100/user/${user_id}?apikey=123456`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         if (data.length > 0) {
+  //           setUser(data[0]);
+  //         }
+  //       } else {
+  //         console.log('Errore nella richiesta');
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
-    fetchUser();
-  }, []);
+  //   // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
+  //   fetchUser();
+  // }, []);
 
   useEffect(() => {
     if (query !== null && query !== undefined && query !== '')
@@ -69,9 +70,27 @@ function App() {
     navigate(`/`);
   };
 
-  const handleLogin = (user) => {
-    setUser(user);
+  const handleLogin = async (user) => {
+    if (user?._id) {
+      try {
+        const response = await fetch(`http://localhost:3100/user/${user._id}?apikey=123456`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.length > 0) {
+            setUser(data[0]);
+          }
+        } else {
+          console.log('Errore nella richiesta');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+    } else {
+      setUser(user)
+    }
     navigate(`/`);
+
   };
 
   const location = useLocation();
@@ -85,10 +104,10 @@ function App() {
           <Grid container spacing={0}>
             {!isLoginPage && !isRegisterPage && (
               <Grid item xs={0} md={2} lg={2}>
-                <SideBar playlists={user.my_playlists} onPlaylistClick={handlePlaylistClick} />
+                <SideBar playlists={user?.my_playlists} onPlaylistClick={handlePlaylistClick} />
               </Grid>
             )}
-            <Grid style={{height:"100%"}} item xs={12} md={10} lg={10}>
+            <Grid style={{ height: "100%" }} item xs={12} md={10} lg={10}>
               {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} />}
               <Routes>
                 <Route path="/login" element={<Login handleLogin={handleLogin} />} />
@@ -96,6 +115,7 @@ function App() {
                 <Route path="/search/:query" element={<Search />} />
 
                 <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} />} />
+                <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} />} />
                 <Route
                   path="/playlist/:playlistId"
                   element={

@@ -7,9 +7,28 @@
 .top-tracks-section{
     background-color: var(--background-color);
 }
-
+.add-button{
+  color: var(--secondary-color) !important;
+  background-color: inherit !important;
+  border-radius: 500px !important;
+  border:solid 1px  var(--secondary-color) !important;
+}
 .delete-icon{
-    color: rgb(131, 17, 17) !important;
+    color: var(--delete-color) !important;
+}
+.edit-button{
+  background-color: inherit !important;
+  color: var(--edit-color) !important;
+  border-radius: 500px !important;
+  border:solid 1px  var(--edit-color) !important;
+}
+.add-button:hover{
+  background-color: var(--secondary-color) !important;
+  color: white !important;
+}
+.edit-button:hover{
+  color: white !important;
+  background-color: var(--edit-color) !important;
 }
 .title-section{
     margin:4% !important;
