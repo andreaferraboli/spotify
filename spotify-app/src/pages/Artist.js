@@ -21,21 +21,21 @@ const Artist = ({ user, onBack }) => {
           const data = await response.json();
           console.log(data)
           setArtist(data.info);
-          // const artistSection = document.getElementById('myArtistSection');
+          const artistSection = document.getElementById('myArtistSection');
 
-          // // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
-          // artistSection.style.backgroundImage = `url(${data.info[0].image})`;
-          // if (data.info[0]?.image) {
-          //   const image = new Image();
-          //   image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
-          //   image.src = data.info[0].image;
+          // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
+          artistSection.style.backgroundImage = `url(${data.info[0].image})`;
+          if (data.info[0]?.image) {
+            const image = new Image();
+            image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
+            image.src = data.info[0].image;
 
-          //   image.onload = () => {
-          //     const colorThief = new ColorThief();
-          //     const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
-          //     setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
-          //   };
-          // }
+            image.onload = () => {
+              const colorThief = new ColorThief();
+              const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
+              setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
+            };
+          }
         } else {
           console.log("Errore nella richiesta");
         }
@@ -54,7 +54,7 @@ const Artist = ({ user, onBack }) => {
       {artist ? (
 
         <>
-          <div className="artist-container" style={{ backgroundImage: `url(${artist[0].image})` }}>
+          <div className="artist-container" id="myArtistSection" style={{ backgroundImage: `url(${artist[0].image})` }}>
             <div className="artist-avatar-info">
               <Avatar src={artist[0].image} alt={artist[0].name} className="artist-avatar" />
               <div className="artist-info">
@@ -77,8 +77,7 @@ const Artist = ({ user, onBack }) => {
             {artist[2]?.length > 0 ? ( // Controlla se c'è almeno un elemento nell'array
               <Carousel
                 showDots={true}
-                centerMode={true}
-                itemClass="carousel-item"
+                itemClass="carousel-item-album"
                 containerClass="carousel-container"
                 responsive={responsive}
               >

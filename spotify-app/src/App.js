@@ -11,8 +11,6 @@ import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import "./style/home.css";
 
 function App() {

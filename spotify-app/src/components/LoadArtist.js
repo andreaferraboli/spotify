@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Container, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import ArtistCard from "./ArtistCard"
+import Carousel from "react-multi-carousel";
+import { responsive } from "../pages/Search"
+import "react-multi-carousel/lib/styles.css";
+import '../style/artist.css';
 const LoadArtist = (props) => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [artists, setArtists] = useState([]);
@@ -55,20 +59,6 @@ const LoadArtist = (props) => {
     }
 
   };
-  const arraysAreEqual = (array1, array2) => {
-    if (array1.length !== array2.length) {
-      return false;
-    }
-
-    for (let i = 0; i < array1.length; i++) {
-      if (array1[i].id !== array2[i].id) {
-        return false;
-      }
-      // Aggiungi altri controlli qui se necessario
-    }
-
-    return true;
-  };
   const handleRegisterClick = () => {
     // Wait for setFavouriteArtists to complete
 
@@ -85,20 +75,20 @@ const LoadArtist = (props) => {
   };
   return (
     <Container>
-      <div style={{height:"17vh"}}>
-      <Typography variant="h6" gutterBottom className='title'>
-        Benvenuto
+      <div style={{ height: "17vh" }}>
+        <Typography variant="h6" gutterBottom className='title'>
+          Benvenuto
         </Typography>
-        <Typography className='title' style={{marginBottom:"2%"}}>
-        Scegli i tuoi artisti per consigli più personalizzati!
-      </Typography>
-      <TextField
-        label="Cerca artisti"
-        fullWidth
-        className='input'
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-      />
+        <Typography className='title' style={{ marginBottom: "2%" }}>
+          Scegli i tuoi artisti per consigli più personalizzati!
+        </Typography>
+        <TextField
+          label="Cerca artisti"
+          fullWidth
+          className='input'
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
 
       </div>
 
@@ -106,7 +96,7 @@ const LoadArtist = (props) => {
       <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
         <Grid container justifyContent="space-around" >
           {artists?.map((artist) => (
-            <Grid item xs={2} >
+            <Grid item xs={3} >
               <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
             </Grid>
           ))}
@@ -114,14 +104,12 @@ const LoadArtist = (props) => {
       </div>
 
       <h2 className='subtitle'>Artisti Selezionati</h2>
-      <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '30vh' }}>
-        <Grid container justifyContent="space-around">
+      <div style={{ height: '30vh' }}>
+      <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
           {selectedAvatars?.map((artist) => (
-            <Grid xs={2} item >
               <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
-            </Grid>
           ))}
-        </Grid>
+        </Carousel>
       </div>
       <div style={{ height: '10vh' }}>
         <Button

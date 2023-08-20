@@ -69,7 +69,7 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           {searchResults.albums && searchResults.albums.length > 0 && (
             <h2>Album</h2>
           )}
-          <Carousel showDots={true} centerMode={true} containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
             {searchResults.albums?.map(album => (
               <Album key={album.id} album={album} />
             ))}
@@ -80,7 +80,7 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           {searchResults.playlists && searchResults.playlists.length > 0 && (
             <h2>Playlist</h2>
           )}
-          <Carousel showDots={true} centerMode={true} containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={true}itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.playlists?.map(playlist => (
               <PlaylistCard
                 playlist={playlist}
@@ -94,14 +94,12 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           {searchResults.artists && searchResults.artists.length > 0 && (
             <h2>Artisti</h2>
           )}
-          <Carousel showDots={true} centerMode={true} containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.artists?.map(artist => (
-              <Grid key={artist.id} xs={12} sm={6} md={4} lg={3}>
                 <ArtistCard
                   artist={artist}
                   selectedArtistId={onArtistClick}
                 />
-              </Grid>
             ))}
           </Carousel>
 
@@ -109,13 +107,11 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
           {searchResults.users && searchResults.users.length > 0 && (
             <h2>Utenti</h2>
           )}
-          <Carousel showDots={true} centerMode={true} containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {searchResults.users?.map(user => (
-              <Grid key={user.id} xs={12} sm={6} md={4} lg={3}>
                 <UserCard
                   user={user}
                 />
-              </Grid>
             ))}
           </Carousel>
         </div>

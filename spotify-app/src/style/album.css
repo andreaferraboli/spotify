@@ -10,8 +10,10 @@
 }
 
 .album-image {
-  width: 180px;
-  height: auto;
+  width: 3rem; /* Imposta la larghezza desiderata */
+  height: auto; /* Imposta l'altezza desiderata */
+  object-fit: cover;
+
   border-radius: 8px;
   margin-bottom: 16px;
 }

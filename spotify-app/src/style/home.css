@@ -1,23 +1,26 @@
 @import url("palette.css");
-.home-section{
-    background-color: var(--primary-color)
+.home-section {
+  background-color: var(--primary-color);
 }
-.home-section h2{
-    color:var(--text-color)
+.home-section h2 {
+  color: var(--text-color);
 }
-.home-box{
-    background-color: var(--primary-color);
-    margin:0;
-    height: 100% !important;
+.home-box {
+  background-color: var(--primary-color);
+  margin: 0;
+  height: 100% !important;
 }
 .carousel-item {
-    margin-right: 20px; /* Aggiusta il valore per ottenere lo spazio desiderato */
-  }
-body{
-    margin:0;
+  margin-right: 20px;
+  width: 100% !important;
 }
-html, body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
+body {
+  margin: 0;
+}
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
