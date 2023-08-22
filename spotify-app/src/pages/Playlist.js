@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Track from "../components/track";
 import {
   Typography,
@@ -29,6 +29,7 @@ const Playlist = ({ user, onBack }) => {
   const [editing, setEditing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -37,8 +38,9 @@ const Playlist = ({ user, onBack }) => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-  const showSnackbar = (message) => {
+  const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
 
@@ -46,8 +48,8 @@ const Playlist = ({ user, onBack }) => {
     const fetchPlaylist = async () => {
       try {
         const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
-
-        setPlaylist(response.data[0].my_playlists);
+        console.log(response.data)
+        setPlaylist(response.data);
 
       } catch (error) {
         console.log(error);
@@ -69,31 +71,56 @@ const Playlist = ({ user, onBack }) => {
   const handleDeletePlaylist = async () => {
     try {
       const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
-      showSnackbar('Playlist eliminato');
+      showSnackbar('Playlist eliminata', "success");
       window.location.href = "/"
     } catch (error) {
-      showSnackbar('Error deleting playlist:', error);
+      showSnackbar('Error deleting playlist:' + error, "error");
     }
   };
   async function publishPlaylist() {
     const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
-    const requestData = { user_id: user._id };
-  
+    const requestData = { user_id: user._id , type: 'private'};
+
     try {
       const response = await axios.put(url, requestData);
-      if(response.status===200){
-        showSnackbar(response.data.message)
-        window.location.href="/"
+      if (response.status === 200) {
+        showSnackbar(response.data.message, "success")
+        window.location.href = "/"
       }
       else
-        showSnackbar("errore nel pubblicare la playlist")
+        showSnackbar("errore nel pubblicare la playlist", "error")
     } catch (error) {
-      showSnackbar("Errore durante la pubblicazione della playlist:", error);
+      showSnackbar("Errore durante la pubblicazione della playlist:" + error, "error");
       throw error;
     }
   }
-
-
+  async function makePlaylistPrivate(playlist) {
+    const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
+    const requestData = { user_id: user._id, type: 'public' };
+  
+    try {
+      const response = await axios.put(url, requestData);
+      if (response.status === 200) {
+        showSnackbar(response.data.message, "success")
+        // Aggiorna il tuo stato o effettua altre azioni necessarie
+      }
+      else
+        showSnackbar("errore nel rendere la playlist privata", "error")
+    } catch (error) {
+      showSnackbar("Errore durante il rendere la playlist privata: " + error, "error");
+      throw error;
+    }
+  }
+  const handleSetCollaborative = async (collaborative) => {
+    try {
+      const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}`, { "collaborative":collaborative });
+      if (response.status === 200) {
+        showSnackbar(response.data.message,"success")
+      }
+    } catch (error) {
+      showSnackbar("Errore durante l'impostazione della playlist come collaborativa:"+ error, "error");
+    }
+  };
   return (
     <>
       <Grid container style={{ margin: 0 }} spacing={1}>
@@ -102,7 +129,7 @@ const Playlist = ({ user, onBack }) => {
         </Grid>
         <Grid item xs={12} sm={9} className="info-section">
           <div className="playlist-info-container">
-            <Typography variant="body1">Playlist</Typography>
+            <Typography variant="body1">{playlist?.type === "private" ? "Playlist" : "Playlist Pubblica"}</Typography>
           </div>
           <div className="playlist-info-container">
             <Typography variant="h3">
@@ -110,28 +137,50 @@ const Playlist = ({ user, onBack }) => {
 
 
             </Typography>
-            <IconButton onClick={handleEditName}>
-              <EditIcon className="icon-button" />
-            </IconButton>
-            <IconButton onClick={handleDeletePlaylist}>
-              <DeleteIcon className="icon-button" />
-            </IconButton>
+
+
+            {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
+              <IconButton onClick={handleEditName}>
+                <EditIcon className="icon-button" />
+              </IconButton>
+            ) : null}
+            {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
+              <IconButton onClick={handleDeletePlaylist}>
+                <DeleteIcon className="icon-button" />
+              </IconButton>
+            ) : null}
+
 
           </div>
           <div className="playlist-info-container">
-            <Avatar
-              src={user.image}
-              alt={user.profile_name}
-              style={{ marginRight: "10px" }}
-            />
+            {playlist?.type === "private" ? (
+              <Avatar
+                src={user.image}
+                alt={user.profile_name}
+                style={{ marginRight: "10px" }}
+              />
+            ) : (
+              <Avatar
+                src={playlist?.owner.image}
+                alt={playlist?.owner.profile_name}
+                style={{ marginRight: "10px" }}
+              />
+            )}
+
             <div>
               <Typography variant="body1">
-                {user.profile_name} - {playlist?.tracks.length} brani, circa{" "}
+                {playlist?.type === 'public' ? (
+                  <Link to={`/user/${playlist?.owner.id}`}>
+                    {playlist?.owner.profile_name}
+                  </Link>
+                ) : (
+                  <Link to={`/user/${user._id}`}>
+                    {user.profile_name}
+                  </Link>
+                )}{" "}
+                - {playlist?.tracks.length} brani, circa{" "}
                 {formatDuration(
-                  playlist?.tracks.reduce(
-                    (total, song) => total + song.duration,
-                    0
-                  )
+                  playlist?.tracks.reduce((total, song) => total + song.duration, 0)
                 )}
               </Typography>
             </div>
@@ -145,39 +194,67 @@ const Playlist = ({ user, onBack }) => {
           </Typography>
           {!editing && (
             <>
-            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-              <Button
-                variant="outlined"
-                className="edit-button"
-                onClick={() => handleEditPlaylist()}
-              >
-                Modifica
-              </Button>
-            </div>
-            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-                <Button
-                  variant="outlined"
-                  className="edit-button"
-                  onClick={() => publishPlaylist(playlist.id,user._id)}
-                >
-                  Pubblica Playlist 
-                </Button>
+              <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                {playlist?.type === "private" || (playlist?.type === "public" && playlist.collaborative === true) ? (
+                  <Button
+                    variant="outlined"
+                    className="edit-button"
+                    onClick={() => handleEditPlaylist()}
+                  >
+                    Modifica
+                  </Button>
+                ) : null}
+
               </div>
               <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-                <Button
-                  variant="outlined"
-                  className="edit-button"
-                  onClick={() => handleEditPlaylist()}
-                >
-                  Rendi Collaborativa
-                </Button>
+                {playlist?.type === "private" ? (
+                  <Button
+                    variant="outlined"
+                    className="edit-button"
+                    onClick={() => publishPlaylist(playlist.id, user._id)}
+                  >
+                    Pubblica Playlist
+                  </Button>
+                ) : (
+                  playlist?.owner.id === user._id && (
+                    <Button
+                      variant="outlined"
+                      className="edit-button"
+                      onClick={() => makePlaylistPrivate(playlist)}
+                    >
+                      Rendi Playlist Privata
+                    </Button>
+                  )
+                )}
+
+              </div>
+              <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                {(playlist?.type === "public" && playlist.collaborative === false && playlist.owner.id === user._id) ? (
+                  <Button
+                    variant="outlined"
+                    className="edit-button"
+                    onClick={() => handleSetCollaborative(true)}
+                  >
+                    Rendi Collaborativa
+                  </Button>
+                ) : (
+                  (playlist?.type === "public" && playlist.collaborative === true && playlist.owner.id === user._id) && (
+                    <Button
+                      variant="outlined"
+                      className="edit-button"
+                      onClick={() => handleSetCollaborative(false)}
+                    >
+                      Rendi Non Collaborativa
+                    </Button>
+                  )
+                )}
               </div></>
 
           )}
         </Grid>
         <Grid container spacing={2} style={{ margin: 0 }}>
           {editing ? (
-            <UpdatePlaylist user={user} playlist={playlist} onClose={() => setEditing(false)} />
+            <UpdatePlaylist user={user} playlist={playlist} snackbar={showSnackbar} onClose={() => setEditing(false)} />
           ) : (
             <div className="top-tracks-section">
               <Grid container spacing={2} >
@@ -191,7 +268,7 @@ const Playlist = ({ user, onBack }) => {
         </Grid>
       </div>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

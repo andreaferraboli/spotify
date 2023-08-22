@@ -26,13 +26,15 @@ const RegisterPage = () => {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  const showSnackbar = (message) => {
+   const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
   const getFavouriteArtists = () => {
@@ -61,15 +63,15 @@ const RegisterPage = () => {
 
       // Controlla la risposta del server
       if (response.status === 201) {
-        console.log('Registrazione effettuata con successo!');
+        showSnackbar('Registrazione effettuata con successo!', "success");
         window.location.href = "/login";
         // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
-        console.log('Errore durante la registrazione');
+        showSnackbar('Errore durante la registrazione',"error");
         // Aggiungi qui il codice per gestire l'errore durante la registrazione
       }
     } catch (error) {
-      console.log('Errore durante la richiesta di registrazione:', error.message);
+      showSnackbar('Errore durante la richiesta di registrazione:'+ error.message, "error");
       // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
     }
   };
@@ -84,23 +86,23 @@ const RegisterPage = () => {
   };
   const validateRegistrationData = async () => {
     if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
-      showSnackbar('Compila tutti i campi.');
+      showSnackbar('Compila tutti i campi.', "warning");
       return false;
     }
 
     if (!validateEmail(email)) {
-      showSnackbar('Inserisci un indirizzo email valido.');
+      showSnackbar('Inserisci un indirizzo email valido.', "warning");
       return false;
     }
     if (await checkDuplicateEmail(email) === true) {
-      showSnackbar("email già presente, prova con un'altra");
+      showSnackbar("email già presente, prova con un'altra",  "warning");
       return false;
     }
     if (password !== confirmPassword) {
-      showSnackbar('Le password non corrispondono.');
+      showSnackbar('Le password non corrispondono.', "warning");
       return false;
     }
-
+    
     return true;
   };
   const checkDuplicateEmail = async (email) => {
@@ -123,6 +125,7 @@ const RegisterPage = () => {
   };
   const loadedGenres = async () => {
     if (await validateRegistrationData()) {
+      showSnackbar("informazioni salvate correttamente","success")
       setLoadGenres(true);
       setLoadArtist(false);
     }
@@ -224,7 +227,7 @@ const RegisterPage = () => {
       )}
     </div>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

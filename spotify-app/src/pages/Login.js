@@ -10,6 +10,7 @@ const LoginPage = (props) => {
   const [password, setPassword] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -19,8 +20,9 @@ const LoginPage = (props) => {
     setSnackbarOpen(false);
   };
 
-  const showSnackbar = (message) => {
+   const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
   const handleLogin = async () => {
@@ -35,13 +37,13 @@ const LoginPage = (props) => {
 
       // Controlla la risposta del server
       if (response.status === 200) {
-        showSnackbar("login avvenuto con successo!")
+        showSnackbar("login avvenuto con successo!","success")
         props.handleLogin(response.data)
-      } else {
-        showSnackbar("Combinazione email/password sbagliata")
+      } else{
+        showSnackbar("Combinazione email/password sbagliata","warning")
       }
     } catch (error) {
-      showSnackbar('Errore durante la richiesta di login')
+      showSnackbar('Errore durante la richiesta di login',"error")
       console.log('Errore durante la richiesta di login:', error.message);
     }
   };
@@ -93,7 +95,7 @@ const LoginPage = (props) => {
       </Grid>
     </div>
     <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

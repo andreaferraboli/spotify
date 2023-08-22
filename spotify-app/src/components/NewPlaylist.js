@@ -3,7 +3,7 @@ import {
     TextField,
     Grid,
     Button, Typography,
-    Avatar,
+    Avatar,Snackbar
 } from '@mui/material';
 
 import { AddCircleOutline } from '@mui/icons-material';
@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from 'axios';
+import MuiAlert from '@mui/material/Alert';
 import { formatDuration } from "../pages/Playlist"
 
 function NewPlaylist({ user, onBack }) {
@@ -25,7 +26,22 @@ function NewPlaylist({ user, onBack }) {
     });
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
-
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+  
+    const Alert = React.forwardRef(function Alert(props, ref) {
+      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+  
+    const handleSnackbarClose = () => {
+      setSnackbarOpen(false);
+    };
+    const showSnackbar = (message, severity) => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+      };
     useEffect(() => {
         async function fetchPlaylistId() {
             try {
@@ -107,10 +123,10 @@ function NewPlaylist({ user, onBack }) {
 
     const handleSavePlaylist = async () => {
         try {
-           
-            let response=await axios.post("http://localhost:3100/upload",{
-                dataUrl:document.getElementById("playlist_image").src,
-                id:playlistId
+
+            let response = await axios.post("http://localhost:3100/upload", {
+                dataUrl: document.getElementById("playlist_image").src,
+                id: playlistId
             })
             localPlaylist.id = playlistId
             localPlaylist.image = response.data.imageUrl
@@ -118,9 +134,14 @@ function NewPlaylist({ user, onBack }) {
                 "playlist": localPlaylist,
                 "userId": user._id
             });
-            window.location.href = "/playlist/" + playlistId;
+            if (response.status === 200) {
+                showSnackbar(response.data.message,"success")
+                window.location.href = "/playlist/" + playlistId;
+            }else{
+                showSnackbar(response.data.message,"error")
+            }
         } catch (error) {
-            console.error('Error saving playlist:', error);
+            showSnackbar('Error saving playlist:'+ error,"error");
         }
     };
 
@@ -167,8 +188,8 @@ function NewPlaylist({ user, onBack }) {
                     else {
                         ctx.drawImage(image, 0, 0, quadrantSize, quadrantSize);
                         dataURL = canvas.toDataURL('image/png');
-                        
-                        
+
+
                         document.getElementById("playlist_image").src = dataURL;
                     }
                 };
@@ -179,7 +200,7 @@ function NewPlaylist({ user, onBack }) {
         // Remove duplicate image URLs
 
     }
-    
+
 
     return (
         <>
@@ -247,7 +268,7 @@ function NewPlaylist({ user, onBack }) {
                                         <Track track={track} />
                                     </div>
                                 </Grid>
-                                <Grid item xs={2}  style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     <Button
                                         variant="contained"
                                         className='add-button'
@@ -270,23 +291,23 @@ function NewPlaylist({ user, onBack }) {
                                         index={index + 1} />
                                 </div>
                             </Grid>
-                            <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
-                                <DeleteIcon
-                                    className="icon-button delete-icon"
-                                    onClick={() => handleRemoveTrack(track.id)} />
-                            </Grid>
-                            <Grid style={{ display: "flex", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
-                                {index !== 0 && (
-                                    <KeyboardArrowUpIcon
-                                        className="icon-button"
-                                        onClick={() => handleMoveTrackUp(index)} />
-                                )}
-                                {index !== localPlaylist.tracks.length - 1 && (
-                                    <KeyboardArrowDownIcon
-                                        className="icon-button"
-                                        onClick={() => handleMoveTrackDown(index)} />
-                                )}
-                            </Grid>
+                                <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                                    <DeleteIcon
+                                        className="icon-button delete-icon"
+                                        onClick={() => handleRemoveTrack(track.id)} />
+                                </Grid>
+                                <Grid style={{ display: "flex", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                                    {index !== 0 && (
+                                        <KeyboardArrowUpIcon
+                                            className="icon-button"
+                                            onClick={() => handleMoveTrackUp(index)} />
+                                    )}
+                                    {index !== localPlaylist.tracks.length - 1 && (
+                                        <KeyboardArrowDownIcon
+                                            className="icon-button"
+                                            onClick={() => handleMoveTrackDown(index)} />
+                                    )}
+                                </Grid>
                             </>
                         ))}
                     </Grid>
@@ -295,7 +316,13 @@ function NewPlaylist({ user, onBack }) {
                 {/* Qui puoi aggiungere la visualizzazione della lista di tracce nella nuova playlist */}
 
                 <button onClick={onBack}>Torna alla Home</button>
-            </div></>
+            </div>
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+        </>
     );
 }
 

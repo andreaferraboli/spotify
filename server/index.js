@@ -272,12 +272,7 @@ app.post("/users", auth, function (req, res) {
 app.get("/user/:id", auth, async function (req, res) {
   // Ricerca nel database
   var id = req.params.id;
-  var pwmClient = await new mongoClient(uri).connect();
-  var user = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .find({ _id: new ObjectId(id) })
-    .project({ password: 0 }).toArray()
+  var user = await getUser(id);
   res.json(user);
 });
 app.get("/login", async function (req, res) {
@@ -340,6 +335,16 @@ app.post("/register", async (req, res) => {
     res.status(500).send(`Errore generico: ${e}`);
   }
 });
+async function getUser(id) {
+  var pwmClient = await new mongoClient(uri).connect();
+  var user = await pwmClient
+    .db("spotify")
+    .collection("users")
+    .find({ _id: new ObjectId(id) })
+    .project({ password: 0 }).toArray();
+  return user;
+}
+
 function convertBase64ToPng(base64String, outputFilePath) {
   try {
     // Remove the data URL prefix and get the actual base64 data
@@ -446,6 +451,25 @@ app.get("/playlist/:id", async (req, res) => {
       { $match: { "my_playlists.id": id } },
       { $project: { my_playlists: 1 } }
     ]).toArray();
+  if (playlist.length === 0) {
+    console.log("ricerca playlist pubblica")
+    playlist = await pwmClient
+      .db("spotify")
+      .collection("public_playlists").findOne(
+        { "id": id }
+      )
+      playlist.type="public"
+      let owner=await getUser(playlist.owner)
+      owner=owner[0];
+      playlist.owner={
+        id: owner._id,
+        profile_name: owner.profile_name,
+        image: owner.image,
+      }
+  }else{
+    playlist[0].my_playlists.type="private"
+    playlist=playlist[0].my_playlists
+  }
   res.json(playlist);
 });
 app.get("/newId", async (req, res) => {
@@ -500,7 +524,12 @@ app.post("/playlist", async (req, res) => {
       { _id: new ObjectId(userId) }, // Qui inserisci il criterio per individuare l'utente corretto
       { $push: { my_playlists: playlist } }
     );
-  res.json(playlist);
+
+  if (result.modifiedCount === 1) {
+    res.status(200).json({ message: 'Playlist added successfully' });
+  } else {
+    res.status(404).json({ message: 'Errore nel caricamento della playlist nel server' });
+  }
 });
 app.delete('/playlist/:id', async (req, res) => {
   const playlistId = req.params.id;
@@ -685,32 +714,56 @@ app.get("/search/:query", async (req, res) => {
 app.put("/movePlaylist/:id", async (req, res) => {
   const playlistId = req.params.id;
   const userId = req.body.user_id
+  const playlistType = req.body.type;
   try {
-    const pwmClient = await new mongoClient(uri).connect();
 
+    const pwmClient = await new mongoClient(uri).connect();
+    let insertedPlaylist,playlistToRemove,response
     // Trova e rimuovi la playlist dalla collezione "users"
-    const playlistToRemove = await pwmClient.db("spotify").collection("users").aggregate([
-      { $unwind: "$my_playlists" },
-      { $match: { "my_playlists.id": playlistId } },
-      { $project: { my_playlists: 1 } }
-    ]).toArray();
-    let playlist=playlistToRemove[0].my_playlists
-    if (playlist.id !== null) {
-      // Rimuovi la playlist dalla collezione "users"
-      let response=await pwmClient.db("spotify").collection("users").updateOne(
-        { _id:new ObjectId(userId) },
-        { $pull: { my_playlists: { id: playlistId } } }
+    if (playlistType === 'public'){
+
+      playlistToRemove = await pwmClient.db("spotify").collection("users").aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": playlistId } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+      let playlist = playlistToRemove[0].my_playlists
+      if (playlist.id !== null) {
+        // Rimuovi la playlist dalla collezione "users"
+        response = await pwmClient.db("spotify").collection("users").updateOne(
+          { _id: new ObjectId(userId) },
+          { $pull: { my_playlists: { id: playlistId } } }
+        );
+        // Inserisci la playlist nella collezione "public_playlist"
+        insertedPlaylist = await pwmClient.db("spotify").collection("public_playlists").insertOne({
+          id: playlist.id,
+          name: playlist.name,
+          image: playlist.image,
+          tracks: playlist.tracks,
+          owner: userId,
+          followers: [],
+          collaborative: false
+        });
+    }else{
+      playlistToRemove = await pwmClient.db("spotify").collection("public_playlists").findOneAndDelete(
+        { id: playlistId }
       );
-      // Inserisci la playlist nella collezione "public_playlist"
-      const insertedPlaylist = await pwmClient.db("spotify").collection("public_playlists").insertOne({
-        id: playlist.id,
-        name: playlist.name,
-        image: playlist.image,
-        tracks: playlist.tracks,
-        owner: userId,
-        followers: [],
-        collaborative: false
-      });
+      if (playlistToRemove.value) {
+        // Inserisci la playlist nella collezione "users"
+        insertedPlaylist = await pwmClient.db("spotify").collection("users").updateOne(
+          { _id: new ObjectId(userId) },
+          { $addToSet: { my_playlists: playlistToRemove.value } }
+        );
+
+        if (insertedPlaylist.modifiedCount > 0) {
+          res.status(200).json({ message: "Playlist spostata con successo." });
+        } else {
+          res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
+        }
+      } else {
+        res.status(404).json({ message: "Playlist non trovata." });
+      }
+    }
       if (insertedPlaylist.insertedId !== null) {
         res.status(200).json({ message: "Playlist spostata con successo." });
       } else {
@@ -721,6 +774,31 @@ app.put("/movePlaylist/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
+  }
+});
+app.put("/setCollaborative/:id", async (req, res) => {
+  console.log("dentro set collaborative")
+  const playlistId = req.params.id;
+  const collaborative = req.body.collaborative;
+  console.log(collaborative)
+  try {
+    const pwmClient = await new MongoClient(uri).connect();
+
+    let response = await pwmClient
+      .db("spotify")
+      .collection("public_playlists")
+      .updateOne(
+        { id: playlistId },
+        { $set: { collaborative: collaborative } }
+      );
+        console.log("response",response)
+    if (response.modifiedCount > 0) {
+      res.status(200).json({ message: "Aggiornamento riuscito." });
+    } else {
+      res.status(500).json({ message: "Errore nell'aggiornamento." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Errore nell'aggiornamento." });
   }
 });
 app.post("/updateInfo", async (req, res) => {

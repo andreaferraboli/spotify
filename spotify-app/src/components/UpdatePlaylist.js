@@ -13,7 +13,7 @@ import Track from "./track";
 import "../style/playlist.css";
 import axios from 'axios'; // Assicurati di aver importato correttamente Axios
 
-function UpdatePlaylist({ playlist, user }) {
+function UpdatePlaylist({ playlist, user, snackbar }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
@@ -83,7 +83,12 @@ function UpdatePlaylist({ playlist, user }) {
             })
             localPlaylist.image = response.data.imageUrl
             response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
-            window.location.href = "/playlist/" + localPlaylist.id;
+            if(response.status===200){
+                snackbar(response.data.message,"success")
+                window.location.href = "/playlist/" + localPlaylist.id;
+            }else{
+                snackbar(response.data.message,"error")
+            }
         } catch (error) {
             console.error('Error saving changes:', error);
         }
