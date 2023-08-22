@@ -5,13 +5,15 @@ import {
   Typography,
   Avatar,
   Grid,
-  IconButton, Button
+  IconButton, Button, Snackbar
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import axios from 'axios';
+import MuiAlert from '@mui/material/Alert';
 import "../style/playlist.css";
+
 export function formatDuration(milliseconds) {
   const hours = Math.floor(milliseconds / 3600000);
   const minutes = Math.floor((milliseconds % 3600000) / 60000);
@@ -25,7 +27,20 @@ const Playlist = ({ user, onBack }) => {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
   const [editing, setEditing] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+  const showSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -54,11 +69,10 @@ const Playlist = ({ user, onBack }) => {
   const handleDeletePlaylist = async () => {
     try {
       const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
-      console.log('Playlist deleted:', response.data);
+      showSnackbar('Playlist eliminato');
       window.location.href = "/"
-      // Redirect to a specific page after successful deletion
     } catch (error) {
-      console.error('Error deleting playlist:', error);
+      showSnackbar('Error deleting playlist:', error);
     }
   };
   async function publishPlaylist() {
@@ -67,9 +81,14 @@ const Playlist = ({ user, onBack }) => {
   
     try {
       const response = await axios.put(url, requestData);
-      return response.data;
+      if(response.status===200){
+        showSnackbar(response.data.message)
+        window.location.href="/"
+      }
+      else
+        showSnackbar("errore nel pubblicare la playlist")
     } catch (error) {
-      console.error("Errore durante la pubblicazione della playlist:", error);
+      showSnackbar("Errore durante la pubblicazione della playlist:", error);
       throw error;
     }
   }
@@ -171,6 +190,11 @@ const Playlist = ({ user, onBack }) => {
           )}
         </Grid>
       </div>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <button onClick={onBack}>Torna alla Home</button>
     </>
   );

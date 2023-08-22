@@ -37,6 +37,8 @@ const LoadGenres = (props) => {
                 if (allGenres[i].name.toLowerCase().includes(query.toLowerCase()))
                     newList.push(allGenres[i])
             setGenres(newList)
+        }else{
+            setGenres(allGenres)
         }
 
     }

@@ -16,36 +16,41 @@ import Grid from '@mui/material/Grid';
 import "./style/home.css";
 
 function App() {
-  const [user, setUser] = useState({ my_playlists: [], favourite_artists: [] });
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || { my_playlists: [], favourite_artists: [] });
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const [query, setQuery] = useState('');
 
 
   // Funzione per ottenere le playlist dall'API del database
-  // useEffect(() => {
-  //   // Funzione per ottenere le playlist dall'API del database
-  //   const fetchUser = async () => {
-  //     const user_id = "64d22a8c6b6f0c5f086a149c";
-
-  //     try {
-  //       const response = await fetch(`http://localhost:3100/user/${user_id}?apikey=123456`);
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         if (data.length > 0) {
-  //           setUser(data[0]);
-  //         }
-  //       } else {
-  //         console.log('Errore nella richiesta');
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
-  //   fetchUser();
-  // }, []);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+  
+    if (storedUser && storedUser._id) {
+      const fetchUser = async () => {
+        try {
+          const response = await fetch(`http://localhost:3100/user/${storedUser._id}?apikey=123456`);
+          if (response.ok) {
+            const data = await response.json();
+  
+            // Verifica se i dati dell'utente sono diversi da quelli presenti in localStorage
+            if (JSON.stringify(data[0]) !== JSON.stringify(user)) {
+              setUser(data[0]);
+              // Aggiorna anche i dati in localStorage
+              localStorage.setItem('user', JSON.stringify(data[0]));
+            }
+          } else {
+            console.log('Errore nella richiesta');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+  
+      // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
+      fetchUser();
+    }
+  }, []);
 
   useEffect(() => {
     if (query !== null && query !== undefined && query !== '')
@@ -90,6 +95,7 @@ function App() {
     } else {
       setUser(user)
     }
+    localStorage.setItem('user', JSON.stringify(user));
     navigate(`/`);
 
   };

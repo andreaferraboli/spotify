@@ -50,6 +50,7 @@ const Account = ({ user,  handleLogin}) => {
         }
     };
     const handleLogout = () => {
+        localStorage.removeItem('user');
         handleLogin({});
       };
 

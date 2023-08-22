@@ -18,6 +18,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [imageFile, setImageFile] = useState('');
   const [favouriteGenres, setFavouriteGenres] = useState([]);
   const [favouriteArtists, setFavouriteArtists] = useState([]);
   const [loadGenres, setLoadGenres] = useState(false);
@@ -40,11 +41,13 @@ const RegisterPage = () => {
 
   const handleRegister = async () => {
     try {
-      // Verifica se le password corrispondono prima di inviare la richiesta
+      let response = await axios.get('http://localhost:3100/get-profile-image', imageFile); // Sostituisci l'URL con quello corretto
 
+      // Estrai l'indirizzo dell'immagine dalla risposta
+      const profileImageUrl = response.data.profileImageUrl;
 
       // Effettua la richiesta POST al server Node
-      const response = await axios.post('http://localhost:3100/register',
+      response = await axios.post('http://localhost:3100/register',
         {
           "name": firstName,
           "surname": lastName,
@@ -68,6 +71,15 @@ const RegisterPage = () => {
     } catch (error) {
       console.log('Errore durante la richiesta di registrazione:', error.message);
       // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
+    }
+  };
+  const handleProfileImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      setImageFile(selectedFile)
+      console.log('Nome del file:', selectedFile.name);
+      // Puoi anche mostrare il nome del file all'utente, ad esempio aggiungendolo a uno stato o visualizzandolo nella UI.
     }
   };
   const validateRegistrationData = async () => {
@@ -120,11 +132,17 @@ const RegisterPage = () => {
     setLoadGenres(false);
   }
   return (
-    <div className='background'>
+    <><div className='background'>
       {loadGenres ? (
-        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} />
+        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={showSnackbar}/>
       ) : loadArtist ? (
-        <LoadArtist favouriteGenres={favouriteGenres} getFavouriteArtists={getFavouriteArtists} setFavouriteArtists={setFavouriteArtists} register={handleRegister}></LoadArtist>
+        <LoadArtist 
+          favouriteGenres={favouriteGenres} 
+          getFavouriteArtists={getFavouriteArtists} 
+          setFavouriteArtists={setFavouriteArtists} 
+          register={handleRegister}
+          snackbar={showSnackbar}
+          ></LoadArtist>
       ) : (
         <><Grid container direction="column" alignItems="center" spacing={3} className="container">
           <Grid item>
@@ -179,6 +197,13 @@ const RegisterPage = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input" />
+            <TextField
+              type="file"
+              label="Carica immagine del profilo"
+              variant="outlined"
+              fullWidth
+              onChange={(e) => handleProfileImageChange(e)}
+              className="input" />
             <Button
               variant="contained"
               fullWidth
@@ -193,14 +218,17 @@ const RegisterPage = () => {
               Hai già un account? <Link to="/login" className='link'>Accedi qui</Link>
             </Typography>
           </Grid>
-        </Grid><Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-            <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
-              {snackbarMessage}
-            </Alert>
-          </Snackbar></>
-      )}
+        </Grid>
 
+        </>
+      )}
     </div>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
 
   );
 };

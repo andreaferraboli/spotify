@@ -7,6 +7,7 @@ import PlaylistCard from '../components/PlaylistCard';
 import ArtistCard from '../components/ArtistCard';
 import UserCard from '../components/UserCard';
 import Album from '../components/Album';
+import Scrollbar from "react-scrollbars-custom";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import "../style/search.css";
@@ -58,11 +59,11 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
             <h2>Brani</h2>
           )}
           <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '50vh' }}>
-            <Grid container spacing={2}>
+            <Scrollbar >
               {searchResults.tracks?.map((track, index) => (
                 <Track track={track} index={index + 1} />
               ))}
-            </Grid>
+            </Scrollbar>
           </div>
 
           {/* Sezione Album */}

@@ -424,7 +424,6 @@ app.get("/album/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   let album = await getAlbum(id);
-  console.log("album:", album.tracks.items)
   res.json(await filterFullAlbum(album));
 })
 app.get("/artist/:id", async (req, res) => {
@@ -686,7 +685,6 @@ app.get("/search/:query", async (req, res) => {
 app.put("/movePlaylist/:id", async (req, res) => {
   const playlistId = req.params.id;
   const userId = req.body.user_id
-  console.log(playlistId, userId)
   try {
     const pwmClient = await new mongoClient(uri).connect();
 

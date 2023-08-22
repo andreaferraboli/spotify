@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Paper, TextField, Button, Typography } from '@mui/material';
+import { Grid, Paper, TextField, Button, Typography, Snackbar } from '@mui/material';
 import axios from 'axios';
 import "../style/login.css";
+import MuiAlert from '@mui/material/Alert';
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+  
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
   const handleLogin = async () => {
     // Implementa la logica di autenticazione qui
     try {
@@ -20,21 +35,19 @@ const LoginPage = (props) => {
 
       // Controlla la risposta del server
       if (response.status === 200) {
+        showSnackbar("login avvenuto con successo!")
         props.handleLogin(response.data)
-        // navigate(`/`);
-        // Aggiungi qui il codice per gestire il successo del login, come il reindirizzamento alla home page
       } else {
-        console.log('Errore durante il login');
-        // Aggiungi qui il codice per gestire l'errore durante il login
+        showSnackbar("Combinazione email/password sbagliata")
       }
     } catch (error) {
+      showSnackbar('Errore durante la richiesta di login')
       console.log('Errore durante la richiesta di login:', error.message);
-      // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
     }
   };
 
   return (
-    <div className='background'>
+    <><div className='background'>
 
       <Grid container direction="column" alignItems="center" spacing={3} className="container">
         <Grid item>
@@ -53,8 +66,7 @@ const LoginPage = (props) => {
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="input"
-          />
+            className="input" />
 
           <TextField
             label="Password"
@@ -63,8 +75,7 @@ const LoginPage = (props) => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input"
-          />
+            className="input" />
           <Button
             variant="contained"
             fullWidth
@@ -81,7 +92,12 @@ const LoginPage = (props) => {
         </Grid>
       </Grid>
     </div>
-
+    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+      </>
   );
 };
 

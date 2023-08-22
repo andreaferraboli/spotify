@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Card, CardHeader, Box, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
 import "../style/artist.css";
 import ColorThief from "colorthief";
@@ -82,7 +82,9 @@ const Artist = ({ user, onBack }) => {
                 responsive={responsive}
               >
                 {artist[2].map((album) => (
-                  <Album key={album.id} album={album} />
+                  <Link key={album.id} to={`/album/${album.id}`}>
+                    <Album key={album.id} album={album} />
+                  </Link>
                 ))}
               </Carousel>
             ) : (

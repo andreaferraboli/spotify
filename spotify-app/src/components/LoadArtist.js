@@ -40,6 +40,7 @@ const LoadArtist = (props) => {
       }
     } catch (error) {
       console.error('An error occurred:', error);
+      props.snackbar('An error occurred while fetching data. Please try again later.');
       setError('An error occurred while fetching data. Please try again later.');
     }
   };
@@ -61,18 +62,14 @@ const LoadArtist = (props) => {
 
   };
   const handleRegisterClick = () => {
+    props.setFavouriteArtists(selectedAvatars); 
     // Wait for setFavouriteArtists to complete
 
-    // Questo codice verrà eseguito dopo 1000 millisecondi (1 secondo)
-    if (selectedAvatars.length === props.getFavouriteArtists()) {
-      props.register();
-    } else {
-      setTimeout(() => {
-        handleRegisterClick()
-      }, 1000);
+    while (selectedAvatars.length !== props.getFavouriteArtists()) {
+      document.getElementById("next-button").text="..."
     }
-
-
+    props.snackbar("artisti caricati correttamente")
+    props.register();
   };
   return (
     <Container>
@@ -94,7 +91,7 @@ const LoadArtist = (props) => {
       </div>
 
       <h2 className='subtitle'>Artisti</h2>
-      <Scrollbar style={{  height: '30vh' }}>
+      <Scrollbar style={{ height: '30vh' }}>
         <Grid container justifyContent="space-around" >
           {artists?.map((artist) => (
             <Grid item xs={3} >
@@ -106,17 +103,18 @@ const LoadArtist = (props) => {
 
       <h2 className='subtitle'>Artisti Selezionati</h2>
       <div style={{ height: '30vh' }}>
-      <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+        <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
           {selectedAvatars?.map((artist) => (
-              <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
+            <ArtistCard artist={artist} selectedArtistId={null} handleAvatarSelect={handleAvatarSelect} />
           ))}
         </Carousel>
       </div>
       <div style={{ height: '10vh' }}>
         <Button
+          id='next-button'
           variant="contained"
           fullWidth
-          onClick={() => { props.setFavouriteArtists(selectedAvatars); handleRegisterClick() }}
+          onClick={() => {handleRegisterClick() }}
           className="button"
         >
           Avanti
