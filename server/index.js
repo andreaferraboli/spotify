@@ -452,23 +452,15 @@ app.get("/playlist/:id", async (req, res) => {
       { $project: { my_playlists: 1 } }
     ]).toArray();
   if (playlist.length === 0) {
-    console.log("ricerca playlist pubblica")
     playlist = await pwmClient
       .db("spotify")
       .collection("public_playlists").findOne(
         { "id": id }
       )
-      playlist.type="public"
-      let owner=await getUser(playlist.owner)
-      owner=owner[0];
-      playlist.owner={
-        id: owner._id,
-        profile_name: owner.profile_name,
-        image: owner.image,
-      }
-  }else{
-    playlist[0].my_playlists.type="private"
-    playlist=playlist[0].my_playlists
+    playlist.type = "public"
+  } else {
+    playlist[0].my_playlists.type = "private"
+    playlist = playlist[0].my_playlists
   }
   res.json(playlist);
 });
@@ -657,19 +649,42 @@ async function searchAlbums(query) {
 async function searchPlaylists(query) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
-    var playlists = await pwmClient
+
+    // Search for user playlists using aggregation
+    var userPlaylistsCursor = await pwmClient
       .db("spotify")
-      .collection("users").aggregate([
+      .collection("users")
+      .aggregate([
         { $unwind: '$my_playlists' },
         { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
         { $project: { my_playlists: 1 } }
       ])
       .toArray();
 
-    return playlists.map(item => item.my_playlists);
+    var userPlaylists = userPlaylistsCursor.map(item => ({
+      ...item.my_playlists,
+      type: "private"
+    }));
+
+    // Search for public playlists using find()
+    var publicPlaylistsCursor = await pwmClient
+      .db("spotify")
+      .collection("public_playlists")
+      .find({ "name": { $regex: query, $options: 'i' } })
+      .toArray();
+
+    var publicPlaylists = publicPlaylistsCursor.map(item => ({
+      ...item,
+      type: "public"
+    }));
+
+    // Combine user and public playlists
+    var allPlaylists = userPlaylists.concat(publicPlaylists);
+
+    return allPlaylists;
   } catch (error) {
     console.error('Error searching playlists:', error);
-    return []; // Ritorna un array vuoto in caso di errore
+    return []; // Return an empty array in case of error
   }
 }
 
@@ -714,13 +729,15 @@ app.get("/search/:query", async (req, res) => {
 app.put("/movePlaylist/:id", async (req, res) => {
   const playlistId = req.params.id;
   const userId = req.body.user_id
+  const image = req.body.image
+  const profile_name = req.body.profile_name
   const playlistType = req.body.type;
   try {
 
     const pwmClient = await new mongoClient(uri).connect();
-    let insertedPlaylist,playlistToRemove,response
+    let insertedPlaylist, playlistToRemove, response
     // Trova e rimuovi la playlist dalla collezione "users"
-    if (playlistType === 'public'){
+    if (playlistType === 'private') {
 
       playlistToRemove = await pwmClient.db("spotify").collection("users").aggregate([
         { $unwind: "$my_playlists" },
@@ -740,11 +757,23 @@ app.put("/movePlaylist/:id", async (req, res) => {
           name: playlist.name,
           image: playlist.image,
           tracks: playlist.tracks,
-          owner: userId,
+          owner: {
+            id: userId,
+            image: image,
+            profile_name: profile_name
+          },
           followers: [],
           collaborative: false
         });
-    }else{
+        if (insertedPlaylist.insertedId !== null) {
+          res.status(200).json({ message: "Playlist spostata con successo." });
+        } else {
+          res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
+        }
+      } else {
+        res.status(404).json({ message: "Playlist non trovata." });
+      }
+    } else {
       playlistToRemove = await pwmClient.db("spotify").collection("public_playlists").findOneAndDelete(
         { id: playlistId }
       );
@@ -764,34 +793,24 @@ app.put("/movePlaylist/:id", async (req, res) => {
         res.status(404).json({ message: "Playlist non trovata." });
       }
     }
-      if (insertedPlaylist.insertedId !== null) {
-        res.status(200).json({ message: "Playlist spostata con successo." });
-      } else {
-        res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
-      }
-    } else {
-      res.status(404).json({ message: "Playlist non trovata." });
-    }
+
   } catch (error) {
     res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
   }
 });
 app.put("/setCollaborative/:id", async (req, res) => {
-  console.log("dentro set collaborative")
   const playlistId = req.params.id;
   const collaborative = req.body.collaborative;
-  console.log(collaborative)
   try {
-    const pwmClient = await new MongoClient(uri).connect();
+    const pwmClient = await new mongoClient(uri).connect();
 
     let response = await pwmClient
       .db("spotify")
       .collection("public_playlists")
       .updateOne(
-        { id: playlistId },
-        { $set: { collaborative: collaborative } }
-      );
-        console.log("response",response)
+        { "id": playlistId },
+        { $set: { "collaborative": collaborative } }
+      )
     if (response.modifiedCount > 0) {
       res.status(200).json({ message: "Aggiornamento riuscito." });
     } else {

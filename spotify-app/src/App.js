@@ -119,7 +119,7 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login handleLogin={handleLogin} />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/search/:query" element={<Search />} />
+                <Route path="/search/:query" element={<Search user={user} />} />
 
                 <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} />} />
                 <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} />} />

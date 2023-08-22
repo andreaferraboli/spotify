@@ -79,13 +79,13 @@ const Playlist = ({ user, onBack }) => {
   };
   async function publishPlaylist() {
     const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
-    const requestData = { user_id: user._id , type: 'private'};
+    const requestData = { user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private' };
 
     try {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
         showSnackbar(response.data.message, "success")
-        window.location.href = "/"
+        window.location.href = "/playlist/" + playlistId
       }
       else
         showSnackbar("errore nel pubblicare la playlist", "error")
@@ -97,12 +97,12 @@ const Playlist = ({ user, onBack }) => {
   async function makePlaylistPrivate(playlist) {
     const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
     const requestData = { user_id: user._id, type: 'public' };
-  
+
     try {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
         showSnackbar(response.data.message, "success")
-        // Aggiorna il tuo stato o effettua altre azioni necessarie
+        window.location.href = "/playlist/" + playlistId
       }
       else
         showSnackbar("errore nel rendere la playlist privata", "error")
@@ -113,12 +113,13 @@ const Playlist = ({ user, onBack }) => {
   }
   const handleSetCollaborative = async (collaborative) => {
     try {
-      const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}`, { "collaborative":collaborative });
+      const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}`, { "collaborative": collaborative });
       if (response.status === 200) {
-        showSnackbar(response.data.message,"success")
+        showSnackbar(response.data.message, "success")
+        window.location.href = "/playlist/" + playlistId
       }
     } catch (error) {
-      showSnackbar("Errore durante l'impostazione della playlist come collaborativa:"+ error, "error");
+      showSnackbar("Errore durante l'impostazione della playlist come collaborativa:" + error, "error");
     }
   };
   return (

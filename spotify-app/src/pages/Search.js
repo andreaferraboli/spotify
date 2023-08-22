@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams,Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Grid } from '@mui/material';
 import Track from '../components/track';
@@ -32,7 +32,7 @@ export const responsive = {
   },
 };
 
-export default function SearchResults({ onPlaylistClick, onArtistClick }) {
+export default function SearchResults({ user }) {
   const { query } = useParams(); // Preleva la query dall'URL
   const [searchResults, setSearchResults] = useState(null);
 
@@ -82,20 +82,26 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
 
           {/* Sezione Playlist */}
           {searchResults.playlists && searchResults.playlists.length > 0 && (
+            <>
             <h2>Playlist</h2>
+            <Carousel
+              showDots={true}
+              itemClass="carousel-item"
+              containerClass="carousel-container"
+              responsive={responsive}
+            >
+              {searchResults.playlists?.map(playlist => (
+                <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                  <PlaylistCard
+                    playlist={playlist}
+                    owner={playlist.type === "public"
+                      ? `${playlist.owner.profile_name} • pubblica`
+                      : user.profile_name}
+                    selectedPlaylistId={null} />
+                </Link>
+              ))}
+            </Carousel></>
           )}
-          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
-            {searchResults.playlists?.map(playlist => (
-              <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
-                <PlaylistCard
-                playlist={playlist}
-                owner={playlist.owner}
-                selectedPlaylistId={null}
-              />
-              </Link>
-              
-            ))}
-          </Carousel>
 
           {/* Sezione Artisti */}
           {searchResults.artists && searchResults.artists.length > 0 && (
@@ -105,11 +111,11 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
             {searchResults.artists?.map(artist => (
               <Link key={artist.id} to={`/artist/${artist.id}`}>
                 <ArtistCard
-                artist={artist}
-                selectedArtistId={""}
-              />
+                  artist={artist}
+                  selectedArtistId={""}
+                />
               </Link>
-              
+
             ))}
           </Carousel>
 
@@ -121,10 +127,10 @@ export default function SearchResults({ onPlaylistClick, onArtistClick }) {
             {searchResults.users?.map(user => (
               <Link key={user.id} to={`/user/${user.id}`}>
                 <UserCard
-                user={user}
-              />
+                  user={user}
+                />
               </Link>
-              
+
             ))}
           </Carousel>
         </div>
