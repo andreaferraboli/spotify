@@ -122,6 +122,21 @@ const Playlist = ({ user, onBack }) => {
       showSnackbar("Errore durante l'impostazione della playlist come collaborativa:" + error, "error");
     }
   };
+  async function changeFollow(playlistId, userId, action) {
+    try {
+      const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}`);
+      if (response.status === 200) {
+        showSnackbar(response.data.message, "success")
+        window.location.href = "/playlist/" + playlistId
+      }
+      else
+        showSnackbar(response.data.message, "error")
+
+      
+    } catch (error) {
+      throw error;
+    }
+  }
   return (
     <>
       <Grid container style={{ margin: 0 }} spacing={1}>
@@ -224,6 +239,28 @@ const Playlist = ({ user, onBack }) => {
                       onClick={() => makePlaylistPrivate(playlist)}
                     >
                       Rendi Playlist Privata
+                    </Button>
+                  )
+                )}
+
+              </div>
+              <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                {playlist?.type === "public" && (playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) ? (
+                  <Button
+                    variant="outlined"
+                    className="delete-button"
+                    onClick={() => changeFollow(playlist.id, user._id, "remove")}
+                  >
+                    Smetti di seguire
+                  </Button>
+                ) : (
+                  playlist?.type === "public" && (!playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) && (
+                    <Button
+                      variant="outlined"
+                      className="add-button"
+                      onClick={() => changeFollow(playlist.id, user._id, "add")}
+                    >
+                      Segui Playlist
                     </Button>
                   )
                 )}

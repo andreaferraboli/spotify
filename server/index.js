@@ -789,6 +789,79 @@ app.get("/search/:query", async (req, res) => {
   res.status(200).send(result)
 
 })
+app.get('/relatedPlaylists/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+
+    let pwmClient = await new mongoClient(uri).connect();
+    const playlistsCollection = pwmClient
+      .db("spotify")
+      .collection("public_playlists");
+
+    const publicPlaylists = await playlistsCollection.find().toArray();
+    publicPlaylists.sort((a, b) => b.followers.length - a.followers.length);
+    const followedPlaylists = await playlistsCollection.find({ followers: { $in: [userId] } }).toArray();
+    const yourPublicPlaylists = await playlistsCollection.find({ 'owner.id': userId }).toArray();
+    console.log(yourPublicPlaylists.length)
+    const responseData = {
+      public_playlists: publicPlaylists,
+      followed_playlists: followedPlaylists,
+      your_public_playlists: yourPublicPlaylists,
+    };
+
+    return res.status(200).json(responseData);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  } 
+});
+app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
+  const playlistId = req.params.playlistId;
+  const followerId = req.params.followerId;
+  const action = req.query.action; // Legge l'azione dalla query string
+
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+
+    const playlist = await pwmClient
+      .db("spotify")
+      .collection("public_playlists").findOne({ id: playlistId });
+    if (!playlist) {
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+
+    let updatedFollowers = playlist.followers || [];
+
+    if (action === 'add') {
+      updatedFollowers.push(followerId);
+    } else if (action === 'remove') {
+      const followerIndex = updatedFollowers.indexOf(followerId);
+      if (followerIndex !== -1) {
+        updatedFollowers.splice(followerIndex, 1);
+      }
+    } else {
+      return res.status(400).json({ message: 'Invalid action' });
+    }
+
+    const result = await pwmClient
+      .db("spotify")
+      .collection("public_playlists").updateOne(
+        { id: playlistId },
+        { $set: { followers: updatedFollowers } }
+      );
+
+    if (result.matchedCount === 1) {
+      return res.status(200).json({ message: 'Playlist updated successfully' });
+    } else {
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 app.put("/movePlaylist/:id", async (req, res) => {
   const playlistId = req.params.id;
