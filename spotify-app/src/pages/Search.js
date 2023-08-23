@@ -68,71 +68,70 @@ export default function SearchResults({ user }) {
 
           {/* Sezione Album */}
           {searchResults.albums && searchResults.albums.length > 0 && (
-            <h2>Album</h2>
-          )}
-          <Carousel showDots={true} centerMode={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
-
-            {searchResults.albums?.map(album => (
-              <Link key={album.id} to={`/album/${album.id}`}>
-                <Album album={album} />
-              </Link>
-            ))}
-          </Carousel>
-
-
-          {/* Sezione Playlist */}
-          {searchResults.playlists && searchResults.playlists.length > 0 && (
             <>
-            <h2>Playlist</h2>
-            <Carousel
-              showDots={true}
-              itemClass="carousel-item"
-              containerClass="carousel-container"
-              responsive={responsive}
-            >
-              {searchResults.playlists?.map(playlist => (
-                <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
-                  <PlaylistCard
-                    playlist={playlist}
-                    owner={playlist.type === "public"
-                      ? `${playlist.owner.profile_name} • pubblica`
-                      : user.profile_name}
-                    selectedPlaylistId={null} />
+            <h2>Album</h2>
+            <Carousel showDots={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
+
+              {searchResults.albums?.map(album => (
+                <Link key={album.id} to={`/album/${album.id}`}>
+                  <Album album={album} />
                 </Link>
               ))}
             </Carousel></>
           )}
 
+          {/* Sezione Playlist */}
+          {searchResults?.playlists && searchResults.playlists?.length > 0 && (
+            <>
+              <h2>Playlist</h2>
+              <Carousel
+                showDots={true}
+                itemClass="carousel-item"
+                containerClass="carousel-container"
+                responsive={responsive}
+              >
+                {searchResults.playlists?.map(playlist => (
+                  <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                    <PlaylistCard
+                      playlist={playlist}
+                      owner={playlist.type === "public"
+                        ? `${playlist.owner.profile_name} • pubblica`
+                        : user.profile_name}
+                      selectedPlaylistId={null} />
+                  </Link>
+                ))}
+              </Carousel></>
+          )}
+
           {/* Sezione Artisti */}
           {searchResults.artists && searchResults.artists.length > 0 && (
-            <h2>Artisti</h2>
+            <>
+              <h2>Artisti</h2>
+              <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+                {searchResults.artists?.map(artist => (
+                  <Link key={artist.id} to={`/artist/${artist.id}`}>
+                    <ArtistCard
+                      artist={artist}
+                      selectedArtistId={""} />
+                  </Link>
+
+                ))}
+              </Carousel></>
           )}
-          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
-            {searchResults.artists?.map(artist => (
-              <Link key={artist.id} to={`/artist/${artist.id}`}>
-                <ArtistCard
-                  artist={artist}
-                  selectedArtistId={""}
-                />
-              </Link>
-
-            ))}
-          </Carousel>
-
           {/* Sezione Utente */}
           {searchResults.users && searchResults.users.length > 0 && (
-            <h2>Utenti</h2>
-          )}
-          <Carousel showDots={true} centerMode={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
-            {searchResults.users?.map(user => (
-              <Link key={user.id} to={`/user/${user.id}`}>
-                <UserCard
-                  user={user}
-                />
-              </Link>
+            <>
+              <h2>Utenti</h2>
+              <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+                {searchResults.users?.map(user => (
+                  <Link key={user.id} to={`/user/${user.id}`}>
+                    <UserCard
+                      user={user} />
+                  </Link>
 
-            ))}
-          </Carousel>
+                ))}
+              </Carousel></>
+          )}
         </div>
       )}
     </div>

@@ -196,7 +196,7 @@ const Playlist = ({ user, onBack }) => {
           {!editing && (
             <>
               <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-                {playlist?.type === "private" || (playlist?.type === "public" && playlist.collaborative === true) ? (
+                {playlist?.type === "private" || (playlist?.type === "public" && (playlist.collaborative === true || playlist.owner.id === user._id)) ? (
                   <Button
                     variant="outlined"
                     className="edit-button"

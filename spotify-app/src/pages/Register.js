@@ -43,13 +43,13 @@ const RegisterPage = () => {
 
   const handleRegister = async () => {
     try {
-      let response = await axios.get('http://localhost:3100/get-profile-image', imageFile); // Sostituisci l'URL con quello corretto
+      // let response = await axios.get('http://localhost:3100/get-profile-image', imageFile); // Sostituisci l'URL con quello corretto
 
-      // Estrai l'indirizzo dell'immagine dalla risposta
-      const profileImageUrl = response.data.profileImageUrl;
+      // // Estrai l'indirizzo dell'immagine dalla risposta
+      // const profileImageUrl = response.data.profileImageUrl;
 
       // Effettua la richiesta POST al server Node
-      response = await axios.post('http://localhost:3100/register',
+      let response = await axios.post('http://localhost:3100/register',
         {
           "name": firstName,
           "surname": lastName,

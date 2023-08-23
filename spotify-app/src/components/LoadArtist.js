@@ -61,16 +61,39 @@ const LoadArtist = (props) => {
     }
 
   };
-  const handleRegisterClick = () => {
-    props.setFavouriteArtists(selectedAvatars); 
-    // Wait for setFavouriteArtists to complete
-
-    while (selectedAvatars.length !== props.getFavouriteArtists()) {
-      document.getElementById("next-button").text="..."
+  const handleRegisterClick = async () => {
+    try {
+      // Mostra i puntini nel pulsante
+      const nextButton = document.getElementById("next-button");
+      const originalButtonText = nextButton.textContent;
+      nextButton.textContent = "...";
+  
+      await props.setFavouriteArtists(selectedAvatars); // Attendere il completamento di setFavouriteArtists
+      
+      while (selectedAvatars.length !== props.getFavouriteArtists()) {
+        // Aggiungi animazione dei puntini
+        nextButton.textContent = "...";
+        await wait(500); // Attendi 500ms
+        nextButton.textContent = "..";
+        await wait(500);
+        nextButton.textContent = ".";
+        await wait(500);
+      }
+  
+      // Ripristina il testo originale nel pulsante
+      nextButton.textContent = originalButtonText;
+  
+      props.snackbar("artisti caricati correttamente");
+      props.register();
+    } catch (error) {
+      console.error("Errore durante la registrazione:", error);
+      // Gestire l'errore in qualche modo
     }
-    props.snackbar("artisti caricati correttamente")
-    props.register();
   };
+  
+  // Funzione di utilità per l'attesa
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  
   return (
     <Container>
       <div style={{ height: "17vh" }}>

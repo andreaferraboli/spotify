@@ -497,7 +497,16 @@ app.put("/playlist/:id", async (req, res) => {
     if (result.matchedCount === 1) {
       res.status(200).json({ message: 'Playlist updated successfully' });
     } else {
-      res.status(404).json({ message: 'Playlist not found' });
+      result = await pwmClient
+      .db("spotify")
+      .collection("public_playlists").updateOne(
+        { 'id': playlistId },
+        { $set: { "tracks":updatedPlaylist.tracks,"image":updatedPlaylist.image } }
+      );
+      if (result.matchedCount === 1) 
+        res.status(200).json({ message: 'Playlist updated successfully' });
+      else
+        res.status(404).json({ message: 'Playlist not found' });
     }
   } catch (error) {
     console.error(error);
