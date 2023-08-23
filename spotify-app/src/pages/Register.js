@@ -32,7 +32,7 @@ const RegisterPage = () => {
     setSnackbarOpen(false);
   };
 
-   const showSnackbar = (message, severity) => {
+  const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
@@ -63,27 +63,50 @@ const RegisterPage = () => {
 
       // Controlla la risposta del server
       if (response.status === 201) {
+        await publicFile(imageFile, response.data.userId);
         showSnackbar('Registrazione effettuata con successo!', "success");
-        window.location.href = "/login";
+        // window.location.href = "/login";
         // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
-        showSnackbar('Errore durante la registrazione',"error");
+        showSnackbar('Errore durante la registrazione', "error");
         // Aggiungi qui il codice per gestire l'errore durante la registrazione
       }
     } catch (error) {
-      showSnackbar('Errore durante la richiesta di registrazione:'+ error.message, "error");
+      showSnackbar('Errore durante la richiesta di registrazione:' + error.message, "error");
       // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
     }
   };
-  const handleProfileImageChange = (e) => {
+  const handleProfileImageChange = async (e) => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       setImageFile(selectedFile)
       console.log('Nome del file:', selectedFile.name);
+      
       // Puoi anche mostrare il nome del file all'utente, ad esempio aggiungendolo a uno stato o visualizzandolo nella UI.
     }
   };
+  async function publicFile(selectedFile,userId) {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+  
+    try {
+      const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
+      if (response.ok) {
+        return response.data.fileUrl
+
+      } else {
+        showSnackbar('Errore durante l\'upload del file.',"error");
+      }
+    } catch (error) {
+      showSnackbar('Errore:'+ error,"error");
+    }
+  }
   const validateRegistrationData = async () => {
     if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
       showSnackbar('Compila tutti i campi.', "warning");
@@ -95,14 +118,14 @@ const RegisterPage = () => {
       return false;
     }
     if (await checkDuplicateEmail(email) === true) {
-      showSnackbar("email già presente, prova con un'altra",  "warning");
+      showSnackbar("email già presente, prova con un'altra", "warning");
       return false;
     }
     if (password !== confirmPassword) {
       showSnackbar('Le password non corrispondono.', "warning");
       return false;
     }
-    
+
     return true;
   };
   const checkDuplicateEmail = async (email) => {
@@ -125,7 +148,7 @@ const RegisterPage = () => {
   };
   const loadedGenres = async () => {
     if (await validateRegistrationData()) {
-      showSnackbar("informazioni salvate correttamente","success")
+      showSnackbar("informazioni salvate correttamente", "success")
       setLoadGenres(true);
       setLoadArtist(false);
     }
@@ -137,15 +160,15 @@ const RegisterPage = () => {
   return (
     <><div className='background'>
       {loadGenres ? (
-        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={showSnackbar}/>
+        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={showSnackbar} />
       ) : loadArtist ? (
-        <LoadArtist 
-          favouriteGenres={favouriteGenres} 
-          getFavouriteArtists={getFavouriteArtists} 
-          setFavouriteArtists={setFavouriteArtists} 
+        <LoadArtist
+          favouriteGenres={favouriteGenres}
+          getFavouriteArtists={getFavouriteArtists}
+          setFavouriteArtists={setFavouriteArtists}
           register={handleRegister}
           snackbar={showSnackbar}
-          ></LoadArtist>
+        ></LoadArtist>
       ) : (
         <><Grid container direction="column" alignItems="center" spacing={3} className="container">
           <Grid item>
@@ -237,3 +260,5 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+

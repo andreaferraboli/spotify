@@ -326,7 +326,8 @@ app.post("/register", async (req, res) => {
       .db("spotify")
       .collection("users")
       .insertOne(register);
-    res.status(201).send(items)
+    res.status(201).send({"userId":items.insertedId})
+    
   } catch (e) {
     if (e.code == 11000) {
       res.status(400).send("Utente già presente");
@@ -360,24 +361,47 @@ function convertBase64ToPng(base64String, outputFilePath) {
     console.error('Error converting and saving image:', error);
   }
 }
-async function uploadToFirebaseStorage(filePath, id) {
+async function uploadToFirebaseStorage(filePath, id, directory) {
   try {
     // Upload the file to Firebase Cloud Storage
     await bucket.upload(filePath, {
-      destination: 'playlist/' + id + '.png', // Destination path in the storage bucket
+      destination: directory + "/" + id + '.png', // Destination path in the storage bucket
     });
 
   } catch (error) {
     console.error('Error uploading image:', error);
   }
 }
+app.post('/uploadFile/:idUser', async (req, res) => {
+  try {
+    const imageBuffer = req.body;
+    const id = req.params.idUser;
+
+    // Carica il buffer dell'immagine nel bucket di Google Cloud Storage
+    await uploadToFirebaseStorage(imageBuffer, id, "user");
+
+    // Genera un URL firmato per l'accesso al file
+    const path = `user/${id}.png`;
+    const [url] = await bucket.file(path).getSignedUrl({
+      version: 'v2',
+      action: 'read',
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 2) // Scade tra due anni
+    });
+
+    res.json({ fileUrl: url });
+  } catch (error) {
+    console.error('Errore:', error);
+    res.status(500).json({ error: 'Si è verificato un errore durante il caricamento del file.' });
+  }
+});
+
 app.post('/upload', async (req, res) => {
   try {
     // const dataUrl = req.body.blobUrl;
     let dataUrl = req.body.dataUrl
     const id = req.body.id;
     convertBase64ToPng(dataUrl, 'image.png');
-    await uploadToFirebaseStorage('image.png', id);
+    await uploadToFirebaseStorage('image.png', id, "playlist");
     const path = "playlist/" + id + ".png";
     const [url] = await bucket.file(path).getSignedUrl({
       version: 'v2',
@@ -498,12 +522,12 @@ app.put("/playlist/:id", async (req, res) => {
       res.status(200).json({ message: 'Playlist updated successfully' });
     } else {
       result = await pwmClient
-      .db("spotify")
-      .collection("public_playlists").updateOne(
-        { 'id': playlistId },
-        { $set: { "tracks":updatedPlaylist.tracks,"image":updatedPlaylist.image } }
-      );
-      if (result.matchedCount === 1) 
+        .db("spotify")
+        .collection("public_playlists").updateOne(
+          { 'id': playlistId },
+          { $set: { "tracks": updatedPlaylist.tracks, "image": updatedPlaylist.image } }
+        );
+      if (result.matchedCount === 1)
         res.status(200).json({ message: 'Playlist updated successfully' });
       else
         res.status(404).json({ message: 'Playlist not found' });
