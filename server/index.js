@@ -803,7 +803,7 @@ app.get('/relatedPlaylists/:userId', async (req, res) => {
     publicPlaylists.sort((a, b) => b.followers.length - a.followers.length);
     const followedPlaylists = await playlistsCollection.find({ followers: { $in: [userId] } }).toArray();
     const yourPublicPlaylists = await playlistsCollection.find({ 'owner.id': userId }).toArray();
-    console.log(yourPublicPlaylists.length)
+    
     const responseData = {
       public_playlists: publicPlaylists,
       followed_playlists: followedPlaylists,
