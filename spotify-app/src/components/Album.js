@@ -7,7 +7,7 @@ const Album = ({ album }) => {
     <Card className="album-card">
       <CardMedia className="album-image" component="img" image={album.image} alt={album.name} />
       <CardContent>
-        <Typography variant="h6" className="album-name" style={{ maxWidth: `${140}px`}}>
+        <Typography variant="h6" className="album-name" style={{ maxWidth: `${140}px` }}>
           {album.name}
         </Typography>
         <Typography variant="body2">

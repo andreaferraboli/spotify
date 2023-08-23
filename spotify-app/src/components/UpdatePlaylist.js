@@ -83,11 +83,11 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
             })
             localPlaylist.image = response.data.imageUrl
             response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
-            if(response.status===200){
-                snackbar(response.data.message,"success")
+            if (response.status === 200) {
+                snackbar(response.data.message, "success")
                 window.location.href = "/playlist/" + localPlaylist.id;
-            }else{
-                snackbar(response.data.message,"error")
+            } else {
+                snackbar(response.data.message, "error")
             }
         } catch (error) {
             console.error('Error saving changes:', error);

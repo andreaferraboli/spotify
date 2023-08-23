@@ -17,12 +17,12 @@ const Track = (props) => {
   const handlePlaylistSelect = (playlistId) => {
     // Implement logic to add the track to the selected playlist
     axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, props.track)
-  .then(response => {
-    console.log(response.data.message);
-  })
-  .catch(error => {
-    console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
-  });
+      .then(response => {
+        console.log(response.data.message);
+      })
+      .catch(error => {
+        console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
+      });
     handleMenuClose();
   };
   return (
@@ -37,7 +37,7 @@ const Track = (props) => {
             style={{ backgroundImage: `url(${props.track.image})` }}
           ></div>
         </Grid>
-        <Grid style={{paddingLeft:"3%"}} xs={12} sm={7} >
+        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} >
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
             <Typography variant="h6" style={{ marginBottom: "8px" }}>
               {props.track.name}
@@ -56,21 +56,21 @@ const Track = (props) => {
           <Typography variant="body2">{formatDuration(props.track.duration)}</Typography>
         </Grid>
         <Grid item xs={1}>
-        <MoreVertIcon onClick={handleMenuOpen} />
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          
-        >
-          <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
-          {props.userPlaylists?.map((playlist) => (
-            <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id)}>
-              {playlist.name}
-            </MenuItem>
-          ))}
-        </Menu>
-      </Grid>
+          <MoreVertIcon onClick={handleMenuOpen} />
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+
+          >
+            <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
+            {props.userPlaylists?.map((playlist) => (
+              <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id)}>
+                {playlist.name}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Grid>
       </Grid>
     </>
   );

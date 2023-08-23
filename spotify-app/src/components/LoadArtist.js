@@ -67,9 +67,9 @@ const LoadArtist = (props) => {
       const nextButton = document.getElementById("next-button");
       const originalButtonText = nextButton.textContent;
       nextButton.textContent = "...";
-  
+
       await props.setFavouriteArtists(selectedAvatars); // Attendere il completamento di setFavouriteArtists
-      
+
       while (selectedAvatars.length !== props.getFavouriteArtists()) {
         // Aggiungi animazione dei puntini
         nextButton.textContent = "...";
@@ -79,10 +79,10 @@ const LoadArtist = (props) => {
         nextButton.textContent = ".";
         await wait(500);
       }
-  
+
       // Ripristina il testo originale nel pulsante
       nextButton.textContent = originalButtonText;
-  
+
       props.snackbar("artisti caricati correttamente");
       props.register();
     } catch (error) {
@@ -90,10 +90,10 @@ const LoadArtist = (props) => {
       // Gestire l'errore in qualche modo
     }
   };
-  
+
   // Funzione di utilità per l'attesa
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-  
+
   return (
     <Container>
       <div style={{ height: "17vh" }}>
@@ -137,7 +137,7 @@ const LoadArtist = (props) => {
           id='next-button'
           variant="contained"
           fullWidth
-          onClick={() => {handleRegisterClick() }}
+          onClick={() => { handleRegisterClick() }}
           className="button"
         >
           Avanti

@@ -50,7 +50,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function PrimarySearchAppBar(props) {
-  let profile = props.user??{};
+  let profile = props.user ?? {};
 
   const profileLink = profile.profile_name ? "/myAccount" : "/login";
   const profile_name = profile.profile_name ?? "guest";
@@ -72,7 +72,7 @@ export default function PrimarySearchAppBar(props) {
             </Search>
             <Box sx={{ flexGrow: 1 }} />
             <Box >
-              <Link  to={profileLink}  style={{ textDecoration: 'none' }}>
+              <Link to={profileLink} style={{ textDecoration: 'none' }}>
                 <Chip
                   avatar={<Avatar alt={profile_name} src={image} />}
                   label={profile_name}

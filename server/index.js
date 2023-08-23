@@ -803,7 +803,7 @@ app.get('/relatedPlaylists/:userId', async (req, res) => {
     publicPlaylists.sort((a, b) => b.followers.length - a.followers.length);
     const followedPlaylists = await playlistsCollection.find({ followers: { $in: [userId] } }).toArray();
     const yourPublicPlaylists = await playlistsCollection.find({ 'owner.id': userId }).toArray();
-    
+
     const responseData = {
       public_playlists: publicPlaylists,
       followed_playlists: followedPlaylists,
@@ -814,7 +814,7 @@ app.get('/relatedPlaylists/:userId', async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
-  } 
+  }
 });
 app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
   const playlistId = req.params.playlistId;

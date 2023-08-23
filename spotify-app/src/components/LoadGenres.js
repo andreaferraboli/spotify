@@ -37,36 +37,37 @@ const LoadGenres = (props) => {
                 if (allGenres[i].name.toLowerCase().includes(query.toLowerCase()))
                     newList.push(allGenres[i])
             setGenres(newList)
-        }else{
+        } else {
             setGenres(allGenres)
         }
 
     }
     return (
         <Container>
-            <div style={{height:"20vh"}}>
+            <div style={{ height: "20vh" }}>
                 <Typography variant="h6" gutterBottom className='title'>
-                Benvenuto
+                    Benvenuto
                 </Typography >
                 <Typography className='title' paragraph>
-                Scegli i tuoi generi musicali preferiti per consigli più personalizzati!
-            </Typography>
-            <TextField
-                label="Cerca generi musicali"
-                fullWidth
-                className='input'
-                onChange={(event) =>{
-                    updateGenres(event.target.value)}
-                }  />
+                    Scegli i tuoi generi musicali preferiti per consigli più personalizzati!
+                </Typography>
+                <TextField
+                    label="Cerca generi musicali"
+                    fullWidth
+                    className='input'
+                    onChange={(event) => {
+                        updateGenres(event.target.value)
+                    }
+                    } />
             </div>
-            
+
             <h2 className='subtitle'>Generi Musicali</h2>
-            <Scrollbar style={{  height: '30vh' }}>
+            <Scrollbar style={{ height: '30vh' }}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
                         <Grid xs={2} item >
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
+                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -81,7 +82,7 @@ const LoadGenres = (props) => {
                     {selectedGenres?.map((genre) => (
                         <Grid xs={2} item >
                             <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={ selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item' }>
+                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -90,14 +91,14 @@ const LoadGenres = (props) => {
                 </Grid>
             </Scrollbar>
             <div style={{ height: '10vh' }}>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={()=>{props.setFavouriteGenres(selectedGenres);props.loadArtist()}}
-              className="button"
-            >
-              Avanti
-            </Button>
+                <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => { props.setFavouriteGenres(selectedGenres); props.loadArtist() }}
+                    className="button"
+                >
+                    Avanti
+                </Button>
             </div>
 
         </Container>

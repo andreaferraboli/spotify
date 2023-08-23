@@ -3,7 +3,7 @@ import {
     TextField,
     Grid,
     Button, Typography,
-    Avatar,Snackbar
+    Avatar, Snackbar
 } from '@mui/material';
 
 import { AddCircleOutline } from '@mui/icons-material';
@@ -28,20 +28,20 @@ function NewPlaylist({ user, onBack }) {
     const [playlistId, setPlaylistId] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-  
+    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
     const Alert = React.forwardRef(function Alert(props, ref) {
-      return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
-  
+
     const handleSnackbarClose = () => {
-      setSnackbarOpen(false);
+        setSnackbarOpen(false);
     };
     const showSnackbar = (message, severity) => {
         setSnackbarMessage(message);
         setSnackbarSeverity(severity);
         setSnackbarOpen(true);
-      };
+    };
     useEffect(() => {
         async function fetchPlaylistId() {
             try {
@@ -135,13 +135,13 @@ function NewPlaylist({ user, onBack }) {
                 "userId": user._id
             });
             if (response.status === 200) {
-                showSnackbar(response.data.message,"success")
+                showSnackbar(response.data.message, "success")
                 window.location.href = "/playlist/" + playlistId;
-            }else{
-                showSnackbar(response.data.message,"error")
+            } else {
+                showSnackbar(response.data.message, "error")
             }
         } catch (error) {
-            showSnackbar('Error saving playlist:'+ error,"error");
+            showSnackbar('Error saving playlist:' + error, "error");
         }
     };
 

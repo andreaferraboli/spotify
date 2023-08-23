@@ -5,9 +5,9 @@ function LoginButton() {
 
 
   return (
-      <Link to={"/Login"}>
+    <Link to={"/Login"}>
       Accedi
-      </Link>
+    </Link>
   );
 }
 
