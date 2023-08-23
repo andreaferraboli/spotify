@@ -16,7 +16,8 @@ import Grid from '@mui/material/Grid';
 import "./style/home.css";
 
 function App() {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || { my_playlists: [], favourite_artists: [] });
+  const defaultUser = { my_playlists: [], favourite_artists: [] };
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) !== null ? JSON.parse(localStorage.getItem("user")) : defaultUser);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const [query, setQuery] = useState('');
@@ -24,7 +25,7 @@ function App() {
 
   // Funzione per ottenere le playlist dall'API del database
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem("user")) : defaultUser;
   
     if (storedUser && storedUser._id) {
       const fetchUser = async () => {

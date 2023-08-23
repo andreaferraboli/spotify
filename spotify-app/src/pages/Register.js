@@ -54,18 +54,23 @@ const RegisterPage = () => {
           "name": firstName,
           "surname": lastName,
           "profile_name": username,
+          "image":'',
           "email": email,
           "password": password,
           "favourite_genres": favouriteGenres,
-          "favourite_artists": favouriteArtists
+          "favourite_artists": favouriteArtists,
+          "my_playlists":[]
         }
       );
 
       // Controlla la risposta del server
       if (response.status === 201) {
-        await publicFile(imageFile, response.data.userId);
+        if(imageFile !== "")
+        {
+          await publicFile(imageFile, response.data.userId);
+        }
         showSnackbar('Registrazione effettuata con successo!', "success");
-        // window.location.href = "/login";
+        window.location.href = "/login";
         // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
         showSnackbar('Errore durante la registrazione', "error");
@@ -87,19 +92,25 @@ const RegisterPage = () => {
     }
   };
   async function publicFile(selectedFile,userId) {
-    const formData = new FormData();
-    formData.append('file', selectedFile);
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+    
+      try {
+        const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
   
-    try {
-      const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      if (response.status === 200) {
+        showSnackbar("informazioni caricate correttamente", "success")
+        let responseImage=await axios.post("http://localhost:3100/setUserImage/"+userId,{"fileUrl":response.data.fileUrl}) 
+        if(responseImage.status === 200){
+          showSnackbar("immagine caricata correttamente", "success")
+          window.location.href="/login"
         }
-      });
-  
-      if (response.ok) {
-        return response.data.fileUrl
-
+        else
+        showSnackbar("immagine non caricata correttamente", "error")
       } else {
         showSnackbar('Errore durante l\'upload del file.',"error");
       }

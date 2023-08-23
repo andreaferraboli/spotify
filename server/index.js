@@ -4,11 +4,13 @@ const ObjectId = require("mongodb").ObjectId;
 const auth = require("./auth").auth;
 const crypto = require("crypto");
 const fs = require('fs');
+const fsPromises = require('fs').promises;
 const express = require("express");
 const bodyParser = require('body-parser');
-const path = require("path");
+const path = require('path');
 var SpotifyWebApi = require("spotify-web-api-node");
 const { v4: uuidv4 } = require('uuid');
+const fileUpload = require('express-fileupload');
 const app = express();
 const axios = require('axios');
 const cors = require('cors');
@@ -23,6 +25,7 @@ admin.initializeApp({
 
 const bucket = admin.storage().bucket();
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
 app.use(cors());
@@ -326,8 +329,8 @@ app.post("/register", async (req, res) => {
       .db("spotify")
       .collection("users")
       .insertOne(register);
-    res.status(201).send({"userId":items.insertedId})
-    
+    res.status(201).send({ "userId": items.insertedId })
+
   } catch (e) {
     if (e.code == 11000) {
       res.status(400).send("Utente già presente");
@@ -336,6 +339,7 @@ app.post("/register", async (req, res) => {
     res.status(500).send(`Errore generico: ${e}`);
   }
 });
+
 async function getUser(id) {
   var pwmClient = await new mongoClient(uri).connect();
   var user = await pwmClient
@@ -372,17 +376,44 @@ async function uploadToFirebaseStorage(filePath, id, directory) {
     console.error('Error uploading image:', error);
   }
 }
+app.post('/setUserImage/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { fileUrl } = req.body;
+
+    let pwmClient = await new mongoClient(uri).connect();
+    const result = await pwmClient
+      .db("spotify")
+      .collection("users")
+      .updateOne(
+        { '_id': new ObjectId(userId) }, // Convert userId to ObjectID
+        { $set: { 'image': fileUrl } }
+      );
+    if (result.matchedCount === 1) {
+      res.status(200).json({ message: 'User image updated successfully' });
+    } else {
+      res.status(404).json({ message: "User not found or error in updating image" });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'An error occurred' });
+  }
+});
 app.post('/uploadFile/:idUser', async (req, res) => {
   try {
-    const imageBuffer = req.body;
     const id = req.params.idUser;
+    const uploadedFile = req.files.file; // Assuming you're using a FormData with a 'file' field
 
-    // Carica il buffer dell'immagine nel bucket di Google Cloud Storage
-    await uploadToFirebaseStorage(imageBuffer, id, "user");
+    const fileData = Buffer.from(uploadedFile.data);
+    const filePath = path.join(__dirname, 'images', `${id}.png`);
+    await fsPromises.writeFile(filePath, fileData);
+
+    // Call your function to upload to Firebase Storage with the imagePath
+    await uploadToFirebaseStorage(filePath, id, 'user');
 
     // Genera un URL firmato per l'accesso al file
-    const path = `user/${id}.png`;
-    const [url] = await bucket.file(path).getSignedUrl({
+    const pathImage = `user/${id}.png`;
+    const [url] = await bucket.file(pathImage).getSignedUrl({
       version: 'v2',
       action: 'read',
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 2) // Scade tra due anni
@@ -400,10 +431,10 @@ app.post('/upload', async (req, res) => {
     // const dataUrl = req.body.blobUrl;
     let dataUrl = req.body.dataUrl
     const id = req.body.id;
-    convertBase64ToPng(dataUrl, 'image.png');
-    await uploadToFirebaseStorage('image.png', id, "playlist");
-    const path = "playlist/" + id + ".png";
-    const [url] = await bucket.file(path).getSignedUrl({
+    convertBase64ToPng(dataUrl, 'images/image.png');
+    await uploadToFirebaseStorage('images/image.png', id, "playlist");
+    const pathImage = "playlist/" + id + ".png";
+    const [url] = await bucket.file(pathImage).getSignedUrl({
       version: 'v2',
       action: 'read',
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 2)
