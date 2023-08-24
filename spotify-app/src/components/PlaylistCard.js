@@ -23,7 +23,6 @@ export default function PlaylistCard(props) {
             {props.playlist.name}
           </Typography>
           <Typography variant="body">
-            {console.log(props.owner)}
             {props.owner}
           </Typography>
         </CardContent>

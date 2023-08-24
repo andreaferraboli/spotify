@@ -56,7 +56,6 @@ fetch(url, {
     });
     spotifyApi.setAccessToken(my_access_token);
 
-
     // getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
   });
 
@@ -751,7 +750,47 @@ async function searchPlaylists(query) {
     return []; // Return an empty array in case of error
   }
 }
+async function searchTags(query) {
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
 
+    // Search for user playlists using aggregation
+    var userPlaylistsCursor = await pwmClient
+      .db("spotify")
+      .collection("users")
+      .aggregate([
+        { $unwind: '$my_playlists' },
+        { $match: { 'my_playlists.tags': { $in: [query] } } },
+        { $project: { 'my_playlists': 1 } }
+      ])
+      .toArray();
+      console.log(userPlaylistsCursor)
+    var userPlaylists = userPlaylistsCursor.map(item => ({
+      ...item.my_playlists,
+      type: "private"
+    }));
+
+    // Search for public playlists using find()
+    var publicPlaylistsCursor = await pwmClient
+      .db("spotify")
+      .collection("public_playlists")
+      .find({ "tags": { $in: [query] } })
+      .toArray();
+
+    var publicPlaylists = publicPlaylistsCursor.map(item => ({
+      ...item,
+      type: "public"
+    }));
+
+    // Combine user and public playlists
+    var allPlaylists = userPlaylists.concat(publicPlaylists);
+
+    return allPlaylists;
+  } catch (error) {
+    console.error('Error searching playlists:', error);
+    return []; // Return an empty array in case of error
+  }
+}
 // Funzione per cercare gli utenti nel database MongoDB
 async function searchUsers(query) {
   try {
@@ -779,12 +818,14 @@ app.get("/search/:query", async (req, res) => {
   let albums = await searchAlbums(query);
   let playlists = await searchPlaylists(query);
   let users = await searchUsers(query);
+  let tags = await searchTags(query);
   let result = {
     "tracks": tracks,
     "albums": albums,
     "artists": artists,
     "playlists": playlists,
-    "users": users
+    "users": users,
+    "tags":tags
   }
   res.status(200).send(result)
 

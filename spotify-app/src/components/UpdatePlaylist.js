@@ -212,7 +212,7 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                                         className="icon-button"
                                         onClick={() => handleMoveTrackUp(index)} />
                                 )}
-                                {index !== playlist.tracks.length - 1 && (
+                                {index !== localPlaylist.tracks.length - 1 && (
                                     <KeyboardArrowDownIcon
                                         className="icon-button"
                                         onClick={() => handleMoveTrackDown(index)} />

@@ -132,6 +132,24 @@ export default function SearchResults({ user }) {
                 ))}
               </Carousel></>
           )}
+          {console.log(searchResults)}
+          {searchResults.tags && searchResults.tags.length > 0 && (
+            <>
+            
+              <h2>Tags</h2>
+              <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+                {searchResults.tags?.map(playlist => (
+                  <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                    <PlaylistCard
+                      playlist={playlist}
+                      owner={playlist.type === "public"
+                        ? `${playlist.owner.profile_name} • pubblica`
+                        : user.profile_name}
+                      selectedPlaylistId={null} />
+                  </Link>
+                ))}
+              </Carousel></>
+          )}
         </div>
       )}
     </div>

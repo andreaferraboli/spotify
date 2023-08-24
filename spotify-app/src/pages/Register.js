@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Snackbar } from '@mui/material';
 import axios from 'axios';
@@ -28,6 +28,12 @@ const RegisterPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    // Focus the file input when the component mounts
+    fileInputRef.current.focus();
+  }, []);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
@@ -240,6 +246,7 @@ const RegisterPage = () => {
               variant="outlined"
               fullWidth
               onChange={(e) => handleProfileImageChange(e)}
+              inputRef={fileInputRef} 
               className="input" />
             <Button
               variant="contained"

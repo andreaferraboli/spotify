@@ -288,6 +288,7 @@ function NewPlaylist({ user, onBack }) {
                             <><Grid item xs={10}>
                                 <div className="track-item">
                                     <Track
+                                        userPlaylists={user.my_playlists}
                                         track={track}
                                         index={index + 1} />
                                 </div>

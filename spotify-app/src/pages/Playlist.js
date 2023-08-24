@@ -383,7 +383,6 @@ const Playlist = ({ user, onBack }) => {
 
           )}
         </Grid>
-        <Grid container spacing={2} style={{ margin: 0 }}>
           {editing ? (
             <UpdatePlaylist user={user} playlist={playlist} snackbar={showSnackbar} onClose={() => setEditing(false)} />
           ) : (
@@ -396,7 +395,7 @@ const Playlist = ({ user, onBack }) => {
               </Grid>
             </div>
           )}
-        </Grid>
+        
       </div>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
