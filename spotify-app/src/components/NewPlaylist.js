@@ -23,6 +23,7 @@ function NewPlaylist({ user, onBack }) {
         name: "",
         image: "", // Aggiungi altre proprietà della playlist se necessario
         tracks: [],
+        tags:[]
     });
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');

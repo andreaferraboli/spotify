@@ -816,6 +816,57 @@ app.get('/relatedPlaylists/:userId', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.post('/changeTag', async (req, res) => {
+  const { playlistId, tag, action } = req.body;
+
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let playlistsCollection = pwmClient
+      .db("spotify")
+      .collection("public_playlists");
+
+    let playlist = await playlistsCollection.findOne({ id: playlistId });
+
+    if (!playlist) {
+      console.log("privata")
+      playlistsCollection = pwmClient
+        .db("spotify")
+        .collection("users");
+      const userPlaylist = await playlistsCollection.aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": playlistId } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+      playlist = userPlaylist[0].my_playlists
+
+    }
+    if (action === 'add') {
+      if (!playlist.tags.includes(tag)) {
+        playlist.tags.push(tag);
+      }
+    } else if (action === 'remove') {
+      const tagIndex = playlist.tags.indexOf(tag);
+      if (tagIndex !== -1) {
+        playlist.tags.splice(tagIndex, 1);
+      }
+    }
+
+
+    if (playlist.owner ?? "")
+      await playlistsCollection.updateOne({ id: playlistId }, { $set: { tags: playlist.tags } });
+    else
+      await playlistsCollection.updateOne(
+        { "my_playlists.id": playlistId },
+        { $set: { "my_playlists.$.tags": playlist.tags } }
+      );
+    return res.status(200).json({ message: 'Tag updated successfully' });
+
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
 app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
   const playlistId = req.params.playlistId;
   const followerId = req.params.followerId;

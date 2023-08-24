@@ -5,8 +5,11 @@ import {
   Typography,
   Avatar,
   Grid,
-  IconButton, Button, Snackbar
+  IconButton, Button, Snackbar, TextField
 } from "@mui/material";
+import { AddCircleOutline } from '@mui/icons-material';
+import Scrollbar from "react-scrollbars-custom";
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
@@ -30,7 +33,8 @@ const Playlist = ({ user, onBack }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-
+  const [isAddingTag, setIsAddingTag] = useState(false);
+  const [newTag, setNewTag] = useState('');
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -48,7 +52,6 @@ const Playlist = ({ user, onBack }) => {
     const fetchPlaylist = async () => {
       try {
         const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
-        console.log(response.data)
         setPlaylist(response.data);
 
       } catch (error) {
@@ -132,11 +135,59 @@ const Playlist = ({ user, onBack }) => {
       else
         showSnackbar(response.data.message, "error")
 
-      
+
     } catch (error) {
       throw error;
     }
   }
+  
+  const changeTag = async (playlistId, tag, action) => {
+    try {
+      const response = await axios.post('http://localhost:3100/changeTag', {
+        playlistId: playlistId,
+        tag: tag,
+        action: action,
+      });
+      if(response.status === 200){
+        showSnackbar(response.data.message,"success");
+        window.location.href="/playlist/"+playlistId
+      }
+      else
+        showSnackbar("errore","error")
+    } catch (error) {
+      throw error;
+    }
+  };
+  const handleAddTag = () => {
+    setIsAddingTag(true);
+  };
+
+  const handleConfirmAddTag = () => {
+    if (newTag.trim() !== '') {
+      addTag(newTag);
+    }
+  };
+  const addTag = async () => {
+    if (newTag.trim() !== '') {
+      try {
+        await changeTag(playlist.id, newTag, 'add');
+        setIsAddingTag(false);
+        setNewTag('');
+        // Aggiorna lo stato della playlist per riflettere i cambiamenti
+      } catch (error) {
+        console.error('Error adding tag:', error);
+      }
+    }
+  };
+  
+  const removeTag = async (tag) => {
+    try {
+      await changeTag(playlist.id, tag, 'remove');
+      // Aggiorna lo stato della playlist per riflettere i cambiamenti
+    } catch (error) {
+      console.error('Error removing tag:', error);
+    }
+  };
   return (
     <>
       <Grid container style={{ margin: 0 }} spacing={1}>
@@ -167,6 +218,48 @@ const Playlist = ({ user, onBack }) => {
             ) : null}
 
 
+          </div>
+          <div className="playlist-info-container">
+            <Scrollbar variant="h3">
+              {playlist?.tags?.map((item) => (
+                <Button
+                  key={item}
+                  variant="outlined"
+                  className="info-button"
+                  onClick={() => removeTag(item)}
+                >
+                  {item}
+                </Button>
+              ))}
+
+              {isAddingTag ? (
+                <div className="tag-input">
+                  <TextField
+                    variant="outlined"
+                    value={newTag}
+                    className="input_playlist"
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleConfirmAddTag();
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    className="add-button"
+                    onClick={handleConfirmAddTag}
+                  >
+                    Add
+                  </Button>
+                </div>
+              ) : (
+                  <IconButton className="add-button"
+                  onClick={handleAddTag}>
+                    <AddCircleOutline  />
+                  </IconButton>
+              )}
+            </Scrollbar>
           </div>
           <div className="playlist-info-container">
             {playlist?.type === "private" ? (
