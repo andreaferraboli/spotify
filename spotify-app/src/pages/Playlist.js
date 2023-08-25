@@ -260,6 +260,9 @@ const Playlist = ({ user, onBack }) => {
                   </IconButton>
               )}
             </Scrollbar>
+            <Typography variant="h6">
+              {playlist?.description}
+            </Typography>
           </div>
           <div className="playlist-info-container">
             {playlist?.type === "private" ? (

@@ -36,7 +36,7 @@ width: 20% !important;
 
 .playlist-info-container {
   color: var(--text-color) !important;
-  height: 33.3%;
+  height: 25%;
   margin-left:5%;
   display: flex;
   align-items: center;

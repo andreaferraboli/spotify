@@ -281,13 +281,18 @@ app.get("/showUser/:id", async function (req, res) {
   // Ricerca nel database
   var id = req.params.id;
   var user = await getUser(id);
+  user=user[0]
   let pwmClient = await new mongoClient(uri).connect();
   const playlistsCollection = pwmClient
     .db("spotify")
     .collection("public_playlists")
   user.playlists=await playlistsCollection.find({ 'owner.id': id }).toArray()
   user.email=""
+  if(user.image === "")
+    user.image="https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png"
   user.my_playlists=[]
+  user.favourite_artists=[]
+  user.favourite_genres=[]
   res.json(user);
 });
 app.get("/login", async function (req, res) {
@@ -777,7 +782,6 @@ async function searchTags(query) {
         { $project: { 'my_playlists': 1 } }
       ])
       .toArray();
-      console.log(userPlaylistsCursor)
     var userPlaylists = userPlaylistsCursor.map(item => ({
       ...item.my_playlists,
       type: "private"
@@ -882,7 +886,6 @@ app.post('/changeTag', async (req, res) => {
     let playlist = await playlistsCollection.findOne({ id: playlistId });
 
     if (!playlist) {
-      console.log("privata")
       playlistsCollection = pwmClient
         .db("spotify")
         .collection("users");
@@ -919,6 +922,27 @@ app.post('/changeTag', async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+app.put('/changeGenres', async (req, res) => {
+  const { id, genres } = req.body;
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let result = await pwmClient
+      .db("spotify")
+      .collection("users").updateOne(
+        { '_id': new ObjectId(id) },
+        { $set: { 'favourite_genres': genres } }
+      );
+
+    if (result.modifiedCount === 0) {
+      // Nessun documento è stato modificato, quindi la playlist non è stata trovata
+      return res.status(404).send({message:'generi non aggiornati'});
+    }
+    res.status(200).send({message:"Generi aggiornati correttamente"});
+  } catch (error) {
+    res.status(500).send({message:"Errore durante l'aggiornamento dei generi"});
+    
   }
 });
 app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
@@ -1098,7 +1122,7 @@ app.post("/changePassword", async (req, res) => {
         { _id: new ObjectId(id) },
         { $set: { password: user.password } }
       )
-      res.json({ message: "Password cambiata con successo." });
+      res.status(200).json({ message: "Password cambiata con successo." });
     } else {
       res.status(400).json({ message: "Vecchia password errata." });
     }

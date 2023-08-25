@@ -125,7 +125,7 @@ function App() {
 
                 <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} />} />
                 <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} />} />
-                <Route path="/user/:userID" element={<UserPage user={user} onBack={handleBackToHome}  />} />
+                <Route path="/user/:userId" element={<UserPage user={user} onBack={handleBackToHome}  />} />
                 <Route
                   path="/playlist/:playlistId"
                   element={
