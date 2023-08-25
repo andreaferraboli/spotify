@@ -124,7 +124,7 @@ export default function SearchResults({ user }) {
               <h2>Utenti</h2>
               <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
                 {searchResults.users?.map(user => (
-                  <Link key={user.id} to={`/user/${user.id}`}>
+                  <Link key={user._id} to={`/user/${user._id}`}>
                     <UserCard
                       user={user} />
                   </Link>

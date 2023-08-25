@@ -9,10 +9,7 @@ import "../style/card.css";
 export default function UserCard(props) {
   return (
     <Card sx={{ maxWidth: 345 }} className='circular-card' onClick={() => {
-      // if (props.selectedArtistId == null)
-      //   props.handleAvatarSelect(props.user)
-      // else
-      //   props.selectedArtistId(props.user.id)
+      
     }} >
       <CardActionArea>
         <Avatar src={props.user.image} alt={props.user.name} sx={{ width: "100%", height: "10rem" }} />

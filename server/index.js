@@ -277,6 +277,19 @@ app.get("/user/:id", auth, async function (req, res) {
   var user = await getUser(id);
   res.json(user);
 });
+app.get("/showUser/:id", async function (req, res) {
+  // Ricerca nel database
+  var id = req.params.id;
+  var user = await getUser(id);
+  let pwmClient = await new mongoClient(uri).connect();
+  const playlistsCollection = pwmClient
+    .db("spotify")
+    .collection("public_playlists")
+  user.playlists=await playlistsCollection.find({ 'owner.id': id }).toArray()
+  user.email=""
+  user.my_playlists=[]
+  res.json(user);
+});
 app.get("/login", async function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/login.html"));
 });

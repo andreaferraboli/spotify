@@ -11,6 +11,7 @@ import Album from '../src/pages/Album';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Account from '../src/pages/Account';
+import UserPage from '../src/pages/User';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import "./style/home.css";
@@ -124,6 +125,7 @@ function App() {
 
                 <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} />} />
                 <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} />} />
+                <Route path="/user/:userID" element={<UserPage user={user} onBack={handleBackToHome}  />} />
                 <Route
                   path="/playlist/:playlistId"
                   element={
