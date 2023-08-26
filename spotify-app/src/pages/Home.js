@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PlaylistCard from "../components/PlaylistCard"
 import ArtistCard from "../components/ArtistCard"
-import Box from "@mui/material/Box";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
@@ -16,7 +15,7 @@ const Home = (props) => {
   useEffect(() => {
     // Chiamata alla funzione che ottiene le playlist correlate
     GetRelatedPlaylists(props.user._id);
-  }, []);
+  }, [props.user._id]);
 
   const GetRelatedPlaylists = async (userId) => {
     try {

@@ -406,6 +406,13 @@ app.post('/setUserImage/:userId', async (req, res) => {
         { '_id': new ObjectId(userId) }, // Convert userId to ObjectID
         { $set: { 'image': fileUrl } }
       );
+      await pwmClient
+      .db("spotify")
+      .collection("public_playlists")
+      .updateMany(
+        { 'owner.id': userId}, 
+        { $set: { 'owner.image': fileUrl } }
+      );
     if (result.matchedCount === 1) {
       res.status(200).json({ message: 'User image updated successfully' });
     } else {
@@ -990,7 +997,50 @@ app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => 
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+app.put('/updatePlaylist', async (req, res) => {
+  const { name, description,playlistId } = req.body;
 
+  try {
+    let pwmClient = await new mongoClient(uri).connect();
+    let playlistsCollection = pwmClient
+      .db("spotify")
+      .collection("public_playlists");
+
+    let playlist = await playlistsCollection.findOne({ id: playlistId });
+
+    if (!playlist) {
+      playlistsCollection = pwmClient
+        .db("spotify")
+        .collection("users");
+      const userPlaylist = await playlistsCollection.aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": playlistId } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+      playlist = userPlaylist[0].my_playlists
+    }
+
+    let response;
+    if (playlist.owner ?? "")
+      response=await playlistsCollection.updateOne({ id: playlistId }, { $set: { name: name,description:description } });
+    else
+      response=await playlistsCollection.updateOne(
+        { "my_playlists.id": playlistId },
+        { $set: { "my_playlists.$.name": name,"my_playlists.$.description" :description} }
+      );
+
+    if (response.modifiedCount === 0) {
+      // Nessun documento è stato modificato, quindi la playlist non è stata trovata
+      return res.status(404).send({message:'informazioni non aggiornate'});
+    }
+    res.status(200).send({message:"Informazioni aggiornat3 correttamente"});
+
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 app.put("/movePlaylist/:id", async (req, res) => {
   const playlistId = req.params.id;
@@ -1086,6 +1136,7 @@ app.put("/setCollaborative/:id", async (req, res) => {
     res.status(500).json({ message: "Errore nell'aggiornamento." });
   }
 });
+
 app.post("/updateInfo", async (req, res) => {
   let id = req.body.id;
   let name = req.body.name;
@@ -1096,6 +1147,10 @@ app.post("/updateInfo", async (req, res) => {
     let update = await pwmClient.db("spotify").collection('users').updateOne(
       { _id: new ObjectId(id) },
       { $set: { name, surname, profile_name } }
+    )
+    await pwmClient.db("spotify").collection('public_playlists').updateMany(
+      { "owner.id": id },
+      { $set: { "owner.profile_name": profile_name } }
     )
     if (update.modifiedCount === 1) {
       res.status(200).json({ message: "Informazioni utente aggiornate con successo." });

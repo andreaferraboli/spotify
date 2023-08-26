@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { AddCircleOutline } from '@mui/icons-material';
 import Scrollbar from "react-scrollbars-custom";
-import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
@@ -69,12 +68,47 @@ const Playlist = ({ user, onBack }) => {
     const newName = prompt("Inserisci il nuovo nome della playlist:");
     if (newName) {
       setPlaylist((prevPlaylist) => ({ ...prevPlaylist, name: newName }));
+      updatePlaylistOnServer(newName, playlist.description);
     }
   };
+
+  const handleDescriptionName = () => {
+    const newDescription = prompt("Inserisci la nuova descrizione della playlist:");
+    if (newDescription) {
+      setPlaylist((prevPlaylist) => ({ ...prevPlaylist, description: newDescription }));
+      updatePlaylistOnServer(playlist.name, newDescription);
+    }
+  };
+  const updatePlaylistOnServer = (newName, newDescription) => {
+    axios.put('http://localhost:3100/updatePlaylist', {
+      name: newName,
+      description: newDescription,
+      playlistId: playlistId
+    })
+      .then(response => {
+        // Handle success response from the server
+        if (response.status === 200) {
+          showSnackbar(response.data.message, "success")
+          window.location.href = "/playlist/" + playlistId
+        }
+        else
+          showSnackbar("errore nell'aggiornare la playlist", "error")
+      })
+      .catch(error => {
+        // Handle error
+        showSnackbar('Error updating playlist', "error");
+      });
+  };
+
   const handleDeletePlaylist = async () => {
     try {
       const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
-      showSnackbar('Playlist eliminata', "success");
+      if (response.status === 200) {
+        showSnackbar(response.data.message, "success")
+        window.location.href = "/playlist/" + playlistId
+      }
+      else
+        showSnackbar("errore nel pubblicare la playlist", "error")
       window.location.href = "/"
     } catch (error) {
       showSnackbar('Error deleting playlist:' + error, "error");
@@ -140,7 +174,7 @@ const Playlist = ({ user, onBack }) => {
       throw error;
     }
   }
-  
+
   const changeTag = async (playlistId, tag, action) => {
     try {
       const response = await axios.post('http://localhost:3100/changeTag', {
@@ -148,12 +182,12 @@ const Playlist = ({ user, onBack }) => {
         tag: tag,
         action: action,
       });
-      if(response.status === 200){
-        showSnackbar(response.data.message,"success");
-        window.location.href="/playlist/"+playlistId
+      if (response.status === 200) {
+        showSnackbar(response.data.message, "success");
+        window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar("errore","error")
+        showSnackbar("errore", "error")
     } catch (error) {
       throw error;
     }
@@ -179,7 +213,7 @@ const Playlist = ({ user, onBack }) => {
       }
     }
   };
-  
+
   const removeTag = async (tag) => {
     try {
       await changeTag(playlist.id, tag, 'remove');
@@ -195,10 +229,10 @@ const Playlist = ({ user, onBack }) => {
           <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image" />
         </Grid>
         <Grid item xs={12} sm={9} className="info-section">
-          <div className="playlist-info-container">
+          <div className="playlist-info-container vh20">
             <Typography variant="body1">{playlist?.type === "private" ? "Playlist" : "Playlist Pubblica"}</Typography>
           </div>
-          <div className="playlist-info-container">
+          <div className="playlist-info-container vh30">
             <Typography variant="h3">
               {playlist?.name}
 
@@ -219,17 +253,37 @@ const Playlist = ({ user, onBack }) => {
 
 
           </div>
-          <div className="playlist-info-container">
+          <div className="playlist-info-container vh10">
+            <Typography variant="body3">
+              {"descrizione: " + playlist?.description}
+            </Typography>
+            {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
+              <IconButton onClick={handleDescriptionName}>
+                <EditIcon className="icon-button-small" />
+              </IconButton>
+            ) : null}
+          </div>
+          <div className="playlist-info-container vh20">
             <Scrollbar variant="h3">
               {playlist?.tags?.map((item) => (
-                <Button
-                  key={item}
-                  variant="outlined"
-                  className="info-button"
-                  onClick={() => removeTag(item)}
-                >
-                  {item}
-                </Button>
+                playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
+                  <Button
+                    key={item}
+                    variant="outlined"
+                    className="info-admin-button"
+                    onClick={() => removeTag(item)}
+                  >
+                    {"#" + item}
+                  </Button>
+                ) : (
+                  <Button
+                    key={item}
+                    variant="outlined"
+                    className="info-button"
+                  >
+                    {"#" + item}
+                  </Button>
+                )
               ))}
 
               {isAddingTag ? (
@@ -237,7 +291,7 @@ const Playlist = ({ user, onBack }) => {
                   <TextField
                     variant="outlined"
                     value={newTag}
-                    className="input_playlist"
+                    className="input-add-tags"
                     onChange={(e) => setNewTag(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -254,17 +308,20 @@ const Playlist = ({ user, onBack }) => {
                   </Button>
                 </div>
               ) : (
-                  <IconButton className="add-button"
-                  onClick={handleAddTag}>
-                    <AddCircleOutline  />
-                  </IconButton>
+                (playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id)) && (
+                  <Button
+                    variant="outlined"
+                    className="add-button"
+                    onClick={handleAddTag}
+                  >
+                    <AddCircleOutline />
+                  </Button>
+                )
               )}
             </Scrollbar>
-            <Typography variant="h6">
-              {playlist?.description}
-            </Typography>
           </div>
-          <div className="playlist-info-container">
+
+          <div className="playlist-info-container vh20">
             {playlist?.type === "private" ? (
               <Avatar
                 src={user.image}
@@ -386,19 +443,19 @@ const Playlist = ({ user, onBack }) => {
 
           )}
         </Grid>
-          {editing ? (
-            <UpdatePlaylist user={user} playlist={playlist} snackbar={showSnackbar} onClose={() => setEditing(false)} />
-          ) : (
-            <div className="top-tracks-section">
-              <Grid container spacing={2} >
-                {playlist?.tracks.map((track, index) => (
-                  <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1}></Track>
+        {editing ? (
+          <UpdatePlaylist user={user} playlist={playlist} snackbar={showSnackbar} onClose={() => setEditing(false)} />
+        ) : (
+          <div className="top-tracks-section">
+            <Grid container spacing={2} >
+              {playlist?.tracks.map((track, index) => (
+                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1}></Track>
 
-                ))}
-              </Grid>
-            </div>
-          )}
-        
+              ))}
+            </Grid>
+          </div>
+        )}
+
       </div>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>

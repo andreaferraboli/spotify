@@ -2,12 +2,21 @@
 .icon-button{
     color: var(--text-color) !important;
     font-size: xx-large !important;
-    
+}
+.icon-button-small{
+    color: var(--text-color) !important;
+    font-size: medium !important;
 }
 .top-tracks-section{
     background-color: var(--background-color);
 }
 .add-button{
+  color: var(--secondary-color) !important;
+  background-color: inherit !important;
+  border-radius: 500px !important;
+  border:solid 1px  var(--secondary-color) !important;
+}
+.info-button,.info-admin-button{
   color: var(--secondary-color) !important;
   background-color: inherit !important;
   border-radius: 500px !important;
@@ -25,6 +34,11 @@
 .add-button:hover{
   background-color: var(--secondary-color) !important;
   color: white !important;
+}
+.info-admin-button:hover{
+  background-color: var(--delete-color) !important;
+  color: white !important;
+  border:solid 1px  var(--delete-color) !important;
 }
 .edit-button:hover{
   color: white !important;
@@ -54,7 +68,7 @@
   .input-new-playlist{
     width: 40% !important;
   }
-  .input-playlist,.input-new-playlist {
+  .input-playlist,.input-new-playlist, .input-add-tags {
     & input {
       color: var(--text-color);
       border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
@@ -97,4 +111,14 @@
 
 .css-a5rdam-MuiGrid-root {
   width: 100% !important;
+}
+
+.vh20{
+  height: 20%;
+}
+.vh30{
+  height: 30%;
+}
+.vh10{
+  height: 10%;
 }

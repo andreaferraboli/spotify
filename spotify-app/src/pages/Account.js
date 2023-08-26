@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Avatar, TextField, Button, Typography,Snackbar } from "@mui/material";
+import { Container, Grid, Avatar, TextField, Button, Typography, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
-import LoadGenres from "../components/LoadGenres";
 import MuiAlert from '@mui/material/Alert';
 
 import "../style/account.css";
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+});
 const Account = ({ user, handleLogin }) => {
-    
+
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
     const [profileName, setProfileName] = useState(user.profile_name);
@@ -23,15 +22,24 @@ const Account = ({ user, handleLogin }) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const handleAvatarClick = () => {
+      setIsDialogOpen(true);
+    };
+  
+    const handleCloseDialog = () => {
+      setIsDialogOpen(false);
+    };
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
-      };
-    
-      const showSnackbar = (message, severity) => {
+    };
+
+    const showSnackbar = (message, severity) => {
         setSnackbarMessage(message);
         setSnackbarSeverity(severity);
         setSnackbarOpen(true);
-      };
+    };
     useEffect(() => {
         // Effettua la chiamata al server solo una volta durante il montaggio iniziale
         axios.get(`http://localhost:3100/genres`)
@@ -65,7 +73,39 @@ const Account = ({ user, handleLogin }) => {
         }
 
     }
-
+    const handleChangeImage = async (event) => {
+        
+        const newImage = event.target.files[0];
+        await publicFile(newImage,user._id)
+        handleCloseDialog();
+      };
+    async function publicFile(selectedFile,userId) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+      
+        try {
+          const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+    
+        if (response.status === 200) {
+          showSnackbar("informazioni caricate correttamente", "success")
+          let responseImage=await axios.post("http://localhost:3100/setUserImage/"+userId,{"fileUrl":response.data.fileUrl}) 
+          if(responseImage.status === 200){
+            showSnackbar("immagine caricata correttamente", "success")
+            window.location.href="/"
+          }
+          else
+          showSnackbar("immagine non caricata correttamente", "error")
+        } else {
+          showSnackbar('Errore durante l\'upload del file.',"error");
+        }
+      } catch (error) {
+        showSnackbar('Errore:'+ error,"error");
+      }
+    }
 
     const handleSaveInfo = async () => {
         try {
@@ -77,7 +117,7 @@ const Account = ({ user, handleLogin }) => {
             });
             if (response.status === 200) {
                 showSnackbar(response.data.message, "success")
-                window.location.href = "/myAccount";
+                handleLogin(user)
             } else {
                 showSnackbar(response.data.message, "error")
             }
@@ -97,7 +137,7 @@ const Account = ({ user, handleLogin }) => {
             });
             if (response.status === 200) {
                 showSnackbar(response.data.message, "success")
-                window.location.href = "/myAccount";
+                handleLogin(user)
             } else {
                 showSnackbar(response.data.message, "error")
             }
@@ -114,7 +154,7 @@ const Account = ({ user, handleLogin }) => {
             })
             if (response.status === 200) {
                 showSnackbar(response.data.message, "success")
-                window.location.href = "/myAccount";
+                handleLogin(user)
             } else {
                 showSnackbar(response.data.message, "error")
             }
@@ -125,10 +165,10 @@ const Account = ({ user, handleLogin }) => {
     const handleDeleteProfile = async () => {
         try {
             const response = await axios.delete("http://localhost:3100/deleteProfile/" + user._id);
-            
+
             if (response.status === 200) {
                 showSnackbar(response.data.message, "success")
-                window.location.href = "/myAccount";
+                handleLogin(user)
             } else {
                 showSnackbar(response.data.message, "error")
             }
@@ -148,7 +188,24 @@ const Account = ({ user, handleLogin }) => {
             <Grid container spacing={3}>
                 {/* Sezione Avatar */}
                 <Grid item xs={12} sm={4}>
-                    <Avatar style={{ width: "auto", height: "100%" }} alt={profileName} src={user.image} />
+                    <Avatar
+                        style={{ width: "auto", height: "100%", cursor: 'pointer' }}
+                        alt={profileName}
+                        src={user.image}
+                        onClick={handleAvatarClick}
+                    />
+                    <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
+                        <DialogTitle>Modifica foto profilo</DialogTitle>
+                        <DialogContent>
+                            {/* File input for selecting a new image */}
+                            <input type="file" accept="image/*" onChange={handleChangeImage} />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog} color="primary">
+                                Annulla
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
 
                 {/* Sezione Info Utente */}

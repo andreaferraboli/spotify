@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Grid } from '@mui/material';
 import Track from '../components/track';
 import PlaylistCard from '../components/PlaylistCard';
 import ArtistCard from '../components/ArtistCard';
@@ -58,7 +57,7 @@ export default function SearchResults({ user }) {
           {searchResults.tracks && searchResults.tracks.length > 0 && (
             <h2>Brani</h2>
           )}
-          <div style={{ overflowY: 'scroll', whiteSpace: 'nowrap', height: '50vh' }}>
+          <div style={{ height: '50vh' }}>
             <Scrollbar >
               {searchResults.tracks?.map((track, index) => (
                 <Track track={track} index={index + 1} />
