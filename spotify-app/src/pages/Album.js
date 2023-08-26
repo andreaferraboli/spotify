@@ -35,16 +35,16 @@ const Album = ({ user, onBack }) => {
                     <img id="playlist_image" src={album?.image} alt="album" className="playlist-image" />
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <Typography variant="body1">album</Typography>
                     </div>
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <Typography variant="h3">
                             {album?.name}
                         </Typography>
 
                     </div>
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <div>
                             <Typography variant="body1">
                                 {album?.artists?.map((artist, index) => (

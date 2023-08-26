@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Track from "../components/track";
 import {
     Typography,
     Avatar,
-    Grid,
-    IconButton,
-    Button,
+    Grid
 } from "@mui/material";
 import axios from 'axios';
 import PlaylistCard from "../components/PlaylistCard"
@@ -38,7 +35,7 @@ const User = ({ onBack }) => {
     return (
         <>
             <Grid container style={{ margin: 0 }} spacing={1}>
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={3} style={{width:"100%",height:"100%",display:"flex",justifyContent:"center",alignItems:"center"}}>
                     <Avatar src={user?.image} alt={user?.profile_name} className="user-avatar" />
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">

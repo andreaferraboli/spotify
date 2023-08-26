@@ -68,6 +68,15 @@ async function getTrack(id_track) {
     throw err;
   }
 }
+async function getFullTrack(id_track) {
+  try {
+    const data = await spotifyApi.getTrack(`${id_track}`);
+    return data.body;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
 function filterTrack(track) {
   const filteredTrack = {
     id: track.id,
@@ -76,7 +85,8 @@ function filterTrack(track) {
     album: track.album.name,
     image: track.album.images[0].url,
     duration: track.duration_ms,
-    popularity: track.popularity
+    popularity: track.popularity,
+    preview_url: track.preview_url
   };
   return filteredTrack;
 }
@@ -503,7 +513,12 @@ app.get("/artists/:query", async (req, res) => {
   query = req.params.query
   res.send(await searchArtists(query))
 });
-
+app.get("/track/:id", async (req, res) => {
+  // Ricerca nel database
+  var id = req.params.id;
+  let track = await getFullTrack(id);
+  res.json(track);
+})
 app.get("/album/:id", async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
@@ -704,7 +719,7 @@ app.post("/genre", async (req, res) => {
 });
 
 async function searchArtists(query) {
-  let artists = await spotifyApi.searchArtists(query)
+  let artists = await spotifyApi?.searchArtists(query)
   return artists.body.artists.items.map((artist) => filterArtist(artist)).sort((a, b) => {
     if (a.name.toLowerCase().includes(query.toLowerCase()) && !b.name.toLowerCase().includes(query.toLowerCase())) {
       return -1; // a comes before b

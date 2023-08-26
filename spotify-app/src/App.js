@@ -8,6 +8,7 @@ import Login from '../src/pages/Login';
 import Register from '../src/pages/Register';
 import Search from '../src/pages/Search';
 import Album from '../src/pages/Album';
+import Track from '../src/pages/Track';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Account from '../src/pages/Account';
@@ -141,6 +142,14 @@ function App() {
                   element={
                     <Album
                       user={user}
+                      onBack={handleBackToHome}
+                    />
+                  }
+                />
+                <Route
+                  path="/track/:trackId"
+                  element={
+                    <Track
                       onBack={handleBackToHome}
                     />
                   }

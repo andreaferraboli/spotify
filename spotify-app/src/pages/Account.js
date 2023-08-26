@@ -187,9 +187,9 @@ const Account = ({ user, handleLogin }) => {
         <><Container>
             <Grid container spacing={3}>
                 {/* Sezione Avatar */}
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4} style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                     <Avatar
-                        style={{ width: "auto", height: "100%", cursor: 'pointer' }}
+                        style={{ width: "auto", height: "100%",maxHeight:"300px",maxWidth:"300px", cursor: 'pointer' }}
                         alt={profileName}
                         src={user.image}
                         onClick={handleAvatarClick}

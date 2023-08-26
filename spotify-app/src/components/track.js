@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from 'axios';
 import "../style/track.css";
 const Track = (props) => {
+  console.log("track:", props.track)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url)); // Crea l'elemento audio con l'URL della preview
 
+  const toggleAudio = () => {
+    if (!props.track.preview_url) {
+      return; // Se l'URL dell'anteprima non è disponibile, non fare nulla
+    }
+    if (isPlaying) {
+      audioElement.pause(); // Metti in pausa se è già in riproduzione
+    } else {
+      audioElement.play(); // Riproduci se non è in riproduzione
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    setAudioElement(new Audio(props.track.preview_url));
+  }, [props.track.preview_url]);
+
+  useEffect(() => {
+    return () => {
+      audioElement.pause();
+    };
+  }, [audioElement]);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -27,17 +51,19 @@ const Track = (props) => {
   };
   return (
     <>
-      <Grid container spacing={1} style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }} className="track">
+      <Grid container spacing={1} style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }} className="track" >
         <Grid item xs={12} sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography variant="body1">{props.index}</Typography>
         </Grid>
-        <Grid xs={12} sm={1} item>
+        <Grid xs={12} sm={1} item onClick={toggleAudio}>
           <div
-            className="image-container"
+            className={`image-container ${isPlaying ? 'playing' : ''}`}
             style={{ backgroundImage: `url(${props.track.image})` }}
           ></div>
         </Grid>
-        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} >
+
+
+        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} onClick={() => { window.location.href = "/track/" + props.track.id }}>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
             <Typography variant="h6" style={{ marginBottom: "8px" }}>
               {props.track.name}
@@ -79,7 +105,7 @@ const Track = (props) => {
 export default Track;
 
 // Funzione per formattare la durata in minuti e secondi
-const formatDuration = (duration) => {
+export const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60000);
   const seconds = ((duration % 60000) / 1000).toFixed(0);
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
