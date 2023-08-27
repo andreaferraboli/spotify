@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger_output.json"); 
 const bodyParser = require('body-parser');
 const path = require('path');
 var SpotifyWebApi = require("spotify-web-api-node");
@@ -28,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
@@ -266,48 +269,53 @@ async function updateUser(res, id, updatedUser) {
 }
 
 
-app.get("/users", auth, async function (req, res) {
-  var pwmClient = await new mongoClient(uri).connect();
-  var users = await pwmClient
-    .db("pwm")
-    .collection("users")
-    .find()
-    .project({ password: 0 })
-    .toArray();
-  res.json(users);
-});
-
-app.post("/users", auth, function (req, res) {
-  addUser(res, req.body);
-});
-
+// Get user information by ID with authentication
+// @route GET /user/:id
+// @group User - Operations related to user
+// @param {string} id.path.required - User's ID
+// @security BearerAuth
+// @returns {object} 200 - User object
 app.get("/user/:id", auth, async function (req, res) {
-  // Ricerca nel database
+  // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
   res.json(user);
 });
+
+// Get user information and playlists by ID
+// @route GET /showUser/:id
+// @group User - Operations related to user
+// @param {string} id.path.required - User's ID
+// @returns {object} 200 - User object with playlists
 app.get("/showUser/:id", async function (req, res) {
-  // Ricerca nel database
+  // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
-  user=user[0]
+  user = user[0];
+
+  // Connect to the MongoDB database
   let pwmClient = await new mongoClient(uri).connect();
   const playlistsCollection = pwmClient
     .db("spotify")
-    .collection("public_playlists")
-  user.playlists=await playlistsCollection.find({ 'owner.id': id }).toArray()
-  user.email=""
-  if(user.image === "")
-    user.image="https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png"
-  user.my_playlists=[]
-  user.favourite_artists=[]
-  user.favourite_genres=[]
+    .collection("public_playlists");
+
+  // Retrieve user's playlists from the database
+  user.playlists = await playlistsCollection.find({ 'owner.id': id }).toArray();
+  user.email = "";
+
+  // Set default user image if not available
+  if (user.image === "") {
+    user.image = "https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png";
+  }
+
+  // Initialize additional user data arrays
+  user.my_playlists = [];
+  user.favourite_artists = [];
+  user.favourite_genres = [];
+
   res.json(user);
 });
-app.get("/login", async function (req, res) {
-  res.sendFile(path.join(__dirname, "./spotify-app/build", "/login.html"));
-});
+
 app.post("/login", async (req, res) => {
   login = req.body;
 
