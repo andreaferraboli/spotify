@@ -1,30 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Paper, TextField, Button, Typography, Snackbar } from '@mui/material';
+import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import "../style/login.css";
-import MuiAlert from '@mui/material/Alert';
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
   
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-   const showSnackbar = (message, severity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+  
   const handleLogin = async () => {
     // Implementa la logica di autenticazione qui
     try {
@@ -37,13 +21,13 @@ const LoginPage = (props) => {
 
       // Controlla la risposta del server
       if (response.status === 200) {
-        showSnackbar("login avvenuto con successo!","success")
+        props.snackbar("login avvenuto con successo!","success")
         props.handleLogin(response.data)
       } else{
-        showSnackbar("Combinazione email/password sbagliata","warning")
+        props.snackbar("Combinazione email/password sbagliata","warning")
       }
     } catch (error) {
-      showSnackbar('Errore durante la richiesta di login',"error")
+      props.snackbar('Errore durante la richiesta di login',"error")
       console.log('Errore durante la richiesta di login:', error.message);
     }
   };
@@ -94,11 +78,7 @@ const LoginPage = (props) => {
         </Grid>
       </Grid>
     </div>
-    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+    
       </>
   );
 };

@@ -3,7 +3,7 @@ import {
     TextField,
     Grid,
     Button, Typography,
-    Avatar, Snackbar
+    Avatar
 } from '@mui/material';
 
 import { AddCircleOutline } from '@mui/icons-material';
@@ -13,10 +13,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from 'axios';
-import MuiAlert from '@mui/material/Alert';
 import { formatDuration } from "../pages/Playlist"
 
-function NewPlaylist({ user, onBack }) {
+function NewPlaylist({ user, onBack, snackbar }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
@@ -27,22 +26,7 @@ function NewPlaylist({ user, onBack }) {
     });
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-    });
-
-    const handleSnackbarClose = () => {
-        setSnackbarOpen(false);
-    };
-    const showSnackbar = (message, severity) => {
-        setSnackbarMessage(message);
-        setSnackbarSeverity(severity);
-        setSnackbarOpen(true);
-    };
     useEffect(() => {
         async function fetchPlaylistId() {
             try {
@@ -136,13 +120,13 @@ function NewPlaylist({ user, onBack }) {
                 "userId": user._id
             });
             if (response.status === 200) {
-                showSnackbar(response.data.message, "success")
+                snackbar(response.data.message, "success")
                 window.location.href = "/playlist/" + playlistId;
             } else {
-                showSnackbar(response.data.message, "error")
+                snackbar(response.data.message, "error")
             }
         } catch (error) {
-            showSnackbar('Error saving playlist:' + error, "error");
+            snackbar('Error saving playlist:' + error, "error");
         }
     };
 
@@ -290,7 +274,8 @@ function NewPlaylist({ user, onBack }) {
                                     <Track
                                         userPlaylists={user.my_playlists}
                                         track={track}
-                                        index={index + 1} />
+                                        index={index + 1}
+                                        snackbar={snackbar} />
                                 </div>
                             </Grid>
                                 <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
@@ -319,11 +304,7 @@ function NewPlaylist({ user, onBack }) {
 
                 <button onClick={onBack}>Torna alla Home</button>
             </div>
-            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
+            
         </>
     );
 }

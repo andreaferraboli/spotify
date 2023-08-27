@@ -1,23 +1,39 @@
 @import url("palette.css");
-.track{
-    background-color: var(--background-color) !important;
-    color: var(--text-color) !important;
-    height: 10% !important;
+
+.track {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+  height: 10% !important;
+}
+
+.image-container-wrapper {
+  position: relative;
 }
 
 .image-container {
-    width: 100%;
-    padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
-    background-size: cover;
-    background-position: center;
-  }
-
-  .css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
-    background-color: #0b0808 !important;
+  width: 100%;
+  padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
+  background-size: cover;
+  background-position: center;
 }
-  
-  .menu-heading {
-    font-weight: bold;
-    color: var(--text-color) !important;
-    padding: 8px 16px;
-  }
+
+.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
+  background-color: #0b0808 !important;
+}
+
+.menu-heading {
+  font-weight: bold;
+  color: var(--text-color) !important;
+  padding: 8px 16px;
+}
+
+/* Stile per l'icona Play al centro dell'immagine */
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  z-index: 1;
+}
+

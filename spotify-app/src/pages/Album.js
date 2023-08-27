@@ -3,16 +3,13 @@ import { useParams, Link } from "react-router-dom";
 import Track from "../components/track";
 import {
     Typography,
-    Avatar,
     Grid,
-    IconButton,
-    Button,
 } from "@mui/material";
 import axios from 'axios';
 import { formatDuration } from "./Playlist"
 import "../style/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const Album = ({ user, onBack }) => {
+const Album = ({ user, onBack, snackbar }) => {
     const { albumId } = useParams();
     const [album, setAlbum] = useState();
 
@@ -74,7 +71,7 @@ const Album = ({ user, onBack }) => {
                     <div className="top-tracks-section">
                         <Grid container spacing={2} >
                             {album?.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1} snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

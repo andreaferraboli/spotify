@@ -1,17 +1,13 @@
 import React, { useState, useRef, useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, TextField, Button, Typography, Snackbar } from '@mui/material';
+import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import LoadArtist from "../components/LoadArtist"
 import LoadGenres from "../components/LoadGenres"
-import MuiAlert from '@mui/material/Alert';
 
 import "../style/login.css"; // Importa il file CSS con gli stili personalizzati
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-const RegisterPage = () => {
+const RegisterPage = (snackbar) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,9 +20,6 @@ const RegisterPage = () => {
   const [loadGenres, setLoadGenres] = useState(false);
   const [loadArtist, setLoadArtist] = useState(false);
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
   const fileInputRef = useRef(null);
 
@@ -34,15 +27,7 @@ const RegisterPage = () => {
     // Focus the file input when the component mounts
     fileInputRef.current.focus();
   }, []);
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  const showSnackbar = (message, severity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+  
   const getFavouriteArtists = () => {
     return favouriteArtists.length;
   };
@@ -75,15 +60,15 @@ const RegisterPage = () => {
         {
           await publicFile(imageFile, response.data.userId);
         }
-        showSnackbar('Registrazione effettuata con successo!', "success");
+        snackbar('Registrazione effettuata con successo!', "success");
         window.location.href = "/login";
         // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
-        showSnackbar('Errore durante la registrazione', "error");
+        snackbar('Errore durante la registrazione', "error");
         // Aggiungi qui il codice per gestire l'errore durante la registrazione
       }
     } catch (error) {
-      showSnackbar('Errore durante la richiesta di registrazione:' + error.message, "error");
+      snackbar('Errore durante la richiesta di registrazione:' + error.message, "error");
       // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
     }
   };
@@ -109,37 +94,37 @@ const RegisterPage = () => {
         });
   
       if (response.status === 200) {
-        showSnackbar("informazioni caricate correttamente", "success")
+        snackbar("informazioni caricate correttamente", "success")
         let responseImage=await axios.post("http://localhost:3100/setUserImage/"+userId,{"fileUrl":response.data.fileUrl}) 
         if(responseImage.status === 200){
-          showSnackbar("immagine caricata correttamente", "success")
+          snackbar("immagine caricata correttamente", "success")
           window.location.href="/login"
         }
         else
-        showSnackbar("immagine non caricata correttamente", "error")
+        snackbar("immagine non caricata correttamente", "error")
       } else {
-        showSnackbar('Errore durante l\'upload del file.',"error");
+        snackbar('Errore durante l\'upload del file.',"error");
       }
     } catch (error) {
-      showSnackbar('Errore:'+ error,"error");
+      snackbar('Errore:'+ error,"error");
     }
   }
   const validateRegistrationData = async () => {
     if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
-      showSnackbar('Compila tutti i campi.', "warning");
+      snackbar('Compila tutti i campi.', "warning");
       return false;
     }
 
     if (!validateEmail(email)) {
-      showSnackbar('Inserisci un indirizzo email valido.', "warning");
+      snackbar('Inserisci un indirizzo email valido.', "warning");
       return false;
     }
     if (await checkDuplicateEmail(email) === true) {
-      showSnackbar("email già presente, prova con un'altra", "warning");
+      snackbar("email già presente, prova con un'altra", "warning");
       return false;
     }
     if (password !== confirmPassword) {
-      showSnackbar('Le password non corrispondono.', "warning");
+      snackbar('Le password non corrispondono.', "warning");
       return false;
     }
 
@@ -165,7 +150,7 @@ const RegisterPage = () => {
   };
   const loadedGenres = async () => {
     if (await validateRegistrationData()) {
-      showSnackbar("informazioni salvate correttamente", "success")
+      snackbar("informazioni salvate correttamente", "success")
       setLoadGenres(true);
       setLoadArtist(false);
     }
@@ -177,14 +162,14 @@ const RegisterPage = () => {
   return (
     <><div className='background'>
       {loadGenres ? (
-        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={showSnackbar} />
+        <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={snackbar} />
       ) : loadArtist ? (
         <LoadArtist
           favouriteGenres={favouriteGenres}
           getFavouriteArtists={getFavouriteArtists}
           setFavouriteArtists={setFavouriteArtists}
           register={handleRegister}
-          snackbar={showSnackbar}
+          snackbar={snackbar}
         ></LoadArtist>
       ) : (
         <><Grid container direction="column" alignItems="center" spacing={3} className="container">
@@ -267,11 +252,6 @@ const RegisterPage = () => {
         </>
       )}
     </div>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
 
   );

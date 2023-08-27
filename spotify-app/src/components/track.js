@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Typography, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import axios from 'axios';
 import "../style/track.css";
 const Track = (props) => {
-  console.log("track:", props.track)
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url)); // Crea l'elemento audio con l'URL della preview
+  const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url));
 
   const toggleAudio = () => {
     if (!props.track.preview_url) {
-      return; // Se l'URL dell'anteprima non è disponibile, non fare nulla
+      props.snackbar("anteprima canzone non disponibile", "warning");
+      return;
     }
     if (isPlaying) {
-      audioElement.pause(); // Metti in pausa se è già in riproduzione
+      audioElement.pause();
     } else {
-      audioElement.play(); // Riproduci se non è in riproduzione
+      audioElement.play();
     }
     setIsPlaying(!isPlaying);
   };
 
   useEffect(() => {
     setAudioElement(new Audio(props.track.preview_url));
+
   }, [props.track.preview_url]);
 
-  useEffect(() => {
-    return () => {
-      audioElement.pause();
-    };
-  }, [audioElement]);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,7 +36,6 @@ const Track = (props) => {
   };
 
   const handlePlaylistSelect = (playlistId) => {
-    // Implement logic to add the track to the selected playlist
     axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, props.track)
       .then(response => {
         console.log(response.data.message);
@@ -55,12 +51,21 @@ const Track = (props) => {
         <Grid item xs={12} sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography variant="body1">{props.index}</Typography>
         </Grid>
-        <Grid xs={12} sm={1} item onClick={toggleAudio}>
-          <div
-            className={`image-container ${isPlaying ? 'playing' : ''}`}
-            style={{ backgroundImage: `url(${props.track.image})` }}
-          ></div>
+        <Grid xs={12} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
+          <div className={`image-container ${isPlaying ? 'playing' : ''}`} style={{ backgroundImage: `url(${props.track.image})` }}>
+            {isPlaying ? (
+              <div className="play-icon"fontSize="13rem">
+                {/* Icona Play al centro dell'immagine */}
+                <PlayCircleOutlineIcon  />
+              </div>
+            ) : null}
+          </div>
         </Grid>
+
+
+
+
+
 
 
         <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} onClick={() => { window.location.href = "/track/" + props.track.id }}>

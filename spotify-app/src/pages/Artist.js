@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Card, CardHeader, Box, CardContent, CardMedia, Typography, Avatar, Grid } from '@mui/material';
+import { Typography, Avatar, Grid } from '@mui/material';
 import "../style/artist.css";
-import ColorThief from "colorthief";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
 import Album from "../components/Album"
 import Track from "../components/track"
-const Artist = ({ user, onBack }) => {
+const Artist = ({ user, onBack, snackbar }) => {
   const { artistId } = useParams(); // Ottieni l'id dell'artista dall'URL della pagina
   const [artist, setArtist] = useState([{}]);
-  const [artistColors, setArtistColors] = useState([]);
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -25,17 +23,7 @@ const Artist = ({ user, onBack }) => {
 
           // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
           artistSection.style.backgroundImage = `url(${data.info[0].image})`;
-          if (data.info[0]?.image) {
-            const image = new Image();
-            image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
-            image.src = data.info[0].image;
-
-            image.onload = () => {
-              const colorThief = new ColorThief();
-              const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
-              setArtistColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
-            };
-          }
+          
         } else {
           console.log("Errore nella richiesta");
         }
@@ -68,7 +56,7 @@ const Artist = ({ user, onBack }) => {
             <Grid container spacing={2} >
               <Typography variant="h4" style={{ margin: "4%" }}>Top Tracks</Typography>
               {artist[1]?.map((track, index) => (
-                <Track userPlaylists={user.my_playlists} key={track.id} track={track} index={index + 1}></Track>
+                <Track userPlaylists={user.my_playlists} key={track.id} track={track} index={index + 1} snackbar={snackbar}></Track>
               ))}
             </Grid>
           </div>

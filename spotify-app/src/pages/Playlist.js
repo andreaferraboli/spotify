@@ -5,7 +5,7 @@ import {
   Typography,
   Avatar,
   Grid,
-  IconButton, Button, Snackbar, TextField
+  IconButton, Button, TextField
 } from "@mui/material";
 import { AddCircleOutline } from '@mui/icons-material';
 import Scrollbar from "react-scrollbars-custom";
@@ -13,7 +13,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import axios from 'axios';
-import MuiAlert from '@mui/material/Alert';
 import "../style/playlist.css";
 
 export function formatDuration(milliseconds) {
@@ -25,27 +24,12 @@ export function formatDuration(milliseconds) {
 
   return `${hours} ore e ${minutes} minuti`;
 }
-const Playlist = ({ user, onBack }) => {
+const Playlist = ({ user, onBack, snackbar }) => {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
   const [editing, setEditing] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [newTag, setNewTag] = useState('');
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-  const showSnackbar = (message, severity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -88,15 +72,15 @@ const Playlist = ({ user, onBack }) => {
       .then(response => {
         // Handle success response from the server
         if (response.status === 200) {
-          showSnackbar(response.data.message, "success")
+          snackbar(response.data.message, "success")
           window.location.href = "/playlist/" + playlistId
         }
         else
-          showSnackbar("errore nell'aggiornare la playlist", "error")
+          snackbar("errore nell'aggiornare la playlist", "error")
       })
       .catch(error => {
         // Handle error
-        showSnackbar('Error updating playlist', "error");
+        snackbar('Error updating playlist', "error");
       });
   };
 
@@ -104,14 +88,14 @@ const Playlist = ({ user, onBack }) => {
     try {
       const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success")
+        snackbar(response.data.message, "success")
         window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar("errore nel pubblicare la playlist", "error")
+        snackbar("errore nel pubblicare la playlist", "error")
       window.location.href = "/"
     } catch (error) {
-      showSnackbar('Error deleting playlist:' + error, "error");
+      snackbar('Error deleting playlist:' + error, "error");
     }
   };
   async function publishPlaylist() {
@@ -121,13 +105,13 @@ const Playlist = ({ user, onBack }) => {
     try {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success")
+        snackbar(response.data.message, "success")
         window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar("errore nel pubblicare la playlist", "error")
+        snackbar("errore nel pubblicare la playlist", "error")
     } catch (error) {
-      showSnackbar("Errore durante la pubblicazione della playlist:" + error, "error");
+      snackbar("Errore durante la pubblicazione della playlist:" + error, "error");
       throw error;
     }
   }
@@ -138,13 +122,13 @@ const Playlist = ({ user, onBack }) => {
     try {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success")
+        snackbar(response.data.message, "success")
         window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar("errore nel rendere la playlist privata", "error")
+        snackbar("errore nel rendere la playlist privata", "error")
     } catch (error) {
-      showSnackbar("Errore durante il rendere la playlist privata: " + error, "error");
+      snackbar("Errore durante il rendere la playlist privata: " + error, "error");
       throw error;
     }
   }
@@ -152,22 +136,22 @@ const Playlist = ({ user, onBack }) => {
     try {
       const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}`, { "collaborative": collaborative });
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success")
+        snackbar(response.data.message, "success")
         window.location.href = "/playlist/" + playlistId
       }
     } catch (error) {
-      showSnackbar("Errore durante l'impostazione della playlist come collaborativa:" + error, "error");
+      snackbar("Errore durante l'impostazione della playlist come collaborativa:" + error, "error");
     }
   };
   async function changeFollow(playlistId, userId, action) {
     try {
       const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}`);
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success")
+        snackbar(response.data.message, "success")
         window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar(response.data.message, "error")
+        snackbar(response.data.message, "error")
 
 
     } catch (error) {
@@ -183,11 +167,11 @@ const Playlist = ({ user, onBack }) => {
         action: action,
       });
       if (response.status === 200) {
-        showSnackbar(response.data.message, "success");
+        snackbar(response.data.message, "success");
         window.location.href = "/playlist/" + playlistId
       }
       else
-        showSnackbar("errore", "error")
+        snackbar("errore", "error")
     } catch (error) {
       throw error;
     }
@@ -444,12 +428,12 @@ const Playlist = ({ user, onBack }) => {
           )}
         </Grid>
         {editing ? (
-          <UpdatePlaylist user={user} playlist={playlist} snackbar={showSnackbar} onClose={() => setEditing(false)} />
+          <UpdatePlaylist user={user} playlist={playlist} snackbar={snackbar} onClose={() => setEditing(false)} />
         ) : (
           <div className="top-tracks-section">
             <Grid container spacing={2} >
               {playlist?.tracks.map((track, index) => (
-                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1}></Track>
+                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1} snackbar={snackbar}></Track>
 
               ))}
             </Grid>
@@ -457,11 +441,7 @@ const Playlist = ({ user, onBack }) => {
         )}
 
       </div>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      
       <button onClick={onBack}>Torna alla Home</button>
     </>
   );
