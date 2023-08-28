@@ -172,6 +172,14 @@ async function getArtistTopTracks(id_artist) {
   return top_tracks.body.tracks.map((track) => filterTrack(track));
 
 }
+async function searchTracksFromArtist(query, name_artist, id_artist) {
+  
+  let tracks = await spotifyApi.searchTracks(`track:${query} artist:${name_artist}`)
+  
+  return tracks.body.tracks.items.map((track) => filterTrack(track)).filter((obj) =>
+    obj.artists.some((artist) => artist.id === id_artist)
+  );
+}
 function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
@@ -287,6 +295,13 @@ app.get("/user/:id", auth, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
+  let pwmClient = await new mongoClient(uri).connect();
+  const playlistsCollection = pwmClient
+    .db("spotify")
+    .collection("public_playlists");
+
+  // Retrieve user's playlists from the database
+  user[0].playlists = await playlistsCollection.find({ 'owner.id': id }).toArray();
   res.json(user);
 });
 
@@ -360,7 +375,7 @@ app.post("/login", async (req, res) => {
       .db("spotify")
       .collection("users")
       .findOne(filter);
-  
+
     if (loggedUser == null) {
       res.status(404).send("sbagliata combinazione");
     } else {
@@ -370,7 +385,7 @@ app.post("/login", async (req, res) => {
     console.error("An error occurred:", error);
     res.status(500).send("Internal Server Error");
   }
-  
+
 });
 
 app.post("/register", async (req, res) => {
@@ -567,7 +582,7 @@ app.get("/artist/:id", async (req, res) => {
   let artist = await getArtist(id);
   let top_tracks = await getArtistTopTracks(id);
   let albums = await getArtistAlbums(id);
-  let response = { "info": [artist, top_tracks, albums] };
+  let response = { artist: { info: artist, top_tracks: top_tracks, albums: albums } };
   res.json(response);
 })
 app.get("/playlist/:id", async (req, res) => {
@@ -687,25 +702,35 @@ app.delete('/playlist/:id', async (req, res) => {
 
 app.post('/playlists/:playlistId/add-track', async (req, res) => {
   const playlistId = req.params.playlistId;
-  const trackData = req.body;
-
+  const trackData = req.body.trackData;
+  const type= req.body.type
   try {
     let pwmClient = await new mongoClient(uri).connect();
-    let result = await pwmClient
+    let result
+    if(type==="private"){
+      result = await pwmClient
       .db("spotify")
       .collection("users").updateOne(
         { 'my_playlists.id': playlistId },
         { $addToSet: { 'my_playlists.$.tracks': trackData } }
       );
+    }else{
+      result = await pwmClient
+      .db("spotify")
+      .collection("public_playlists").updateOne(
+        { 'id': playlistId },
+        { $addToSet: { "tracks": trackData } }
+      );
+    }
+    
 
     if (result.modifiedCount === 0) {
-      // Nessun documento è stato modificato, quindi la playlist non è stata trovata
-      return res.status(404).send('Traccia già presente');
-    }
-    res.status(200).send('Traccia aggiunta alla playlist con successo');
+      return res.status(404).send({message:'Traccia già presente'});
+    }else
+      res.status(200).send({message:'Traccia aggiunta alla playlist con successo'});
   } catch (error) {
     console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
-    res.status(500).send('Si è verificato un errore interno');
+    res.status(500).send({message:'Si è verificato un errore interno'});
   }
 });
 app.get("/genres", async (req, res) => {
@@ -785,7 +810,7 @@ async function searchAlbums(query) {
   let albums = await spotifyApi.searchAlbums(query)
   return albums.body.albums.items.filter(album => album.album_type === "album").map((album) => filterAlbum(album));
 }
-async function searchPlaylists(query,id) {
+async function searchPlaylists(query, id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
@@ -827,8 +852,8 @@ async function searchPlaylists(query,id) {
     return []; // Return an empty array in case of error
   }
 }
-async function searchTags(query,id) {
-  console.log(id)
+async function searchTags(query, id) {
+  
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
@@ -892,13 +917,12 @@ app.get("/searchTracks/:query", async (req, res) => {
 app.get("/search/:query", async (req, res) => {
   let query = req.params.query
   const id = req.query.id;
-  console.log("id",id)
   let tracks = await searchTracks(query);
   let artists = await searchArtists(query)
   let albums = await searchAlbums(query);
-  let playlists = await searchPlaylists(query,id);
+  let playlists = await searchPlaylists(query, id);
   let users = await searchUsers(query);
-  let tags = await searchTags(query,id);
+  let tags = await searchTags(query, id);
   let result = {
     "tracks": tracks,
     "albums": albums,
@@ -908,6 +932,14 @@ app.get("/search/:query", async (req, res) => {
     "tags": tags
   }
   res.status(200).send(result)
+
+})
+app.get("/searchTracksArtist/:id/:query", async (req, res) => {
+  let query = req.params.query
+  const id = req.params.id;
+  let artist = await getArtist(id);
+  let tracks = await searchTracksFromArtist(query, artist.name, id);
+  res.status(200).send(tracks)
 
 })
 app.get('/relatedPlaylists/:userId', async (req, res) => {
@@ -1136,8 +1168,8 @@ app.put("/movePlaylist/:id", async (req, res) => {
           },
           followers: [],
           collaborative: false,
-          tags:playlist.tags,
-          description:playlist.description
+          tags: playlist.tags,
+          description: playlist.description
         });
         if (insertedPlaylist.insertedId !== null) {
           res.status(200).json({ message: "Playlist spostata con successo." });

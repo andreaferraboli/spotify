@@ -14,7 +14,6 @@ import "../style/user.css"; // Assumi che tu abbia uno stile CSS per l'user
 
 const User = ({ onBack }) => {
     const { userId } = useParams();
-    console.log("userid", userId)
     const [user, setUser] = useState();
 
     useEffect(() => {
@@ -22,7 +21,6 @@ const User = ({ onBack }) => {
             if (userId ?? "") {
                 try {
                     const response = await axios.get(`http://localhost:3100/showUser/${userId}?apikey=123456`);
-                    console.log(response);
                     setUser(response.data);
                 } catch (error) {
                     console.log(error);

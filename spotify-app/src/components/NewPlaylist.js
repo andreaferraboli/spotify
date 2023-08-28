@@ -270,7 +270,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
                             <><Grid item xs={10}>
                                 <div className="track-item">
                                     <Track
-                                        userPlaylists={user.my_playlists}
+                                        userPlaylists={user.my_playlists.concat(user.playlists)}
                                         track={track}
                                         index={index + 1}
                                         snackbar={snackbar} />

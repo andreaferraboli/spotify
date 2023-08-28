@@ -6,9 +6,6 @@
   height: 10% !important;
 }
 
-.image-container-wrapper {
-  position: relative;
-}
 
 .image-container {
   width: 100%;
@@ -28,12 +25,23 @@
 }
 
 /* Stile per l'icona Play al centro dell'immagine */
+.image-container-wrapper {
+  position: relative; /* Crea un contesto di posizionamento relativo */
+}
+
+.play-icon-div {
+  position: absolute; /* Posizionamento assoluto sopra l'immagine */
+  top: 50%; /* Posiziona verticalmente al centro */
+  left: 50%; /* Posiziona orizzontalmente al centro */
+  transform: translate(-50%, -50%); /* Centra l'elemento rispetto al centro */
+  z-index: 1; /* Posiziona sopra l'immagine */
+  /* Stili per l'icona */
+}
+
 .play-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  font-size: 3rem !important;
   color: white;
   z-index: 1;
+  /* Altri stili per l'icona */
 }
 

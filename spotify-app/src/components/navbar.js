@@ -1,5 +1,7 @@
 import React from "react";
 import { styled, alpha } from "@mui/material/styles";
+import { IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -49,7 +51,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-export default function PrimarySearchAppBar(props) {
+export default function Navbar(props) {
   let profile = props.user ?? {};
 
   const profileLink = profile.profile_name ? "/myAccount" : "/login";
@@ -60,6 +62,16 @@ export default function PrimarySearchAppBar(props) {
       <AppBar position="static">
         <div className="myAppBar">
           <Toolbar>
+            {props.isSmallScreen && ( // Renderizza il pulsante solo quando lo schermo è md
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={props.onDrawerToggle}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />

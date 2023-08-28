@@ -39,6 +39,9 @@ function Sidebar(props) {
           {playlists?.map((playlist) => (
             <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id} option={playlist.name} />
           ))}
+          {props.public_playlists?.map((playlist) => (
+            <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id} option={playlist.name} public={true}/>
+          ))}
         </Scrollbar>
       </div>
     </div>

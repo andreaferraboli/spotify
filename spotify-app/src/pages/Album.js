@@ -71,7 +71,7 @@ const Album = ({ user, onBack, snackbar }) => {
                     <div className="top-tracks-section">
                         <Grid container spacing={2} >
                             {album?.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists} track={track} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists.concat(user.playlists)} track={track} index={index + 1} snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

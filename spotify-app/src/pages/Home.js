@@ -4,7 +4,7 @@ import PlaylistCard from "../components/PlaylistCard"
 import ArtistCard from "../components/ArtistCard"
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { responsive } from "./Search"
+import { responsive, responsiveArtist } from "./Search"
 import "../style/home.css";
 
 const Home = (props) => {
@@ -82,7 +82,7 @@ const Home = (props) => {
       {props.user?.favourite_artists?.length > 0 && (
         <div className='home-section'>
           <h2>I miei ARTISTI</h2>
-          <Carousel showDots={true} centerMode={false} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={false} itemClass="carousel-item" containerClass="carousel-container" responsive={responsiveArtist}>
             {props.user.favourite_artists.map((artist) => (
               <ArtistCard key={artist.id} artist={artist} selectedArtistId={props.onArtistClick} />
             ))}

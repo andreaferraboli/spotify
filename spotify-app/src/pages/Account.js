@@ -241,6 +241,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     Cambia Password
                 </Button>
             </Grid>
+            <br></br>
+            <br></br>
             <div style={{ height: "5vh" }}>
                 <TextField
                     label="Cerca generi musicali"
@@ -250,7 +252,10 @@ const Account = ({ user, handleLogin, snackbar }) => {
                         updateGenres(event.target.value);
                     }} />
             </div>
+            <br></br>
+            <br></br>
             <h2 className='subtitle'>Generi Musicali</h2>
+            <br></br>
             <Scrollbar style={{ height: '30vh' }}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
@@ -264,8 +269,9 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     ))}
                 </Grid>
             </Scrollbar>
-
+            <br></br>
             <h2 className='subtitle'>Generi Musicali Selezionati</h2>
+            <br></br>
             <Scrollbar style={{ height: '25vh' }}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
@@ -286,7 +292,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     onClick={() => { changeGenres(selectedGenres); }}
                     className="button"
                 >
-                    Avanti
+                    Cambia Generi
                 </Button>
             </div>
 

@@ -13,12 +13,14 @@ import Track from '../src/pages/Track';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Account from '../src/pages/Account';
+import { useMediaQuery, Drawer } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserPage from '../src/pages/User';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MuiAlert from '@mui/material/Alert';
 import "./style/home.css";
-
+const theme = createTheme();
 function App() {
   const defaultUser = { my_playlists: [], favourite_artists: [] };
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) !== null ? JSON.parse(localStorage.getItem("user")) : defaultUser);
@@ -54,6 +56,7 @@ function App() {
 
             // Verifica se i dati dell'utente sono diversi da quelli presenti in localStorage
             if (JSON.stringify(data[0]) !== JSON.stringify(user)) {
+              console.log("useer", data[0])
               setUser(data[0]);
               // Aggiorna anche i dati in localStorage
               localStorage.setItem('user', JSON.stringify(data[0]));
@@ -122,76 +125,108 @@ function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  console.log(isSmallScreen);
+  const handleDrawerToggle = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
   return (
-    <><div>
-      {!(isLoginPage || isRegisterPage) && ( // Condizione per mostrare il Box e Grid esterni
-        <Box className="home-box">
-          <Grid container spacing={0}>
-            {!isLoginPage && !isRegisterPage && (
-              <Grid item xs={0} md={2} lg={2}>
-                <SideBar playlists={user?.my_playlists} onPlaylistClick={handlePlaylistClick} />
-              </Grid>
-            )}
-            <Grid style={{ height: "100%" }} item xs={12} md={10} lg={10}>
-              {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} />}
-              <Routes>
-                <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
-                <Route path="/register" element={<Register snackbar={showSnackbar} />} />
-                <Route path="/search/:query" element={<Search user={user} />} />
+    <>
+      <ThemeProvider theme={theme}>
 
-                <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} snackbar={showSnackbar} />} />
-                <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} snackbar={showSnackbar} />} />
-                <Route path="/user/:userId" element={<UserPage user={user} onBack={handleBackToHome} />} />
-                <Route
-                  path="/playlist/:playlistId"
-                  element={<Playlist
-                    user={user}
-                    playlistId={selectedPlaylistId}
-                    onBack={handleBackToHome}
-                    snackbar={showSnackbar} />} />
-                <Route
-                  path="/album/:albumId"
-                  element={<Album
-                    user={user}
-                    onBack={handleBackToHome}
-                    snackbar={showSnackbar} />} />
-                <Route
-                  path="/track/:trackId"
-                  element={<Track
-                    onBack={handleBackToHome} />} />
-                <Route
-                  path="/artist/:artistId"
-                  element={<Artist
-                    user={user}
-                    artistId={selectedArtistId}
-                    onBack={handleBackToHome}
-                    snackbar={showSnackbar} />} />
-                <Route
-                  path="/"
-                  element={<Home
-                    user={user}
-                    onPlaylistClick={handlePlaylistClick}
-                    onArtistClick={handleArtistClick}
-                    snackbar={showSnackbar} />} />
-              </Routes>
-            </Grid>
-          </Grid>
-        </Box>
-      )}
-      {isLoginPage && <Login handleLogin={handleLogin} snackbar={showSnackbar} />}
-      {isRegisterPage && <Register snackbar={showSnackbar} />}
-    </div>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+
+        <div>
+          {!(isLoginPage || isRegisterPage) && ( // Condizione per mostrare il Box e Grid esterni
+            <Box className="home-box">
+              <Grid container spacing={0}>
+                {!isLoginPage && !isRegisterPage && (
+                  <Grid item xs={0} md={2} lg={2}>
+                    {isSmallScreen ? (
+                      <Drawer
+                        anchor="left"
+                        open={isDrawerOpen}
+                        onClose={closeDrawer}
+                      >
+                        <SideBar
+                          playlists={user?.my_playlists}
+                          public_playlists={user?.playlists}
+                          onPlaylistClick={handlePlaylistClick}
+                          onDrawerToggle={handleDrawerToggle}
+                        />
+                      </Drawer>
+                    ) : (
+                      <SideBar
+                        playlists={user?.my_playlists}
+                        public_playlists={user?.playlists}
+                        onPlaylistClick={handlePlaylistClick}
+                      />
+                    )}
+                  </Grid>
+                )}
+                <Grid style={{ height: "100%" }} item xs={12} md={10} lg={10}>
+                  {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} onDrawerToggle={handleDrawerToggle} isSmallScreen={isSmallScreen} />}
+                  <Routes>
+                    <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
+                    <Route path="/register" element={<Register snackbar={showSnackbar} />} />
+                    <Route path="/search/:query" element={<Search user={user} />} />
+
+                    <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} snackbar={showSnackbar} />} />
+                    <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} snackbar={showSnackbar} />} />
+                    <Route path="/user/:userId" element={<UserPage user={user} onBack={handleBackToHome} />} />
+                    <Route
+                      path="/playlist/:playlistId"
+                      element={<Playlist
+                        user={user}
+                        playlistId={selectedPlaylistId}
+                        onBack={handleBackToHome}
+                        snackbar={showSnackbar} />} />
+                    <Route
+                      path="/album/:albumId"
+                      element={<Album
+                        user={user}
+                        onBack={handleBackToHome}
+                        snackbar={showSnackbar} />} />
+                    <Route
+                      path="/track/:trackId"
+                      element={<Track
+                        onBack={handleBackToHome} />} />
+                    <Route
+                      path="/artist/:artistId"
+                      element={<Artist
+                        user={user}
+                        artistId={selectedArtistId}
+                        onBack={handleBackToHome}
+                        snackbar={showSnackbar} />} />
+                    <Route
+                      path="/"
+                      element={<Home
+                        user={user}
+                        onPlaylistClick={handlePlaylistClick}
+                        onArtistClick={handleArtistClick}
+                        snackbar={showSnackbar} />} />
+                  </Routes>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+          {isLoginPage && <Login handleLogin={handleLogin} snackbar={showSnackbar} />}
+          {isRegisterPage && <Register snackbar={showSnackbar} />}
+        </div>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </ThemeProvider>
     </>
   );
 }

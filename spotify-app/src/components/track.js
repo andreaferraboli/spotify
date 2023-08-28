@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Grid, Typography, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -8,6 +9,7 @@ const Track = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url));
+
 
   const toggleAudio = () => {
     if (!props.track.preview_url) {
@@ -35,13 +37,17 @@ const Track = (props) => {
     setAnchorEl(null);
   };
 
-  const handlePlaylistSelect = (playlistId) => {
-    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, props.track)
+  const handlePlaylistSelect = (playlistId, type) => {
+    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, { trackData: props.track, type: type })
       .then(response => {
-        console.log(response.data.message);
+        props.snackbar(response.data.message, "success");
       })
       .catch(error => {
-        console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
+        if (error.response && error.response.status === 404) {
+          props.snackbar('Traccia già presente', "error");
+        } else {
+          props.snackbar('Errore durante l\'aggiunta della traccia alla playlist', "error");
+        }
       });
     handleMenuClose();
   };
@@ -54,9 +60,8 @@ const Track = (props) => {
         <Grid xs={12} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
           <div className={`image-container ${isPlaying ? 'playing' : ''}`} style={{ backgroundImage: `url(${props.track.image})` }}>
             {isPlaying ? (
-              <div className="play-icon"fontSize="13rem">
-                {/* Icona Play al centro dell'immagine */}
-                <PlayCircleOutlineIcon  />
+              <div className="play-icon-div">
+                <PlayCircleOutlineIcon className="play-icon" />
               </div>
             ) : null}
           </div>
@@ -68,15 +73,17 @@ const Track = (props) => {
 
 
 
-        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} onClick={() => { window.location.href = "/track/" + props.track.id }}>
+        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} >
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <Typography variant="h6" style={{ marginBottom: "8px" }}>
-              {props.track.name}
+            <Typography variant="h6" style={{ marginBottom: "8px" }} >
+              <span key={props.track.id}>
+                <Link to={`/track/${props.track.id}`}>{props.track.name}</Link>
+              </span>
             </Typography>
             <Typography variant="subtitle2">
               {props.track.artists.map((artist, index) => (
                 <span key={artist.id}>
-                  {artist.name}
+                  <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
                   {index !== props.track.artists.length - 1 && ", "}
                 </span>
               ))}
@@ -96,7 +103,7 @@ const Track = (props) => {
           >
             <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
             {props.userPlaylists?.map((playlist) => (
-              <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id)}>
+              <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id, playlist.collaborative !== undefined ? "public" : "private")}>
                 {playlist.name}
               </MenuItem>
             ))}

@@ -77,7 +77,6 @@ const RegisterPage = ({ snackbar }) => {
 
     if (selectedFile) {
       setImageFile(selectedFile)
-      console.log('Nome del file:', selectedFile.name);
       
       // Puoi anche mostrare il nome del file all'utente, ad esempio aggiungendolo a uno stato o visualizzandolo nella UI.
     }
