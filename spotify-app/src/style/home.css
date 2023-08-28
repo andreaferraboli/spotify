@@ -17,6 +17,9 @@
 .carousel-item-playlist {
   margin-right: 20px;
 }
+.carousel-item-playlist:last-child {
+  padding-right: 40px; /* Imposta il valore desiderato */
+}
 body {
   margin: 0;
 }
@@ -26,4 +29,12 @@ body,
   margin: 0;
   padding: 0;
   height: 100%;
+}
+.carousel-container {
+  margin-right: auto;
+  overflow: hidden;
+  margin-left: auto;
+  width: 100%;
+  padding: 0 20px; /* Regola questo valore in base alle tue esigenze */
+  box-sizing: border-box;
 }

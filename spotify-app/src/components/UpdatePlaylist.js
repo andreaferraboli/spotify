@@ -104,7 +104,6 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
             canvas.height = collageSize;
 
             const imagesToUse = uniqueImageUrls.length > 3 ? uniqueImageUrls.slice(0, 4) : uniqueImageUrls.slice(0, 1); // Prendi fino a 4 immagini
-            console.log("imageTouse", imagesToUse)
             const quadrantSize = imagesToUse.length === 1 ? collageSize : collageSize / 2;
 
             const imagesLoaded = [];

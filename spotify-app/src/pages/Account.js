@@ -290,8 +290,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 </Button>
             </div>
 
-
-            <Button
+            <div className="button-container">
+                <Button
                 variant="contained"
                 className="delete-button"
                 onClick={handleDeleteProfile}
@@ -305,6 +305,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
             >
                 Disconnettiti
             </Button>
+            </div>
+            
         </Container>
         </>
     );

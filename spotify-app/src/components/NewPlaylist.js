@@ -20,7 +20,8 @@ function NewPlaylist({ user, onBack, snackbar }) {
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
         name: "",
-        image: "", // Aggiungi altre proprietà della playlist se necessario
+        image: "",
+        description:"",
         tracks: [],
         tags:[]
     });
@@ -32,7 +33,6 @@ function NewPlaylist({ user, onBack, snackbar }) {
             try {
                 const id = await searchId();
                 setPlaylistId(id);
-                console.log(playlistId)
             } catch (error) {
                 console.error('Error fetching new id:', error);
             }
@@ -44,7 +44,6 @@ function NewPlaylist({ user, onBack, snackbar }) {
         try {
 
             const response = await axios.get(`http://localhost:3100/newId`);
-            console.log(response)
             return response.data.id;
         } catch (error) {
             console.error('Error found new id:', error);
@@ -141,7 +140,6 @@ function NewPlaylist({ user, onBack, snackbar }) {
             canvas.height = collageSize;
 
             const imagesToUse = uniqueImageUrls.length > 3 ? uniqueImageUrls.slice(0, 4) : uniqueImageUrls.slice(0, 1); // Prendi fino a 4 immagini
-            console.log("imageTouse", imagesToUse)
             const quadrantSize = imagesToUse.length === 1 ? collageSize : collageSize / 2;
 
             const imagesLoaded = [];
@@ -194,10 +192,10 @@ function NewPlaylist({ user, onBack, snackbar }) {
                     <img id='playlist_image' src={localPlaylist?.image} alt="Playlist" className="playlist-image" />
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <Typography variant="body1">Playlist</Typography>
                     </div>
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <TextField
                             label="Titolo della Playlist"
                             variant="outlined"
@@ -207,7 +205,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
                             onChange={(e) => setLocalPlaylist({ ...localPlaylist, name: e.target.value })}
                         />
                     </div>
-                    <div className="playlist-info-container">
+                    <div className="playlist-info-container vh33">
                         <Avatar
                             src={user.image}
                             alt={user.profile_name}
@@ -250,7 +248,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
                             <React.Fragment key={track.id}>
                                 <Grid item xs={10}>
                                     <div>
-                                        <Track track={track} />
+                                        <Track track={track} snackbar={snackbar}/>
                                     </div>
                                 </Grid>
                                 <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

@@ -27,8 +27,6 @@ const LoadArtist = (props) => {
       } else {
         const genres = props.favouriteGenres.map(genre => genre.name);
         const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));
-        console.log("genres:", genres);
-        console.log("limit:", limit);
         const response = await axios.post('http://localhost:3100/genre', {
           genres: genres,
           limit: limit

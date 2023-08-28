@@ -21,12 +21,11 @@ const Home = (props) => {
     try {
       const response = await axios.get(`http://localhost:3100/relatedPlaylists/${userId}`);
       const data = response.data;
-      console.log(data)
       setPublicPlaylists(data.public_playlists || []);
       setFollowedPlaylists(data.followed_playlists || []);
       setYourPublicPlaylists(data.your_public_playlists || []);
     } catch (error) {
-      console.error('Error fetching related playlists:', error);
+      props.snackbar('Error fetching related playlists', "error");
     }
   };
   return (
@@ -34,7 +33,9 @@ const Home = (props) => {
       {props.user?.my_playlists?.length > 0 && (
         <div className='home-section'>
           <h2>Le mie PLAYLIST</h2>
-          <Carousel showDots={true} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={false}
+            arrows={true}
+            infinite={false} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
             {props.user.my_playlists.map((playlist) => (
               <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
             ))}
@@ -58,7 +59,7 @@ const Home = (props) => {
       {followed_playlists?.length > 0 && (
         <div className='home-section'>
           <h2>Playlist che segui</h2>
-          <Carousel showDots={true} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={false} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
             {followed_playlists.map((playlist) => (
               <PlaylistCard key={playlist.id} playlist={playlist} owner={playlist.owner.profile_name} selectedPlaylistId={props.onPlaylistClick} />
             ))}
@@ -70,7 +71,7 @@ const Home = (props) => {
       {your_public_playlists?.length > 0 && (
         <div className='home-section'>
           <h2>Playlist pubbliche create da te</h2>
-          <Carousel showDots={true} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={false} itemClass="carousel-item-playlist" containerClass="carousel-container" responsive={responsive}>
             {your_public_playlists.map((playlist) => (
               <PlaylistCard key={playlist.id} playlist={playlist} owner={props.user.profile_name} selectedPlaylistId={props.onPlaylistClick} />
             ))}
@@ -81,7 +82,7 @@ const Home = (props) => {
       {props.user?.favourite_artists?.length > 0 && (
         <div className='home-section'>
           <h2>I miei ARTISTI</h2>
-          <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
+          <Carousel showDots={true} centerMode={false} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
             {props.user.favourite_artists.map((artist) => (
               <ArtistCard key={artist.id} artist={artist} selectedArtistId={props.onArtistClick} />
             ))}

@@ -7,7 +7,7 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./swagger_output.json"); 
+const swaggerDocument = require("./swagger_output.json");
 const bodyParser = require('body-parser');
 const path = require('path');
 var SpotifyWebApi = require("spotify-web-api-node");
@@ -269,12 +269,20 @@ async function updateUser(res, id, updatedUser) {
 }
 
 
-// Get user information by ID with authentication
-// @route GET /user/:id
-// @group User - Operations related to user
-// @param {string} id.path.required - User's ID
-// @security BearerAuth
-// @returns {object} 200 - User object
+/* #swagger.parameters['id'] = {
+    in: 'path',
+    description: 'User\'s ID',
+    required: true,
+    type: 'string'
+} */
+/* #swagger.responses[200] = {
+    description: 'User successfully obtained.',
+    schema: {
+        name: 'Jhon Doe',
+        age: 29,
+        about: ''
+    }
+} */
 app.get("/user/:id", auth, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
@@ -282,11 +290,25 @@ app.get("/user/:id", auth, async function (req, res) {
   res.json(user);
 });
 
-// Get user information and playlists by ID
-// @route GET /showUser/:id
-// @group User - Operations related to user
-// @param {string} id.path.required - User's ID
-// @returns {object} 200 - User object with playlists
+/* #swagger.parameters['id'] = {
+    in: 'path',
+    description: 'User\'s ID',
+    required: true,
+    type: 'string'
+} */
+/* #swagger.responses[200] = {
+    description: 'User with playlists successfully obtained.',
+    schema: {
+        name: 'Jhon Doe',
+        age: 29,
+        about: '',
+        playlists: [
+            {
+                // Playlist schema here
+            }
+        ]
+    }
+} */
 app.get("/showUser/:id", async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
@@ -329,20 +351,26 @@ app.post("/login", async (req, res) => {
   }
 
   login.password = hash(login.password);
-  var pwmClient = await new mongoClient(uri).connect();
-  var filter = {
-    $and: [{ email: login.email }, { password: login.password }],
-  };
-  var loggedUser = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .findOne(filter);
-
-  if (loggedUser == null) {
-    res.status(401).send("Unauthorized");
-  } else {
-    res.json(loggedUser);
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
+    var filter = {
+      $and: [{ email: login.email }, { password: login.password }],
+    };
+    var loggedUser = await pwmClient
+      .db("spotify")
+      .collection("users")
+      .findOne(filter);
+  
+    if (loggedUser == null) {
+      res.status(404).send("sbagliata combinazione");
+    } else {
+      res.status(200).json(loggedUser);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send("Internal Server Error");
   }
+  
 });
 
 app.post("/register", async (req, res) => {
@@ -424,11 +452,11 @@ app.post('/setUserImage/:userId', async (req, res) => {
         { '_id': new ObjectId(userId) }, // Convert userId to ObjectID
         { $set: { 'image': fileUrl } }
       );
-      await pwmClient
+    await pwmClient
       .db("spotify")
       .collection("public_playlists")
       .updateMany(
-        { 'owner.id': userId}, 
+        { 'owner.id': userId },
         { $set: { 'owner.image': fileUrl } }
       );
     if (result.matchedCount === 1) {
@@ -757,7 +785,7 @@ async function searchAlbums(query) {
   let albums = await spotifyApi.searchAlbums(query)
   return albums.body.albums.items.filter(album => album.album_type === "album").map((album) => filterAlbum(album));
 }
-async function searchPlaylists(query) {
+async function searchPlaylists(query,id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
@@ -766,6 +794,7 @@ async function searchPlaylists(query) {
       .db("spotify")
       .collection("users")
       .aggregate([
+        { $match: { _id: new ObjectId(id) } },
         { $unwind: '$my_playlists' },
         { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
         { $project: { my_playlists: 1 } }
@@ -798,18 +827,20 @@ async function searchPlaylists(query) {
     return []; // Return an empty array in case of error
   }
 }
-async function searchTags(query) {
+async function searchTags(query,id) {
+  console.log(id)
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
     // Search for user playlists using aggregation
-    var userPlaylistsCursor = await pwmClient
+    const userPlaylistsCursor = await pwmClient
       .db("spotify")
       .collection("users")
       .aggregate([
+        { $match: { _id: new ObjectId(id) } },
         { $unwind: '$my_playlists' },
         { $match: { 'my_playlists.tags': { $in: [query] } } },
-        { $project: { 'my_playlists': 1 } }
+        { $project: { my_playlists: 1 } } // Seleziona solo l'array 'my_playlists'
       ])
       .toArray();
     var userPlaylists = userPlaylistsCursor.map(item => ({
@@ -860,19 +891,21 @@ app.get("/searchTracks/:query", async (req, res) => {
 })
 app.get("/search/:query", async (req, res) => {
   let query = req.params.query
+  const id = req.query.id;
+  console.log("id",id)
   let tracks = await searchTracks(query);
   let artists = await searchArtists(query)
   let albums = await searchAlbums(query);
-  let playlists = await searchPlaylists(query);
+  let playlists = await searchPlaylists(query,id);
   let users = await searchUsers(query);
-  let tags = await searchTags(query);
+  let tags = await searchTags(query,id);
   let result = {
     "tracks": tracks,
     "albums": albums,
     "artists": artists,
     "playlists": playlists,
     "users": users,
-    "tags":tags
+    "tags": tags
   }
   res.status(200).send(result)
 
@@ -967,12 +1000,12 @@ app.put('/changeGenres', async (req, res) => {
 
     if (result.modifiedCount === 0) {
       // Nessun documento è stato modificato, quindi la playlist non è stata trovata
-      return res.status(404).send({message:'generi non aggiornati'});
+      return res.status(404).send({ message: 'generi non aggiornati' });
     }
-    res.status(200).send({message:"Generi aggiornati correttamente"});
+    res.status(200).send({ message: "Generi aggiornati correttamente" });
   } catch (error) {
-    res.status(500).send({message:"Errore durante l'aggiornamento dei generi"});
-    
+    res.status(500).send({ message: "Errore durante l'aggiornamento dei generi" });
+
   }
 });
 app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
@@ -1021,7 +1054,7 @@ app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => 
   }
 });
 app.put('/updatePlaylist', async (req, res) => {
-  const { name, description,playlistId } = req.body;
+  const { name, description, playlistId } = req.body;
 
   try {
     let pwmClient = await new mongoClient(uri).connect();
@@ -1045,18 +1078,18 @@ app.put('/updatePlaylist', async (req, res) => {
 
     let response;
     if (playlist.owner ?? "")
-      response=await playlistsCollection.updateOne({ id: playlistId }, { $set: { name: name,description:description } });
+      response = await playlistsCollection.updateOne({ id: playlistId }, { $set: { name: name, description: description } });
     else
-      response=await playlistsCollection.updateOne(
+      response = await playlistsCollection.updateOne(
         { "my_playlists.id": playlistId },
-        { $set: { "my_playlists.$.name": name,"my_playlists.$.description" :description} }
+        { $set: { "my_playlists.$.name": name, "my_playlists.$.description": description } }
       );
 
     if (response.modifiedCount === 0) {
       // Nessun documento è stato modificato, quindi la playlist non è stata trovata
-      return res.status(404).send({message:'informazioni non aggiornate'});
+      return res.status(404).send({ message: 'informazioni non aggiornate' });
     }
-    res.status(200).send({message:"Informazioni aggiornat3 correttamente"});
+    res.status(200).send({ message: "Informazioni aggiornat3 correttamente" });
 
 
   } catch (error) {
@@ -1102,7 +1135,9 @@ app.put("/movePlaylist/:id", async (req, res) => {
             profile_name: profile_name
           },
           followers: [],
-          collaborative: false
+          collaborative: false,
+          tags:playlist.tags,
+          description:playlist.description
         });
         if (insertedPlaylist.insertedId !== null) {
           res.status(200).json({ message: "Playlist spostata con successo." });
@@ -1117,10 +1152,12 @@ app.put("/movePlaylist/:id", async (req, res) => {
         { id: playlistId }
       );
       if (playlistToRemove.value) {
+
+        const { owner, followers, collaborative, ...playlistWithoutAttributes } = playlistToRemove.value;
         // Inserisci la playlist nella collezione "users"
         insertedPlaylist = await pwmClient.db("spotify").collection("users").updateOne(
           { _id: new ObjectId(userId) },
-          { $addToSet: { my_playlists: playlistToRemove.value } }
+          { $addToSet: { my_playlists: playlistWithoutAttributes } }
         );
 
         if (insertedPlaylist.modifiedCount > 0) {

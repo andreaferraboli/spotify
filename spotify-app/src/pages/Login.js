@@ -12,22 +12,31 @@ const LoginPage = (props) => {
   const handleLogin = async () => {
     // Implementa la logica di autenticazione qui
     try {
-      // Effettua la richiesta POST al server Node
       const response = await axios.post('http://localhost:3100/login', {
         email,
         password,
       });
-
-
-      // Controlla la risposta del server
+    
       if (response.status === 200) {
-        props.snackbar("login avvenuto con successo!","success")
-        props.handleLogin(response.data)
-      } else{
-        props.snackbar("Combinazione email/password sbagliata","warning")
+        props.snackbar("Login avvenuto con successo!", "success");
+        props.handleLogin(response.data);
+      } else if (response.status === 404) {
+        props.snackbar("Combinazione email/password errata", "warning");
+      } else {
+        props.snackbar("Errore durante la richiesta di login", "error");
       }
     } catch (error) {
-      props.snackbar('Errore durante la richiesta di login',"error")
+      if (error.response) {
+        if (error.response.status === 404) {
+          props.snackbar("Combinazione email/password errata", "warning");
+        } else {
+          props.snackbar("Errore durante la richiesta di login", "error");
+        }
+      } else if (error.message.includes("Network Error")) {
+        props.snackbar("Impossibile raggiungere il server", "error");
+      } else {
+        props.snackbar("Errore sconosciuto", "error");
+      }
       console.log('Errore durante la richiesta di login:', error.message);
     }
   };

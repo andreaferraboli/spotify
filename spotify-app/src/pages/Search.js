@@ -13,22 +13,25 @@ import "../style/search.css";
 export const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 1024 },
-    items: 5,
-    slidesToSlide: 2,
+    breakpoint: { max: 4000, min: 3000 },
+    items: 8,
+    slidesToSlide: 3
   },
   desktop: {
-    breakpoint: { max: 1024, min: 800 },
-    items: 4,
+    breakpoint: { max: 3000, min: 1024 },
+    items: 6,
+    slidesToSlide: 3 // optional, default to 1.
   },
   tablet: {
-    breakpoint: { max: 800, min: 464 },
-    items: 2,
+    breakpoint: { max: 1024, min: 464 },
+    items: 4,
+    slidesToSlide: 2 // optional, default to 1.
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
-  },
+    slidesToSlide: 1 // optional, default to 1.
+  }
 };
 
 export default function SearchResults({ user }) {
@@ -39,9 +42,10 @@ export default function SearchResults({ user }) {
 
   useEffect(() => {
     // Invia la richiesta al server
-    axios.get(`http://localhost:3100/search/${query}`)
+    axios.get(`http://localhost:3100/search/${query}`,{
+      params: { id: user._id }
+    })
       .then(response => {
-        console.log("response.data", response.data);
         setSearchResults(response.data); // Imposta i risultati della ricerca
       })
       .catch(error => {
@@ -131,7 +135,6 @@ export default function SearchResults({ user }) {
                 ))}
               </Carousel></>
           )}
-          {console.log(searchResults)}
           {searchResults.tags && searchResults.tags.length > 0 && (
             <>
             

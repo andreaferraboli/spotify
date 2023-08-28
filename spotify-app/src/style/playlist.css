@@ -31,8 +31,18 @@
   border-radius: 500px !important;
   border:solid 1px  var(--edit-color) !important;
 }
+.delete-button{
+  background-color: inherit !important;
+  color: var(--delete-color) !important;
+  border-radius: 500px !important;
+  border:solid 1px  var(--delete-color) !important;
+}
 .add-button:hover{
   background-color: var(--secondary-color) !important;
+  color: white !important;
+}
+.delete-button:hover{
+  background-color: var(--delete-color) !important;
   color: white !important;
 }
 .info-admin-button:hover{
