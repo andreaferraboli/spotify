@@ -86,6 +86,7 @@ function filterTrack(track) {
     name: track.name,
     artists: track.artists.map((artist) => ({ name: artist.name, id: artist.id })),
     album: track.album.name,
+    year: track.album.release_date.slice(0, 4),
     image: track.album.images[0].url,
     duration: track.duration_ms,
     popularity: track.popularity,
@@ -173,9 +174,9 @@ async function getArtistTopTracks(id_artist) {
 
 }
 async function searchTracksFromArtist(query, name_artist, id_artist) {
-  
+
   let tracks = await spotifyApi.searchTracks(`track:${query} artist:${name_artist}`)
-  
+
   return tracks.body.tracks.items.map((track) => filterTrack(track)).filter((obj) =>
     obj.artists.some((artist) => artist.id === id_artist)
   );
@@ -703,34 +704,34 @@ app.delete('/playlist/:id', async (req, res) => {
 app.post('/playlists/:playlistId/add-track', async (req, res) => {
   const playlistId = req.params.playlistId;
   const trackData = req.body.trackData;
-  const type= req.body.type
+  const type = req.body.type
   try {
     let pwmClient = await new mongoClient(uri).connect();
     let result
-    if(type==="private"){
+    if (type === "private") {
       result = await pwmClient
-      .db("spotify")
-      .collection("users").updateOne(
-        { 'my_playlists.id': playlistId },
-        { $addToSet: { 'my_playlists.$.tracks': trackData } }
-      );
-    }else{
+        .db("spotify")
+        .collection("users").updateOne(
+          { 'my_playlists.id': playlistId },
+          { $addToSet: { 'my_playlists.$.tracks': trackData } }
+        );
+    } else {
       result = await pwmClient
-      .db("spotify")
-      .collection("public_playlists").updateOne(
-        { 'id': playlistId },
-        { $addToSet: { "tracks": trackData } }
-      );
+        .db("spotify")
+        .collection("public_playlists").updateOne(
+          { 'id': playlistId },
+          { $addToSet: { "tracks": trackData } }
+        );
     }
-    
+
 
     if (result.modifiedCount === 0) {
-      return res.status(404).send({message:'Traccia già presente'});
-    }else
-      res.status(200).send({message:'Traccia aggiunta alla playlist con successo'});
+      return res.status(404).send({ message: 'Traccia già presente' });
+    } else
+      res.status(200).send({ message: 'Traccia aggiunta alla playlist con successo' });
   } catch (error) {
     console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
-    res.status(500).send({message:'Si è verificato un errore interno'});
+    res.status(500).send({ message: 'Si è verificato un errore interno' });
   }
 });
 app.get("/genres", async (req, res) => {
@@ -853,7 +854,7 @@ async function searchPlaylists(query, id) {
   }
 }
 async function searchTags(query, id) {
-  
+
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
@@ -913,6 +914,33 @@ async function searchUsers(query) {
 app.get("/searchTracks/:query", async (req, res) => {
   query = req.params.query
   res.send(await searchTracks(query));
+})
+app.get("/searchTrack/:idTrack", async (req, res) => {
+  id_track = req.params.idTrack
+  const id = req.query.id;
+  var pwmClient = await new mongoClient(uri).connect();
+
+  // Search for user playlists using aggregation
+  var userPlaylistsCursor = await pwmClient
+    .db("spotify")
+    .collection("users")
+    .aggregate([
+      { $match: { _id: new ObjectId(id) } },
+      { $unwind: '$my_playlists' },
+      { $match: { 'my_playlists.tracks.id': id_track } },
+      { $project: { _id: 0, 'my_playlists': 1 } }
+    ])
+    .toArray();
+  const playlistsCollection = await pwmClient
+    .db("spotify")
+    .collection("public_playlists").
+    find({ "tracks.id": id_track })
+    .toArray();
+  let result = {
+    playlists: userPlaylistsCursor.map(playlist => playlist.my_playlists),
+    public_playlists: playlistsCollection
+  }
+  res.send(result);
 })
 app.get("/search/:query", async (req, res) => {
   let query = req.params.query

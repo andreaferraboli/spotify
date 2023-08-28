@@ -8,6 +8,7 @@ import Home from '../src/pages/Home';
 import Login from '../src/pages/Login';
 import Register from '../src/pages/Register';
 import Search from '../src/pages/Search';
+import SearchTrack from '../src/pages/SearchTrack';
 import Album from '../src/pages/Album';
 import Track from '../src/pages/Track';
 import Playlist from '../src/pages/Playlist';
@@ -173,6 +174,7 @@ function App() {
                     <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
                     <Route path="/register" element={<Register snackbar={showSnackbar} />} />
                     <Route path="/search/:query" element={<Search user={user} />} />
+                    <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} />} />
 
                     <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} snackbar={showSnackbar} />} />
                     <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} snackbar={showSnackbar} />} />

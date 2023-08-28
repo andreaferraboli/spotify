@@ -37,6 +37,10 @@ const Track = (props) => {
     setAnchorEl(null);
   };
 
+  const searchTrack = (id_track) => {
+    window.location.href="/searchTrack/"+id_track
+  };
+
   const handlePlaylistSelect = (playlistId, type) => {
     axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, { trackData: props.track, type: type })
       .then(response => {
@@ -54,10 +58,10 @@ const Track = (props) => {
   return (
     <>
       <Grid container spacing={1} style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }} className="track" >
-        <Grid item xs={12} sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Grid item  sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography variant="body1">{props.index}</Typography>
         </Grid>
-        <Grid xs={12} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
+        <Grid xs={1} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
           <div className={`image-container ${isPlaying ? 'playing' : ''}`} style={{ backgroundImage: `url(${props.track.image})` }}>
             {isPlaying ? (
               <div className="play-icon-div">
@@ -66,14 +70,7 @@ const Track = (props) => {
             ) : null}
           </div>
         </Grid>
-
-
-
-
-
-
-
-        <Grid style={{ paddingLeft: "3%" }} xs={12} sm={7} >
+        <Grid style={{ paddingLeft: "3%" }}  sm={7} >
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
             <Typography variant="h6" style={{ marginBottom: "8px" }} >
               <span key={props.track.id}>
@@ -90,10 +87,13 @@ const Track = (props) => {
             </Typography>
           </div>
         </Grid>
-        <Grid item xs={12} sm={2}>
+        <Grid item sm={1}>
           <Typography variant="body2">{formatDuration(props.track.duration)}</Typography>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item  sm={1}>
+          <Typography variant="body2">{props.track.year}</Typography>
+        </Grid>
+        <Grid item  sm={1}>
           <MoreVertIcon onClick={handleMenuOpen} />
           <Menu
             anchorEl={anchorEl}
@@ -101,6 +101,7 @@ const Track = (props) => {
             onClose={handleMenuClose}
 
           >
+            <MenuItem onClick={()=>searchTrack(props.track.id)}>Cerca nelle playlist</MenuItem>
             <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
             {props.userPlaylists?.map((playlist) => (
               <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id, playlist.collaborative !== undefined ? "public" : "private")}>
