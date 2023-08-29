@@ -46,30 +46,38 @@ function auth(req, res, next) {
 //connect spotify api
 const uri =
   "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
+// Credenziali del client fornite da Spotify
 const client_id = "2671048b97804e938412fcbe2810b373";
 const client_secret = "3b8081f11e264df7bc3b45bdbd23ebf1";
+// Variabili per memorizzare l'access token e l'oggetto SpotifyApi
 var my_access_token, spotifyApi;
+// URL dell'endpoint per ottenere il token di accesso da Spotify
 var url = "https://accounts.spotify.com/api/token";
+// Effettua una richiesta POST all'endpoint per ottenere il token di accesso
 fetch(url, {
   method: "POST",
   headers: {
+    // Include le credenziali del client codificate in Base64 nell'header Authorization
     Authorization: "Basic " + btoa(`${client_id}:${client_secret}`),
+    // Specifica il tipo di contenuto nell'header
     "Content-Type": "application/x-www-form-urlencoded",
   },
+  // Includi il tipo di concessione richiesto (client_credentials) nel corpo della richiesta
   body: new URLSearchParams({ grant_type: "client_credentials" }),
 })
   .then((response) => response.json())
   .then(async (tokenResponse) => {
-    //Sarebbe opportuno salvare il token nel local storage
+    // Una volta ottenuto il token di accesso dalla risposta, memorizzalo
     my_access_token = tokenResponse.access_token;
+    // Inizializza un'istanza di SpotifyWebApi con le credenziali del client
     spotifyApi = new SpotifyWebApi({
       clientId: client_id,
       clientSecret: client_secret,
     });
+    // Imposta il token di accesso per l'istanza di SpotifyWebApi
     spotifyApi.setAccessToken(my_access_token);
-
-    // getPlaylist("6kKHNiL4UuCxSXPv6EuYdl");
   });
+
 
 async function getTrack(id_track) {
   try {
