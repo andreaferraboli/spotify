@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const express = require("express");
+const apiKey = "123456"
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger_output.json");
 const bodyParser = require('body-parser');
@@ -34,6 +35,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+function auth(req, res, next) {
+  if (req.query.apikey != apiKey) {
+    res.status(401)
+    return res.json({ message: "Invalid API key" })
+  }
+
+  next()
+}
 //connect spotify api
 const uri =
   "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
