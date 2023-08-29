@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom"; // Importa il componente Link
-import "../style/SidebarOption.css";
+import "../styles/SidebarOption.css";
 
 function SidebarOption({ option = "test", Icon, navigateTo, public: isPublic }) {
   return (

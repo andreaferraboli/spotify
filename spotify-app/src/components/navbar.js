@@ -10,7 +10,7 @@ import InputBase from "@mui/material/InputBase";
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import SearchIcon from "@mui/icons-material/Search";
-import "../style/navbar.css";
+import "../styles/navbar.css";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

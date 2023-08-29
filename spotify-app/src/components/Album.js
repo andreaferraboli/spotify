@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
-import "../style/album.css"; // Importa il file CSS
+import "../styles/album.css"; // Importa il file CSS
 
 const Album = ({ album }) => {
   return (

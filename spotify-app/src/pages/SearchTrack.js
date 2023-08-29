@@ -7,7 +7,7 @@ import { Grid } from '@mui/material'; // Import the Grid component from Material
 import ArtistCard from '../components/ArtistCard';
 import UserCard from '../components/UserCard';
 import Album from '../components/Album';
-import "../style/search.css";
+import "../styles/search.css";
 
 
 export default function SearchResults({ user }) {

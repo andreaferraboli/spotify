@@ -5,7 +5,7 @@ import axios from 'axios';
 import LoadArtist from "../components/LoadArtist"
 import LoadGenres from "../components/LoadGenres"
 
-import "../style/login.css"; // Importa il file CSS con gli stili personalizzati
+import "../styles/login.css"; // Importa il file CSS con gli stili personalizzati
 
 const RegisterPage = ({ snackbar }) => {
   const [firstName, setFirstName] = useState('');

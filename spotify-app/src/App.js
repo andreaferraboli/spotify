@@ -20,7 +20,7 @@ import UserPage from '../src/pages/User';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MuiAlert from '@mui/material/Alert';
-import "./style/home.css";
+import "./styles/home.css";
 const theme = createTheme();
 function App() {
   const defaultUser = { my_playlists: [], favourite_artists: [] };

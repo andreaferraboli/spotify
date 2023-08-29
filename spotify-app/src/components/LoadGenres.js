@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Container, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import Scrollbar from "react-scrollbars-custom";
-import "../style/login.css";
+import "../styles/login.css";
 const LoadGenres = (props) => {
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [genres, setGenres] = useState([]);

@@ -5,7 +5,7 @@ import ArtistCard from "../components/ArtistCard"
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { responsive, responsiveArtist } from "./Search"
-import "../style/home.css";
+import "../styles/home.css";
 
 const Home = (props) => {
   const [public_playlists, setPublicPlaylists] = useState([])

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Typography, Avatar, Grid, TextField } from '@mui/material';
-import "../style/artist.css";
+import "../styles/artist.css";
 import axios from 'axios';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";

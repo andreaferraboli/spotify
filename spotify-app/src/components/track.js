@@ -4,7 +4,7 @@ import { Grid, Typography, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import axios from 'axios';
-import "../style/track.css";
+import "../styles/track.css";
 const Track = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);

@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import axios from 'axios';
-import "../style/playlist.css";
+import "../styles/playlist.css";
 
 export function formatDuration(milliseconds) {
   const hours = Math.floor(milliseconds / 3600000);

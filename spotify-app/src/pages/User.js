@@ -10,7 +10,7 @@ import PlaylistCard from "../components/PlaylistCard"
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
-import "../style/user.css"; // Assumi che tu abbia uno stile CSS per l'user
+import "../styles/user.css"; // Assumi che tu abbia uno stile CSS per l'user
 
 const User = ({ onBack }) => {
     const { userId } = useParams();

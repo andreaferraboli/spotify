@@ -9,7 +9,7 @@ import Album from '../components/Album';
 import Scrollbar from "react-scrollbars-custom";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import "../style/search.css";
+import "../styles/search.css";
 export const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.

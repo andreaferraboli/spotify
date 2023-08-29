@@ -8,7 +8,7 @@ import {
 
 import { AddCircleOutline } from '@mui/icons-material';
 import Track from "./track";
-import "../style/playlist.css";
+import "../styles/playlist.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';

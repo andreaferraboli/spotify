@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 import { formatDuration } from "./Playlist"
-import "../style/album.css"; // Assumi che tu abbia uno stile CSS per l'album
+import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
 const Album = ({ user, onBack, snackbar }) => {
     const { albumId } = useParams();

@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, Avatar } from '@mui/material';
-import "../style/card.css";
+import "../styles/card.css";
 
 export default function ArtistCard(props) {
   return (

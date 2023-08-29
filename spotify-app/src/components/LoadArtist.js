@@ -6,7 +6,7 @@ import Carousel from "react-multi-carousel";
 import { responsive } from "../pages/Search"
 import Scrollbar from "react-scrollbars-custom";
 import "react-multi-carousel/lib/styles.css";
-import '../style/artist.css';
+import '../styles/artist.css';
 const LoadArtist = (props) => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [artists, setArtists] = useState([]);

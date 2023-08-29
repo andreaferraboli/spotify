@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
-import "../style/login.css";
+import "../styles/login.css";
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState('');

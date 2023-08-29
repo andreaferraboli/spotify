@@ -3,7 +3,7 @@ import { Container, Grid, Avatar, TextField, Button, Typography,  Dialog, Dialog
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
 
-import "../style/account.css";
+import "../styles/account.css";
 const Account = ({ user, handleLogin, snackbar }) => {
 
     const [name, setName] = useState(user.name);
