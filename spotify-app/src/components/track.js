@@ -42,19 +42,25 @@ const Track = (props) => {
   };
 
   const handlePlaylistSelect = (playlistId, type) => {
-    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, { trackData: props.track, type: type })
-      .then(response => {
+    const apiKey = process.env.REACT_APP_API_KEY;
+    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, {
+        trackData: props.track,
+        type: type,
+        "apikey": apiKey
+    })
+    .then(response => {
         props.snackbar(response.data.message, "success");
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         if (error.response && error.response.status === 404) {
-          props.snackbar('Traccia già presente', "error");
+            props.snackbar('Traccia già presente', "error");
         } else {
-          props.snackbar('Errore durante l\'aggiunta della traccia alla playlist', "error");
+            props.snackbar('Errore durante l\'aggiunta della traccia alla playlist', "error");
         }
-      });
+    });
     handleMenuClose();
-  };
+};
+
   return (
     <>
       <Grid container spacing={1} style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }} className="track" >

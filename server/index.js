@@ -1,7 +1,6 @@
 const { ServerApiVersion } = require('mongodb');
 const mongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
-const auth = require("./auth").auth;
 const crypto = require("crypto");
 const fs = require('fs');
 const fsPromises = require('fs').promises;
@@ -10,6 +9,7 @@ const apiKey = "123456"
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger_output.json");
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const path = require('path');
 var SpotifyWebApi = require("spotify-web-api-node");
 const { v4: uuidv4 } = require('uuid');
@@ -35,14 +35,21 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-function auth(req, res, next) {
-  if (req.query.apikey != apiKey) {
-    res.status(401)
-    return res.json({ message: "Invalid API key" })
+function authenticateApiKey(req, res, next) {
+  const providedApiKey = req.query.apikey;
+
+  if (!providedApiKey) {
+    return res.status(401).json({ message: "API key missing" });
   }
 
-  next()
+  if (providedApiKey !== apiKey) {
+    return res.status(401).json({ message: "Invalid API key" });
+  }
+
+  // L'API key è valida, procedi all'endpoint successivo
+  next();
 }
+
 //connect spotify api
 const uri =
   "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
@@ -202,46 +209,7 @@ function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
 
-async function addUser(res, user) {
-  if (user.name == undefined) {
-    res.status(400).send("Missing Name");
-    return;
-  }
-  if (user.surname == undefined) {
-    res.status(400).send("Missing Surname");
-    return;
-  }
-  if (user.email == undefined) {
-    res.status(400).send("Missing Email");
-    return;
-  }
-  if (user.password == undefined || user.password.length < 3) {
-    res.status(400).send("Password is missing or too short");
-    return;
-  }
-  if (user.date == undefined) {
-    res.status(400).send("Date is missing or too short");
-    return;
-  }
 
-  user.password = hash(user.password);
-
-  var pwmClient = await new mongoClient(uri).connect();
-  try {
-    var items = await pwmClient
-      .db("pwm")
-      .collection("spotify")
-      .collection("users")
-      .insertOne(user);
-    // res.json(items)
-  } catch (e) {
-    if (e.code == 11000) {
-      res.status(400).send("Utente già presente");
-      return;
-    }
-    res.status(500).send(`Errore generico: ${e}`);
-  }
-}
 function deleteUser(res, id) {
   let index = users.findIndex((user) => user.id == id);
   if (index == -1) {
@@ -309,7 +277,7 @@ async function updateUser(res, id, updatedUser) {
         about: ''
     }
 } */
-app.get("/user/:id", auth, async function (req, res) {
+app.get("/user/:id", async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
@@ -342,7 +310,7 @@ app.get("/user/:id", auth, async function (req, res) {
         ]
     }
 } */
-app.get("/showUser/:id", async function (req, res) {
+app.get("/showUser/:id", authenticateApiKey, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
@@ -371,7 +339,7 @@ app.get("/showUser/:id", async function (req, res) {
   res.json(user);
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", authenticateApiKey, async (req, res) => {
   login = req.body;
 
   if (login.email == undefined) {
@@ -406,7 +374,7 @@ app.post("/login", async (req, res) => {
 
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", authenticateApiKey, async (req, res) => {
 
   register = req.body;
   if (register.email == undefined) {
@@ -461,17 +429,19 @@ function convertBase64ToPng(base64String, outputFilePath) {
     console.error('Error converting and saving image:', error);
   }
 }
+// Funzione per caricare un file su Firebase Cloud Storage
 async function uploadToFirebaseStorage(filePath, id, directory) {
   try {
-    // Upload the file to Firebase Cloud Storage
+    // Carica il file su Firebase Cloud Storage specificando la destinazione
     await bucket.upload(filePath, {
-      destination: directory + "/" + id + '.png', // Destination path in the storage bucket
+      destination: directory + "/" + id + '.png', // Percorso di destinazione nel bucket di archiviazione
     });
 
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Errore durante il caricamento dell\'immagine:', error);
   }
 }
+
 app.post('/setUserImage/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -547,15 +517,15 @@ app.post('/upload', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching the Blob URL.' });
   }
 });
-app.put("/users/:id", auth, function (req, res) {
+app.put("/users/:id", authenticateApiKey, function (req, res) {
   updateUser(res, req.params.id, req.body);
 });
 
-app.delete("/users/:id", auth, function (req, res) {
+app.delete("/users/:id", authenticateApiKey,  function (req, res) {
   deleteUser(res, req.params.id);
 });
 
-app.get("/", function (req, res) {
+app.get("/", authenticateApiKey, function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
 });
 
@@ -577,24 +547,24 @@ app.get('/check-email/:email', async (req, res) => {
     res.status(500).json({ error: 'Errore interno del server' });
   }
 });
-app.get("/artists/:query", async (req, res) => {
+app.get("/artists/:query", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   query = req.params.query
   res.send(await searchArtists(query))
 });
-app.get("/track/:id", async (req, res) => {
+app.get("/track/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   let track = await getFullTrack(id);
   res.json(track);
 })
-app.get("/album/:id", async (req, res) => {
+app.get("/album/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   let album = await getAlbum(id);
   res.json(await filterFullAlbum(album));
 })
-app.get("/artist/:id", async (req, res) => {
+app.get("/artist/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   let artist = await getArtist(id);
@@ -603,7 +573,7 @@ app.get("/artist/:id", async (req, res) => {
   let response = { artist: { info: artist, top_tracks: top_tracks, albums: albums } };
   res.json(response);
 })
-app.get("/playlist/:id", async (req, res) => {
+app.get("/playlist/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   var pwmClient = await new mongoClient(uri).connect();
@@ -627,7 +597,7 @@ app.get("/playlist/:id", async (req, res) => {
   }
   res.json(playlist);
 });
-app.get("/newId", async (req, res) => {
+app.get("/newId", authenticateApiKey, async (req, res) => {
   let newId;
   let pwmClient, playlist;
   do {
@@ -645,7 +615,7 @@ app.get("/newId", async (req, res) => {
   return res.status(200).send({ 'id': newId })
 
 })
-app.put("/playlist/:id", async (req, res) => {
+app.put("/playlist/:id", authenticateApiKey, async (req, res) => {
   const playlistId = req.params.id;
   const updatedPlaylist = req.body;
   try {
@@ -676,7 +646,7 @@ app.put("/playlist/:id", async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 })
-app.post("/playlist", async (req, res) => {
+app.post("/playlist", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
 
   const playlist = req.body.playlist; // Replace with your desired genres array
@@ -751,7 +721,7 @@ app.post('/playlists/:playlistId/add-track', async (req, res) => {
     res.status(500).send({ message: 'Si è verificato un errore interno' });
   }
 });
-app.get("/genres", async (req, res) => {
+app.get("/genres", authenticateApiKey, async (req, res) => {
   try {
     const response = await axios.get(`https://api.spotify.com/v1/recommendations/available-genre-seeds`, {
       headers: {
@@ -766,7 +736,7 @@ app.get("/genres", async (req, res) => {
   }
 });
 
-app.post("/genre", async (req, res) => {
+app.post("/genre", authenticateApiKey, async (req, res) => {
   const genres = req.body.genres; // Replace with your desired genres array
   const limit = req.body.limit; // Limit the number of results
   let artists = [];
@@ -928,11 +898,11 @@ async function searchUsers(query) {
     return []; // Ritorna un array vuoto in caso di errore
   }
 }
-app.get("/searchTracks/:query", async (req, res) => {
+app.get("/searchTracks/:query", authenticateApiKey, async (req, res) => {
   query = req.params.query
   res.send(await searchTracks(query));
 })
-app.get("/searchTrack/:idTrack", async (req, res) => {
+app.get("/searchTrack/:idTrack", authenticateApiKey, async (req, res) => {
   id_track = req.params.idTrack
   const id = req.query.id;
   var pwmClient = await new mongoClient(uri).connect();
@@ -959,7 +929,7 @@ app.get("/searchTrack/:idTrack", async (req, res) => {
   }
   res.send(result);
 })
-app.get("/search/:query", async (req, res) => {
+app.get("/search/:query", authenticateApiKey, async (req, res) => {
   let query = req.params.query
   const id = req.query.id;
   let tracks = await searchTracks(query);
@@ -979,7 +949,7 @@ app.get("/search/:query", async (req, res) => {
   res.status(200).send(result)
 
 })
-app.get("/searchTracksArtist/:id/:query", async (req, res) => {
+app.get("/searchTracksArtist/:id/:query", authenticateApiKey, async (req, res) => {
   let query = req.params.query
   const id = req.params.id;
   let artist = await getArtist(id);
@@ -1175,7 +1145,7 @@ app.put('/updatePlaylist', async (req, res) => {
   }
 });
 
-app.put("/movePlaylist/:id", async (req, res) => {
+app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
   const playlistId = req.params.id;
   const userId = req.body.user_id
   const image = req.body.image
@@ -1251,7 +1221,7 @@ app.put("/movePlaylist/:id", async (req, res) => {
     res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
   }
 });
-app.put("/setCollaborative/:id", async (req, res) => {
+app.put("/setCollaborative/:id", authenticateApiKey, async (req, res) => {
   const playlistId = req.params.id;
   const collaborative = req.body.collaborative;
   try {
@@ -1274,7 +1244,7 @@ app.put("/setCollaborative/:id", async (req, res) => {
   }
 });
 
-app.post("/updateInfo", async (req, res) => {
+app.post("/updateInfo", authenticateApiKey, async (req, res) => {
   let id = req.body.id;
   let name = req.body.name;
   let surname = req.body.surname;
@@ -1300,7 +1270,7 @@ app.post("/updateInfo", async (req, res) => {
 });
 
 // Cambia la password dell'utente
-app.post("/changePassword", async (req, res) => {
+app.post("/changePassword", authenticateApiKey, async (req, res) => {
   let id = req.body.id;
   let oldPassword = req.body.oldPassword;
   let newPassword = req.body.newPassword;
@@ -1324,7 +1294,7 @@ app.post("/changePassword", async (req, res) => {
 });
 
 // Elimina il profilo dell'utente
-app.delete("/deleteProfile/:id", async (req, res) => {
+app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
   const userId = req.params.id;
   try {
     const pwmClient = await new mongoClient(uri).connect();

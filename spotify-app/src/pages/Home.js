@@ -18,16 +18,22 @@ const Home = (props) => {
   }, [props.user._id]);
 
   const GetRelatedPlaylists = async (userId) => {
+    const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      const response = await axios.get(`http://localhost:3100/relatedPlaylists/${userId}`);
-      const data = response.data;
-      setPublicPlaylists(data.public_playlists || []);
-      setFollowedPlaylists(data.followed_playlists || []);
-      setYourPublicPlaylists(data.your_public_playlists || []);
+      const response = await axios.get(`http://localhost:3100/relatedPlaylists/${userId}?apikey=${apiKey}`);
+      if (response.status === 200) {
+          const data = response.data;
+          setPublicPlaylists(data.public_playlists || []);
+          setFollowedPlaylists(data.followed_playlists || []);
+          setYourPublicPlaylists(data.your_public_playlists || []);
+      } else {
+          props.snackbar('Error fetching related playlists', "error");
+      }
     } catch (error) {
       props.snackbar('Error fetching related playlists', "error");
     }
-  };
+};
+
   return (
     <>
       {props.user?.my_playlists?.length > 0 && (

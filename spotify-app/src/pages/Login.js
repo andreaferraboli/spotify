@@ -10,9 +10,9 @@ const LoginPage = (props) => {
   
   
   const handleLogin = async () => {
-    // Implementa la logica di autenticazione qui
+    const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      const response = await axios.post('http://localhost:3100/login', {
+      const response = await axios.post(`http://localhost:3100/login?apikey=${apiKey}`, {
         email,
         password,
       });
@@ -37,9 +37,10 @@ const LoginPage = (props) => {
       } else {
         props.snackbar("Errore sconosciuto", "error");
       }
-      console.log('Errore durante la richiesta di login:', error.message);
+      props.snackbar('Errore durante la richiesta di login:'+ error.message,"errore");
     }
   };
+
 
   return (
     <><div className='background'>

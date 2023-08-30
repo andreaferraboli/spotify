@@ -7,16 +7,26 @@ const LoadGenres = (props) => {
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [genres, setGenres] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
+    const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
         // Effettua la chiamata al server solo una volta durante il montaggio iniziale
-        axios.get(`http://localhost:3100/genres`)
+        axios.get(`http://localhost:3100/genres?apikey=${apiKey}`)
             .then(response => {
-                setGenres(response.data);
-                setAllGenres(response.data)
+                if (response.status === 200) {
+                    setGenres(response.data);
+                    setAllGenres(response.data);
+                } else {
+                    console.error('Error fetching genres:', response.statusText);
+                    // Aggiungi qui il codice per gestire l'errore nella richiesta
+                }
             })
-            .catch(error => console.error(error));
+            .catch(error => {
+                console.error('Error fetching genres:', error);
+                // Aggiungi qui il codice per gestire l'errore nella richiesta
+            });
     }, []); // Array di dipendenze vuoto
+    
 
     const handleGenreSelect = (genre) => {
         if (genre !== null && genre !== undefined) {

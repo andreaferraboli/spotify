@@ -30,23 +30,24 @@ const Playlist = ({ user, onBack, snackbar }) => {
   const [editing, setEditing] = useState(false);
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [newTag, setNewTag] = useState('');
+  const apiKey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
     const fetchPlaylist = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=123456`);
-        setPlaylist(response.data);
-
-      } catch (error) {
-        console.log(error);
-      }
+        try {
+            const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=${apiKey}`);
+            if (response.status === 200) {
+                setPlaylist(response.data);
+            } else {
+                snackbar("Errore nella richiesta", "error");
+            }
+        } catch (error) {
+            snackbar("Errore durante la richiesta", "error");
+        }
     };
     fetchPlaylist();
-  }, [playlistId]);
+}, [playlistId]);
 
-  const handleEditPlaylist = () => {
-    setEditing(true);
-  };
 
   const handleEditName = () => {
     const newName = prompt("Inserisci il nuovo nome della playlist:");
@@ -64,118 +65,127 @@ const Playlist = ({ user, onBack, snackbar }) => {
     }
   };
   const updatePlaylistOnServer = (newName, newDescription) => {
-    axios.put('http://localhost:3100/updatePlaylist', {
-      name: newName,
-      description: newDescription,
-      playlistId: playlistId
+    axios.put(`http://localhost:3100/updatePlaylist?apikey=${apiKey}`, {
+        name: newName,
+        description: newDescription,
+        playlistId: playlistId
     })
-      .then(response => {
+    .then(response => {
         // Handle success response from the server
         if (response.status === 200) {
-          snackbar(response.data.message, "success")
-          window.location.href = "/playlist/" + playlistId
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar("Errore nell'aggiornamento della playlist", "error");
         }
-        else
-          snackbar("errore nell'aggiornare la playlist", "error")
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         // Handle error
-        snackbar('Error updating playlist', "error");
-      });
-  };
+        snackbar('Errore durante l\'aggiornamento della playlist', "error");
+    });
+};
+
 
   const handleDeletePlaylist = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}`);
-      if (response.status === 200) {
-        snackbar(response.data.message, "success")
-        window.location.href = "/playlist/" + playlistId
-      }
-      else
-        snackbar("errore nel pubblicare la playlist", "error")
-      window.location.href = "/"
+        const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`);
+        
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar("Errore nell'eliminazione della playlist", "error");
+            window.location.href = "/";
+        }
     } catch (error) {
-      snackbar('Error deleting playlist:' + error, "error");
+        snackbar("Errore durante l'eliminazione della playlist: " + error.message, "error");
     }
-  };
+};
+
   async function publishPlaylist() {
-    const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
+    const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
     const requestData = { user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private' };
 
     try {
-      const response = await axios.put(url, requestData);
-      if (response.status === 200) {
-        snackbar(response.data.message, "success")
-        window.location.href = "/playlist/" + playlistId
-      }
-      else
-        snackbar("errore nel pubblicare la playlist", "error")
+        const response = await axios.put(url, requestData);
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar("Errore nel pubblicare la playlist", "error");
+        }
     } catch (error) {
-      snackbar("Errore durante la pubblicazione della playlist:" + error, "error");
-      throw error;
+        snackbar("Errore durante la pubblicazione della playlist: " + error.message, "error");
     }
-  }
+}
+
   async function makePlaylistPrivate(playlist) {
-    const url = `http://localhost:3100/movePlaylist/${playlist.id}`;
+    const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
     const requestData = { user_id: user._id, type: 'public' };
 
     try {
-      const response = await axios.put(url, requestData);
-      if (response.status === 200) {
-        snackbar(response.data.message, "success")
-        window.location.href = "/playlist/" + playlistId
-      }
-      else
-        snackbar("errore nel rendere la playlist privata", "error")
+        const response = await axios.put(url, requestData);
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar("Errore nel rendere la playlist privata", "error");
+        }
     } catch (error) {
-      snackbar("Errore durante il rendere la playlist privata: " + error, "error");
-      throw error;
+        snackbar("Errore durante il rendere la playlist privata: " + error.message, "error");
     }
-  }
+}
+
   const handleSetCollaborative = async (collaborative) => {
     try {
-      const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}`, { "collaborative": collaborative });
-      if (response.status === 200) {
-        snackbar(response.data.message, "success")
-        window.location.href = "/playlist/" + playlistId
-      }
+        const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
+        
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar(response.data.message, "error");
+        }
     } catch (error) {
-      snackbar("Errore durante l'impostazione della playlist come collaborativa:" + error, "error");
+        snackbar("Errore durante l'impostazione della playlist come collaborativa:" + error.message, "error");
     }
-  };
+};
+
   async function changeFollow(playlistId, userId, action) {
     try {
-      const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}`);
-      if (response.status === 200) {
-        snackbar(response.data.message, "success")
-        window.location.href = "/playlist/" + playlistId
-      }
-      else
-        snackbar(response.data.message, "error")
-
-
+        const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}&apikey=${apiKey}`);
+        
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar(response.data.message, "error");
+        }
     } catch (error) {
-      throw error;
+        snackbar(error.message, "error");
     }
-  }
+}
+
 
   const changeTag = async (playlistId, tag, action) => {
     try {
-      const response = await axios.post('http://localhost:3100/changeTag', {
-        playlistId: playlistId,
-        tag: tag,
-        action: action,
-      });
-      if (response.status === 200) {
-        snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId
-      }
-      else
-        snackbar("errore", "error")
+        const response = await axios.post(`http://localhost:3100/changeTag?apikey=${apiKey}`, {
+            playlistId: playlistId,
+            tag: tag,
+            action: action,
+        });
+
+        if (response.status === 200) {
+            snackbar(response.data.message, "success");
+            window.location.href = "/playlist/" + playlistId;
+        } else {
+            snackbar("Errore durante l'operazione", "error");
+        }
     } catch (error) {
-      throw error;
+      snackbar(error,"error");
     }
-  };
+};
+
   const handleAddTag = () => {
     setIsAddingTag(true);
   };

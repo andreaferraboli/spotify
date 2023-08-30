@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Avatar, TextField, Button, Typography,  Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Container, Grid, Avatar, TextField, Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
 
@@ -16,24 +16,26 @@ const Account = ({ user, handleLogin, snackbar }) => {
     const [genres, setGenres] = useState([]);
     const [allGenres, setAllGenres] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const apiKey = process.env.REACT_APP_API_KEY;
 
     const handleAvatarClick = () => {
-      setIsDialogOpen(true);
+        setIsDialogOpen(true);
     };
-  
+
     const handleCloseDialog = () => {
-      setIsDialogOpen(false);
+        setIsDialogOpen(false);
     };
-    
+
     useEffect(() => {
         // Effettua la chiamata al server solo una volta durante il montaggio iniziale
-        axios.get(`http://localhost:3100/genres`)
+        axios.get(`http://localhost:3100/genres?apikey=${apiKey}`)
             .then(response => {
                 setGenres(response.data);
-                setAllGenres(response.data)
+                setAllGenres(response.data);
             })
             .catch(error => console.error(error));
     }, []);
+
     const handleGenreSelect = (genre) => {
         if (genre !== null && genre !== undefined) {
             if (!selectedGenres?.some(g => g.id === genre.id)) {
@@ -59,109 +61,125 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
     }
     const handleChangeImage = async (event) => {
-        
+
         const newImage = event.target.files[0];
-        await publicFile(newImage,user._id)
+        await publicFile(newImage, user._id)
         handleCloseDialog();
-      };
-    async function publicFile(selectedFile,userId) {
+    };
+    async function publicFile(selectedFile, userId) {
         const formData = new FormData();
         formData.append('file', selectedFile);
-      
+
         try {
-          const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
+            const uploadUrl = `http://localhost:3100/uploadFile/${userId}?apikey=${apiKey}`;
+            const response = await axios.post(uploadUrl, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (response.status === 200) {
+                snackbar("Informazioni caricate correttamente", "success");
+                const setImageUrlUrl = `http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`;
+                let responseImage = await axios.post(setImageUrlUrl, { "fileUrl": response.data.fileUrl });
+
+                if (responseImage.status === 200) {
+                    snackbar("Immagine caricata correttamente", "success");
+                    window.location.href = "/";
+                } else {
+                    snackbar("Immagine non caricata correttamente", "error");
+                }
+            } else {
+                snackbar('Errore durante l\'upload del file.', "error");
             }
-          });
-    
-        if (response.status === 200) {
-          snackbar("informazioni caricate correttamente", "success")
-          let responseImage=await axios.post("http://localhost:3100/setUserImage/"+userId,{"fileUrl":response.data.fileUrl}) 
-          if(responseImage.status === 200){
-            snackbar("immagine caricata correttamente", "success")
-            window.location.href="/"
-          }
-          else
-          snackbar("immagine non caricata correttamente", "error")
-        } else {
-          snackbar('Errore durante l\'upload del file.',"error");
+        } catch (error) {
+            snackbar('Errore: ' + error, "error");
         }
-      } catch (error) {
-        snackbar('Errore:'+ error,"error");
-      }
     }
+
 
     const handleSaveInfo = async () => {
         try {
-            const response = await axios.post("http://localhost:3100/updateInfo", {
+            const updateInfoUrl = `http://localhost:3100/updateInfo?apikey=${apiKey}`;
+            const response = await axios.post(updateInfoUrl, {
                 "id": user._id,
                 "name": name,
                 "surname": surname,
                 "profile_name": profileName,
             });
+
             if (response.status === 200) {
-                snackbar(response.data.message, "success")
-                handleLogin(user)
+                snackbar(response.data.message, "success");
+                handleLogin(user);
             } else {
-                snackbar(response.data.message, "error")
+                snackbar(response.data.message, "error");
             }
-            handleLogin(user)
-            // Handle success or display a message to the user
         } catch (error) {
             // Handle error
+            snackbar(error, "error");
         }
     };
 
     const handleChangePassword = async () => {
         try {
-            const response = await axios.post("http://localhost:3100/changePassword", {
+            const changePasswordUrl = `http://localhost:3100/changePassword?apikey=${apiKey}`;
+            const response = await axios.post(changePasswordUrl, {
                 "id": user._id,
                 "oldPassword": oldPassword,
                 "newPassword": newPassword,
             });
+    
             if (response.status === 200) {
-                snackbar(response.data.message, "success")
-                handleLogin(user)
+                snackbar(response.data.message, "success");
+                handleLogin(user);
             } else {
-                snackbar(response.data.message, "error")
+                snackbar(response.data.message, "error");
             }
         } catch (error) {
             // Handle error
+            snackbar(error, "error");
         }
     };
+    
 
     const changeGenres = async (genres) => {
         try {
-            const response = await axios.put("http://localhost:3100/changeGenres", {
+            const changeGenresUrl = `http://localhost:3100/changeGenres?apikey=${apiKey}`;
+            const response = await axios.put(changeGenresUrl, {
                 "id": user._id,
                 "genres": genres
-            })
+            });
+    
             if (response.status === 200) {
-                snackbar(response.data.message, "success")
-                handleLogin(user)
+                snackbar(response.data.message, "success");
+                handleLogin(user);
             } else {
-                snackbar(response.data.message, "error")
+                snackbar(response.data.message, "error");
             }
         } catch (error) {
             // Handle error
-        }
-    }
-    const handleDeleteProfile = async () => {
-        try {
-            const response = await axios.delete("http://localhost:3100/deleteProfile/" + user._id);
-
-            if (response.status === 200) {
-                snackbar(response.data.message, "success")
-                handleLogin(user)
-            } else {
-                snackbar(response.data.message, "error")
-            }
-            handleLogout()
-        } catch (error) {
-            // Handle error
+            snackbar(error, "error");
         }
     };
+    
+    const handleDeleteProfile = async () => {
+        try {
+            const deleteProfileUrl = `http://localhost:3100/deleteProfile/${user._id}?apikey=${apiKey}`;
+            const response = await axios.delete(deleteProfileUrl);
+    
+            if (response.status === 200) {
+                snackbar(response.data.message, "success");
+                handleLogin(user);
+                handleLogout();
+            } else {
+                snackbar(response.data.message, "error");
+            }
+        } catch (error) {
+            // Handle error
+            snackbar(error, "error");
+        }
+    };
+    
     const handleLogout = () => {
         localStorage.removeItem('user');
         snackbar("logout eseguito correttamente", "success")
@@ -172,9 +190,9 @@ const Account = ({ user, handleLogin, snackbar }) => {
         <><Container>
             <Grid container spacing={3}>
                 {/* Sezione Avatar */}
-                <Grid item xs={12} sm={4} style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+                <Grid item xs={12} sm={4} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <Avatar
-                        style={{ width: "auto", height: "100%",maxHeight:"300px",maxWidth:"300px", cursor: 'pointer' }}
+                        style={{ width: "auto", height: "100%", maxHeight: "300px", maxWidth: "300px", cursor: 'pointer' }}
                         alt={profileName}
                         src={user.image}
                         onClick={handleAvatarClick}
@@ -298,21 +316,21 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
             <div className="button-container">
                 <Button
-                variant="contained"
-                className="delete-button"
-                onClick={handleDeleteProfile}
-            >
-                Elimina Profilo
-            </Button>
-            <Button
-                variant="contained"
-                className="edit-button"
-                onClick={handleLogout}
-            >
-                Disconnettiti
-            </Button>
+                    variant="contained"
+                    className="delete-button"
+                    onClick={handleDeleteProfile}
+                >
+                    Elimina Profilo
+                </Button>
+                <Button
+                    variant="contained"
+                    className="edit-button"
+                    onClick={handleLogout}
+                >
+                    Disconnettiti
+                </Button>
             </div>
-            
+
         </Container>
         </>
     );

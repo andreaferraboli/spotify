@@ -64,17 +64,16 @@ export default function SearchResults({ user }) {
 
 
   useEffect(() => {
-    // Invia la richiesta al server
-    axios.get(`http://localhost:3100/search/${query}`,{
-      params: { id: user._id }
-    })
-      .then(response => {
+    const apiKey = process.env.REACT_APP_API_KEY;
+    // Invia la richiesta al server con l'API key nell'URL come query parameter
+    axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`)
+    .then(response => {
         setSearchResults(response.data); // Imposta i risultati della ricerca
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error fetching search results:', error);
-      });
-  }, [query]);
+    });
+}, [query]);
 
   return (
     <div>

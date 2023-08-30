@@ -15,16 +15,23 @@ const Album = ({ user, onBack, snackbar }) => {
 
     useEffect(() => {
         const fetchAlbum = async () => {
+        const apiKey = process.env.REACT_APP_API_KEY;
             try {
-                const response = await axios.get(`http://localhost:3100/album/${albumId}?apikey=123456`);
-                console.log(response);
-                setAlbum(response.data);
+                const response = await axios.get(`http://localhost:3100/album/${albumId}?apikey=${apiKey}`);
+                
+                if (response.status === 200) {
+                    setAlbum(response.data);
+                } else {
+                    snackbar("Error fetching album details", "error");
+                }
             } catch (error) {
-                console.log(error);
+                snackbar("Error:"+ error, "error");
             }
         };
+        
         fetchAlbum();
     }, [albumId]);
+    
     return (
         <>
             <Grid container style={{ margin: 0 }} spacing={1}>

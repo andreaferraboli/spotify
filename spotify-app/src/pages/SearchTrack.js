@@ -17,17 +17,17 @@ export default function SearchResults({ user }) {
 
 
     useEffect(() => {
-        // Invia la richiesta al server
-        axios.get(`http://localhost:3100/searchTrack/${idTrack}`, {
-            params: { id: user._id }
+        const apiKey = process.env.REACT_APP_API_KEY;
+        // Invia la richiesta al server con l'API key nell'URL come query parameter
+        axios.get(`http://localhost:3100/searchTrack/${idTrack}?id=${user._id}&apikey=${apiKey}`)
+        .then(response => {
+            setSearchResults(response.data); // Imposta i risultati della ricerca
         })
-            .then(response => {
-                setSearchResults(response.data); // Imposta i risultati della ricerca
-            })
-            .catch(error => {
-                console.error('Error fetching search results:', error);
-            });
+        .catch(error => {
+            console.error('Error fetching search results:', error);
+        });
     }, [idTrack]);
+    
 
     return (
         <div>

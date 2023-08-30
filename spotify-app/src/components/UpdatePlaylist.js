@@ -17,19 +17,21 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
+    const apiKey = process.env.REACT_APP_API_KEY;
     const handleSearch = async (query) => {
         try {
             if (query.trim() === '') {
                 setSearchResults([]);
                 return;
             }
-
-            const response = await axios.get(`http://localhost:3100/searchTracks/${query}`);
+    
+            const response = await axios.get(`http://localhost:3100/searchTracks/${query}?apikey=${apiKey}`);
             setSearchResults(response.data);
         } catch (error) {
-            console.error('Error searching tracks:', error);
+            snackbar('Error searching tracks:'+ error, "error");
         }
     };
+    
     const handleRemoveTrack = (trackId) => {
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
@@ -77,22 +79,26 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
 
     const handleSaveChanges = async () => {
         try {
-            let response = await axios.post("http://localhost:3100/upload", {
+            let response = await axios.post(`http://localhost:3100/upload?apikey=${apiKey}`, {
                 dataUrl: document.getElementById("playlist_image").src,
                 id: localPlaylist.id
-            })
-            localPlaylist.image = response.data.imageUrl
-            response = await axios.put(`http://localhost:3100/playlist/${playlist.id}`, localPlaylist);
+            });
+    
+            localPlaylist.image = response.data.imageUrl;
+            
+            response = await axios.put(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`, localPlaylist);
+    
             if (response.status === 200) {
-                snackbar(response.data.message, "success")
+                snackbar(response.data.message, "success");
                 window.location.href = "/playlist/" + localPlaylist.id;
             } else {
-                snackbar(response.data.message, "error")
+                snackbar(response.data.message, "error");
             }
         } catch (error) {
-            console.error('Error saving changes:', error);
+            snackbar('Error saving changes:'+ error,"error");
         }
     };
+    
     function createImageCollage(imageUrls) {
         if (imageUrls.length !== 0) {
             const uniqueImageUrls = [...new Set(imageUrls)];

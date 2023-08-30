@@ -11,15 +11,16 @@ const LoadArtist = (props) => {
   const [selectedAvatars, setSelectedAvatars] = useState([]);
   const [artists, setArtists] = useState([]);
   const [query, setQuery] = useState('');
-  const [error, setError] = useState(null);
   const [noResults, setNoResults] = useState(false);
+  const apiKey = process.env.REACT_APP_API_KEY;
+
   const fetchData = async () => {
     try {
-      setError(null);
       setNoResults(false);
+
       if (query !== '') {
-        const response = await axios.get(`http://localhost:3100/artists/${query}`);
-        const artistsReceived = response.data
+        const response = await axios.get(`http://localhost:3100/artists/${query}?apikey=${apiKey}`);
+        const artistsReceived = response.data;
         if (artistsReceived.length === 0) {
           setNoResults(true); // Set noResults state if no artists match the query
         }
@@ -39,13 +40,13 @@ const LoadArtist = (props) => {
     } catch (error) {
       console.error('An error occurred:', error);
       props.snackbar('An error occurred while fetching data. Please try again later.');
-      setError('An error occurred while fetching data. Please try again later.');
     }
   };
 
   useEffect(() => {
     fetchData();
   }, [query]);
+
 
   const handleAvatarSelect = (artist) => {
     if (artist !== null && artist !== undefined) {
@@ -142,7 +143,6 @@ const LoadArtist = (props) => {
         </Button>
       </div>
       {noResults && <p>No artists match your search or no artists are available.</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </Container>
   );
 };

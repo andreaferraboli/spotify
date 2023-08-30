@@ -13,29 +13,33 @@ const TrackPage = ({ onBack }) => {
     const { trackId } = useParams();
     const [track, setTrack] = useState();
     const [trackColors, setTrackColors] = useState([]);
-    useEffect(() => {
-        const fetchTrack = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3100/track/${trackId}?apikey=123456`);
-                console.log(response);
-                setTrack(response.data);
-                if (response.data.album.images[0]?.url) {
-                    const image = new Image();
-                    image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
-                    image.src = response.data.album.images[0].url;
 
-                    image.onload = () => {
-                        const colorThief = new ColorThief();
-                        const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
-                        setTrackColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
-                    };
-                }
-            } catch (error) {
-                console.log(error);
+   useEffect(() => {
+    const apiKey = process.env.REACT_APP_API_KEY;
+    const fetchTrack = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3100/track/${trackId}?apikey=${apiKey}`);
+            console.log(response);
+            setTrack(response.data);
+            if (response.data.album.images[0]?.url) {
+                const image = new Image();
+                image.crossOrigin = "anonymous"; // Assicurati che l'immagine possa essere letta come dati dai domini esterni
+                image.src = response.data.album.images[0].url;
+
+                image.onload = () => {
+                    const colorThief = new ColorThief();
+                    const colorPalette = colorThief.getPalette(image, 3); // Ottieni una sfumatura di 3 colori
+                    setTrackColors(colorPalette.map(color => `rgb(${color[0]}, ${color[1]}, ${color[2]})`));
+                };
             }
-        };
-        fetchTrack();
-    }, [trackId]);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    fetchTrack();
+}, [trackId]);
+
+
     return (
         <>
             <div style={{ background: `linear-gradient(0deg, ${trackColors[0]} 0%, ${trackColors[1]} 80%, ${trackColors[2]}) 20%` }}>

@@ -15,21 +15,23 @@ import "../styles/user.css"; // Assumi che tu abbia uno stile CSS per l'user
 const User = ({ onBack }) => {
     const { userId } = useParams();
     const [user, setUser] = useState();
+    const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
+    
         const fetchUser = async () => {
             if (userId ?? "") {
                 try {
-                    const response = await axios.get(`http://localhost:3100/showUser/${userId}?apikey=123456`);
+                    const response = await axios.get(`http://localhost:3100/showUser/${userId}?apikey=${apiKey}`);
                     setUser(response.data);
                 } catch (error) {
                     console.log(error);
                 }
             }
-
         };
         fetchUser();
     }, [userId]);
+    
     return (
         <>
             <Grid container style={{ margin: 0 }} spacing={1}>

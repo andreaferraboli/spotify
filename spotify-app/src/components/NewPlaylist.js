@@ -21,12 +21,13 @@ function NewPlaylist({ user, onBack, snackbar }) {
         id: "",
         name: "",
         image: "",
-        description:"",
+        description: "",
         tracks: [],
-        tags:[]
+        tags: []
     });
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
+    const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
         async function fetchPlaylistId() {
@@ -42,13 +43,19 @@ function NewPlaylist({ user, onBack, snackbar }) {
 
     async function searchId() {
         try {
+            const response = await axios.get(`http://localhost:3100/newId?apikey=${apiKey}`);
 
-            const response = await axios.get(`http://localhost:3100/newId`);
-            return response.data.id;
+            if (response.status === 200) {
+                return response.data.id;
+            } else {
+                snackbar('Errore durante la ricerca del nuovo ID', "error");
+            }
         } catch (error) {
-            console.error('Error found new id:', error);
+            snackbar('Errore durante la ricerca del nuovo ID', "error");
         }
     }
+
+
     useEffect(() => {
         createImageCollage(localPlaylist.tracks.map((track) => track.image));
     }, [localPlaylist.tracks]);
@@ -59,12 +66,18 @@ function NewPlaylist({ user, onBack, snackbar }) {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:3100/searchTracks/${query}`);
-            setSearchResults(response.data);
+            const response = await axios.get(`http://localhost:3100/searchTracks/${query}?apikey=${apiKey}`);
+
+            if (response.status === 200) {
+                setSearchResults(response.data);
+            } else {
+                snackbar('Errore durante la ricerca delle tracce', "error");
+            }
         } catch (error) {
-            console.error('Error searching tracks:', error);
+            snackbar('Errore durante la ricerca delle tracce', "error");
         }
     };
+
     const handleMoveTrackUp = (currentIndex) => {
         if (currentIndex > 0) {
             const updatedTracks = [...localPlaylist.tracks];
@@ -107,27 +120,32 @@ function NewPlaylist({ user, onBack, snackbar }) {
 
     const handleSavePlaylist = async () => {
         try {
-
             let response = await axios.post("http://localhost:3100/upload", {
                 dataUrl: document.getElementById("playlist_image").src,
-                id: playlistId
-            })
-            localPlaylist.id = playlistId
-            localPlaylist.image = response.data.imageUrl
+                id: playlistId,
+                "apikey": apiKey
+            });
+
+            localPlaylist.id = playlistId;
+            localPlaylist.image = response.data.imageUrl;
+
             response = await axios.post(`http://localhost:3100/playlist`, {
                 "playlist": localPlaylist,
-                "userId": user._id
+                "userId": user._id,
+                "apikey": apiKey
             });
+
             if (response.status === 200) {
-                snackbar(response.data.message, "success")
+                snackbar(response.data.message, "success");
                 window.location.href = "/playlist/" + playlistId;
             } else {
-                snackbar(response.data.message, "error")
+                snackbar(response.data.message, "error");
             }
         } catch (error) {
-            snackbar('Error saving playlist:' + error, "error");
+            snackbar('Errore durante il salvataggio della playlist:' + error, "error");
         }
     };
+
 
     function createImageCollage(imageUrls) {
         if (imageUrls.length !== 0) {
@@ -180,8 +198,6 @@ function NewPlaylist({ user, onBack, snackbar }) {
         } else {
             document.getElementById("playlist_image").src = "https://is3-ssl.mzstatic.com/image/thumb/Purple116/v4/03/3f/2f/033f2ffa-2747-96c6-39f1-3b577fea0ba5/source/512x512bb.jpg"
         }
-        // Remove duplicate image URLs
-
     }
 
 
@@ -248,7 +264,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
                             <React.Fragment key={track.id}>
                                 <Grid item xs={10}>
                                     <div>
-                                        <Track track={track} snackbar={snackbar}/>
+                                        <Track track={track} snackbar={snackbar} />
                                     </div>
                                 </Grid>
                                 <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -302,7 +318,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
 
                 <button onClick={onBack}>Torna alla Home</button>
             </div>
-            
+
         </>
     );
 }

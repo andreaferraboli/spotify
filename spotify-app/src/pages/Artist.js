@@ -13,39 +13,45 @@ const Artist = ({ user, onBack, snackbar }) => {
   const [artist, setArtist] = useState([{}]);
   const [query, setQuery] = useState("");
   const [tracks, setTracks] = useState([]);
-
+  const apiKey = process.env.REACT_APP_API_KEY;
   useEffect(() => {
     const fetchArtist = async () => {
       try {
-        const response = await axios.get(`http://localhost:3100/artist/${artistId}?apikey=123456`);
-        if (response.status === 200) {
-          console.log(response)
-          setArtist(response.data.artist);
-          const artistSection = document.getElementById('myArtistSection');
-          setTracks(response.data.artist.top_tracks); 
-          // Imposta l'immagine di sfondo utilizzando la proprietà style.backgroundImage
-          artistSection.style.backgroundImage = `url(${response.data.artist.info.image})`;
+        const response = await axios.get(`http://localhost:3100/artist/${artistId}?apikey=${apiKey}`);
 
+        if (response.status === 200) {
+          const { artist } = response.data;
+          setArtist(artist);
+
+          const artistSection = document.getElementById('myArtistSection');
+          setTracks(artist.top_tracks);
+
+          // Imposta l'immagine di sfondo utilizzando il CSS invece di manipolare il DOM direttamente
+          artistSection.style.backgroundImage = `url(${artist.info.image})`;
         } else {
-          console.log("Errore nella richiesta");
+          snackbar("Errore nella richiesta:" + response.status, "error");
         }
       } catch (error) {
-        console.log(error);
+        snackbar("Errore:" + error, "error");
       }
     };
 
     fetchArtist();
-  }, []);
+  }, [artistId]);
+
 
   useEffect(() => {
     const fetchQuery = async () => {
       if (query.trim() !== '' && query !== null) {
         try {
-          const response = await axios.get(`http://localhost:3100/searchTracksArtist/${artistId}/${query}`);
-          console.log(query,response.data)
-          setTracks(response.data);
+          const response = await axios.get(`http://localhost:3100/searchTracksArtist/${artistId}/${query}?apikey=${apiKey}`);
+          if (response.status === 200) {
+            setTracks(response.data);
+          } else {
+            snackbar('Error fetching tracks:' + response.data.message, "error");
+          }
         } catch (error) {
-          console.error('Error fetching tracks:', error);
+          snackbar('Error fetching tracks:' + error, "error");
         }
       } else {
         setTracks(artist.top_tracks);
@@ -53,6 +59,7 @@ const Artist = ({ user, onBack, snackbar }) => {
     };
     fetchQuery();
   }, [query, artist.top_tracks, artistId]);
+
 
   function addDotsToNumberString(str) {
     return new String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ".");

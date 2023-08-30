@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
@@ -27,87 +27,80 @@ const RegisterPage = ({ snackbar }) => {
     // Focus the file input when the component mounts
     fileInputRef.current.focus();
   }, []);
-  
+
   const getFavouriteArtists = () => {
     return favouriteArtists.length;
   };
 
   const handleRegister = async () => {
+    const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      // let response = await axios.get('http://localhost:3100/get-profile-image', imageFile); // Sostituisci l'URL con quello corretto
-
-      // // Estrai l'indirizzo dell'immagine dalla risposta
-      // const profileImageUrl = response.data.profileImageUrl;
-
       // Effettua la richiesta POST al server Node
-      let response = await axios.post('http://localhost:3100/register',
-        {
-          "name": firstName,
-          "surname": lastName,
-          "profile_name": username,
-          "image":'',
-          "email": email,
-          "password": password,
-          "favourite_genres": favouriteGenres,
-          "favourite_artists": favouriteArtists,
-          "my_playlists":[]
-        }
-      );
+      let response = await axios.post(`http://localhost:3100/register?apikey=${apiKey}`, {
+        "name": firstName,
+        "surname": lastName,
+        "profile_name": username,
+        "image": '',
+        "email": email,
+        "password": password,
+        "favourite_genres": favouriteGenres,
+        "favourite_artists": favouriteArtists,
+        "my_playlists": []
+      });
 
       // Controlla la risposta del server
       if (response.status === 201) {
-        if(imageFile !== "")
-        {
+        if (imageFile !== "") {
           await publicFile(imageFile, response.data.userId);
         }
         snackbar('Registrazione effettuata con successo!', "success");
         window.location.href = "/login";
-        // Aggiungi qui il codice per gestire il successo della registrazione, come il reindirizzamento alla pagina di login
       } else {
         snackbar('Errore durante la registrazione', "error");
-        // Aggiungi qui il codice per gestire l'errore durante la registrazione
       }
     } catch (error) {
       snackbar('Errore durante la richiesta di registrazione:' + error.message, "error");
-      // Aggiungi qui il codice per gestire l'errore di rete o altre eccezioni
     }
   };
+
   const handleProfileImageChange = async (e) => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       setImageFile(selectedFile)
-      
+
       // Puoi anche mostrare il nome del file all'utente, ad esempio aggiungendolo a uno stato o visualizzandolo nella UI.
     }
   };
-  async function publicFile(selectedFile,userId) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-    
-      try {
-        const response = await axios.post('http://localhost:3100/uploadFile/' + userId, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-  
+  async function publicFile(selectedFile, userId) {
+    const apiKey = process.env.REACT_APP_API_KEY;
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await axios.post(`http://localhost:3100/uploadFile/${userId}?apikey=${apiKey}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
       if (response.status === 200) {
         snackbar("informazioni caricate correttamente", "success")
-        let responseImage=await axios.post("http://localhost:3100/setUserImage/"+userId,{"fileUrl":response.data.fileUrl}) 
-        if(responseImage.status === 200){
+        const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
+        if (responseImage.status === 200) {
           snackbar("immagine caricata correttamente", "success")
-          window.location.href="/login"
+          window.location.href = "/login"
+        } else {
+          snackbar("immagine non caricata correttamente", "error")
         }
-        else
-        snackbar("immagine non caricata correttamente", "error")
       } else {
-        snackbar('Errore durante l\'upload del file.',"error");
+        snackbar('Errore durante l\'upload del file.', "error");
       }
     } catch (error) {
-      snackbar('Errore:'+ error,"error");
+      snackbar('Errore:' + error, "error");
     }
   }
+
   const validateRegistrationData = async () => {
     if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
       snackbar('Compila tutti i campi.', "warning");
@@ -130,8 +123,9 @@ const RegisterPage = ({ snackbar }) => {
     return true;
   };
   const checkDuplicateEmail = async (email) => {
+    const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      const response = await axios.get(`http://localhost:3100/check-email/${email}`);
+      const response = await axios.get(`http://localhost:3100/check-email/${email}?apikey=${apiKey}`);
       // Controlla la risposta dal server
       if (response.data.exists === true) {
         return true;
@@ -142,6 +136,7 @@ const RegisterPage = ({ snackbar }) => {
       return true;
     }
   };
+
   const validateEmail = (email) => {
     // Utilizza una regex per validare l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -230,7 +225,7 @@ const RegisterPage = ({ snackbar }) => {
               variant="outlined"
               fullWidth
               onChange={(e) => handleProfileImageChange(e)}
-              inputRef={fileInputRef} 
+              inputRef={fileInputRef}
               className="input" />
             <Button
               variant="contained"
