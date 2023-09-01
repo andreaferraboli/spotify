@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const express = require("express");
-const apiKey = "123456"
+const apiKey = "12345667654"
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger_output.json");
 const bodyParser = require('body-parser');
@@ -37,7 +37,7 @@ app.use(express.json({ limit: '10mb' }));
 
 function authenticateApiKey(req, res, next) {
   const providedApiKey = req.query.apikey;
-
+  console.log(providedApiKey)
   if (!providedApiKey) {
     return res.status(401).json({ message: "API key missing" });
   }

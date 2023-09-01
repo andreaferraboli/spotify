@@ -33,7 +33,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 setGenres(response.data);
                 setAllGenres(response.data);
             })
-            .catch(error => console.error(error));
+            .catch(error => snackbar("errore caricamento generi" + error, "error"));
     }, []);
 
     const handleGenreSelect = (genre) => {
@@ -128,7 +128,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 "oldPassword": oldPassword,
                 "newPassword": newPassword,
             });
-    
+
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
                 handleLogin(user);
@@ -140,7 +140,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             snackbar(error, "error");
         }
     };
-    
+
 
     const changeGenres = async (genres) => {
         try {
@@ -149,7 +149,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 "id": user._id,
                 "genres": genres
             });
-    
+
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
                 handleLogin(user);
@@ -161,12 +161,12 @@ const Account = ({ user, handleLogin, snackbar }) => {
             snackbar(error, "error");
         }
     };
-    
+
     const handleDeleteProfile = async () => {
         try {
             const deleteProfileUrl = `http://localhost:3100/deleteProfile/${user._id}?apikey=${apiKey}`;
             const response = await axios.delete(deleteProfileUrl);
-    
+
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
                 handleLogin(user);
@@ -179,7 +179,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             snackbar(error, "error");
         }
     };
-    
+
     const handleLogout = () => {
         localStorage.removeItem('user');
         snackbar("logout eseguito correttamente", "success")
