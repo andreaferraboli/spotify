@@ -57,16 +57,15 @@ function App() {
 
             // Verifica se i dati dell'utente sono diversi da quelli presenti in localStorage
             if (JSON.stringify(data[0]) !== JSON.stringify(user)) {
-              console.log("useer", data[0])
               setUser(data[0]);
               // Aggiorna anche i dati in localStorage
               localStorage.setItem('user', JSON.stringify(data[0]));
             }
           } else {
-            console.log('Errore nella richiesta');
+            showSnackbar('Errore nella richiesta',"error");
           }
         } catch (error) {
-          console.log(error);
+          showSnackbar(error,"error");
         }
       };
 
@@ -109,10 +108,10 @@ function App() {
             setUser(data[0]);
           }
         } else {
-          console.log('Errore nella richiesta');
+          showSnackbar('Errore nella richiesta di login',"error");
         }
       } catch (error) {
-        console.log(error);
+        showSnackbar(error,"error");
       }
 
     } else {
@@ -128,7 +127,6 @@ function App() {
   const isRegisterPage = location.pathname === "/register";
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-  console.log(isSmallScreen);
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -173,7 +171,7 @@ function App() {
                   <Routes>
                     <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
                     <Route path="/register" element={<Register snackbar={showSnackbar} />} />
-                    <Route path="/search/:query" element={<Search user={user} />} />
+                    <Route path="/search/:query" element={<Search user={user} snackbar={showSnackbar} />} />
                     <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} />} />
 
                     <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} snackbar={showSnackbar} />} />
@@ -195,7 +193,8 @@ function App() {
                     <Route
                       path="/track/:trackId"
                       element={<Track
-                        onBack={handleBackToHome} />} />
+                        onBack={handleBackToHome}
+                        snackbar={showSnackbar} />} />
                     <Route
                       path="/artist/:artistId"
                       element={<Artist

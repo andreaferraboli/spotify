@@ -37,7 +37,6 @@ app.use(express.json({ limit: '10mb' }));
 
 function authenticateApiKey(req, res, next) {
   const providedApiKey = req.query.apikey;
-  console.log(providedApiKey)
   if (!providedApiKey) {
     return res.status(401).json({ message: "API key missing" });
   }

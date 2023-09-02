@@ -12,7 +12,7 @@ import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
 import "../styles/user.css"; // Assumi che tu abbia uno stile CSS per l'user
 
-const User = ({ onBack }) => {
+const User = ({ onBack, snackbar }) => {
     const { userId } = useParams();
     const [user, setUser] = useState();
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -25,7 +25,7 @@ const User = ({ onBack }) => {
                     const response = await axios.get(`http://localhost:3100/showUser/${userId}?apikey=${apiKey}`);
                     setUser(response.data);
                 } catch (error) {
-                    console.log(error);
+                    snackbar(error,"error");
                 }
             }
         };

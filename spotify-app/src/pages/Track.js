@@ -9,7 +9,7 @@ import axios from 'axios';
 import { formatDuration } from "../components/track"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const TrackPage = ({ onBack }) => {
+const TrackPage = ({ onBack, snackbar }) => {
     const { trackId } = useParams();
     const [track, setTrack] = useState();
     const [trackColors, setTrackColors] = useState([]);
@@ -19,7 +19,6 @@ const TrackPage = ({ onBack }) => {
     const fetchTrack = async () => {
         try {
             const response = await axios.get(`http://localhost:3100/track/${trackId}?apikey=${apiKey}`);
-            console.log(response);
             setTrack(response.data);
             if (response.data.album.images[0]?.url) {
                 const image = new Image();
@@ -33,7 +32,7 @@ const TrackPage = ({ onBack }) => {
                 };
             }
         } catch (error) {
-            console.log(error);
+            snackbar(error,"error");
         }
     };
     fetchTrack();
