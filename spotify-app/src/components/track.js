@@ -110,8 +110,8 @@ const Track = (props) => {
             <MenuItem onClick={()=>searchTrack(props.track.id)}>Cerca nelle playlist</MenuItem>
             <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
             {props.userPlaylists?.map((playlist) => (
-              <MenuItem className="menu-heading " key={playlist.id} onClick={() => handlePlaylistSelect(playlist.id, playlist.collaborative !== undefined ? "public" : "private")}>
-                {playlist.name}
+              <MenuItem className="menu-heading " key={playlist?.id} onClick={() => handlePlaylistSelect(playlist?.id, playlist?.collaborative !== undefined ? "public" : "private")}>
+                {playlist?.name}
               </MenuItem>
             ))}
           </Menu>

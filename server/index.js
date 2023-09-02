@@ -23,7 +23,7 @@ const serviceAccount = require('./spotify-7a2ad-firebase-adminsdk-lyp7p-dd1e759f
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'spotify-7a2ad.appspot.com/', // Replace with your Firebase project's storage bucket
+  storageBucket: 'spotify-7a2ad.appspot.com/',
 });
 
 const bucket = admin.storage().bucket();
@@ -277,7 +277,7 @@ async function updateUser(res, id, updatedUser) {
         about: ''
     }
 } */
-app.get("/user/:id", async function (req, res) {
+app.get("/user/:id", authenticateApiKey, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
@@ -442,7 +442,7 @@ async function uploadToFirebaseStorage(filePath, id, directory) {
   }
 }
 
-app.post('/setUserImage/:userId', async (req, res) => {
+app.post('/setUserImage/:userId',authenticateApiKey, async (req, res) => {
   try {
     const userId = req.params.userId;
     const { fileUrl } = req.body;
@@ -472,7 +472,7 @@ app.post('/setUserImage/:userId', async (req, res) => {
     res.status(500).json({ message: 'An error occurred' });
   }
 });
-app.post('/uploadFile/:idUser', async (req, res) => {
+app.post('/uploadFile/:idUser',authenticateApiKey, async (req, res) => {
   try {
     const id = req.params.idUser;
     const uploadedFile = req.files.file; // Assuming you're using a FormData with a 'file' field
@@ -499,7 +499,7 @@ app.post('/uploadFile/:idUser', async (req, res) => {
   }
 });
 
-app.post('/upload', async (req, res) => {
+app.post('/upload',authenticateApiKey, async (req, res) => {
   try {
     // const dataUrl = req.body.blobUrl;
     let dataUrl = req.body.dataUrl
@@ -529,7 +529,7 @@ app.get("/", authenticateApiKey, function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
 });
 
-app.get('/check-email/:email', async (req, res) => {
+app.get('/check-email/:email',authenticateApiKey, async (req, res) => {
   const email = req.params.email;
 
   try {
@@ -665,7 +665,7 @@ app.post("/playlist", authenticateApiKey, async (req, res) => {
     res.status(404).json({ message: 'Errore nel caricamento della playlist nel server' });
   }
 });
-app.delete('/playlist/:id', async (req, res) => {
+app.delete('/playlist/:id',authenticateApiKey, async (req, res) => {
   const playlistId = req.params.id;
 
   try {
@@ -688,7 +688,7 @@ app.delete('/playlist/:id', async (req, res) => {
   }
 });
 
-app.post('/playlists/:playlistId/add-track', async (req, res) => {
+app.post('/playlists/:playlistId/add-track',authenticateApiKey, async (req, res) => {
   const playlistId = req.params.playlistId;
   const trackData = req.body.trackData;
   const type = req.body.type
@@ -957,7 +957,7 @@ app.get("/searchTracksArtist/:id/:query", authenticateApiKey, async (req, res) =
   res.status(200).send(tracks)
 
 })
-app.get('/relatedPlaylists/:userId', async (req, res) => {
+app.get('/relatedPlaylists/:userId',authenticateApiKey, async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -984,7 +984,7 @@ app.get('/relatedPlaylists/:userId', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.post('/changeTag', async (req, res) => {
+app.post('/changeTag',authenticateApiKey, async (req, res) => {
   const { playlistId, tag, action } = req.body;
 
   try {
@@ -1034,7 +1034,7 @@ app.post('/changeTag', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.put('/changeGenres', async (req, res) => {
+app.put('/changeGenres',authenticateApiKey, async (req, res) => {
   const { id, genres } = req.body;
   try {
     let pwmClient = await new mongoClient(uri).connect();
@@ -1055,7 +1055,7 @@ app.put('/changeGenres', async (req, res) => {
 
   }
 });
-app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => {
+app.put('/updatePlaylistFollowers/:playlistId/:followerId',authenticateApiKey, async (req, res) => {
   const playlistId = req.params.playlistId;
   const followerId = req.params.followerId;
   const action = req.query.action; // Legge l'azione dalla query string
@@ -1100,7 +1100,7 @@ app.put('/updatePlaylistFollowers/:playlistId/:followerId', async (req, res) => 
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.put('/updatePlaylist', async (req, res) => {
+app.put('/updatePlaylist',authenticateApiKey, async (req, res) => {
   const { name, description, playlistId } = req.body;
 
   try {
