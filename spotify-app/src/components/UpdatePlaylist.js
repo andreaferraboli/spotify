@@ -178,7 +178,7 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                         <React.Fragment key={track.id}>
                             <Grid item xs={10}>
                                 <div>
-                                    <Track track={track} />
+                                    <Track track={track} snackbar={snackbar} />
                                 </div>
                             </Grid>
                             <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -203,7 +203,8 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                                     <Track
                                         userPlaylists={user.my_playlists.concat(user.playlists)}
                                         track={track}
-                                        index={index + 1} />
+                                        index={index + 1} 
+                                        snackbar={snackbar}/>
                                 </div>
                             </Grid>
                             <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">

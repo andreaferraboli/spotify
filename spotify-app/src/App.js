@@ -31,7 +31,7 @@ function App() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-
+  const apiKey = process.env.REACT_APP_API_KEY;
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -51,7 +51,7 @@ function App() {
     if (storedUser && storedUser._id) {
       const fetchUser = async () => {
         try {
-          const response = await fetch(`http://localhost:3100/user/${storedUser._id}?apikey=123456`);
+          const response = await fetch(`http://localhost:3100/user/${storedUser._id}?apikey=${apiKey}`);
           if (response.ok) {
             const data = await response.json();
 
@@ -102,7 +102,7 @@ function App() {
   const handleLogin = async (user) => {
     if (user?._id) {
       try {
-        const response = await fetch(`http://localhost:3100/user/${user._id}?apikey=123456`);
+        const response = await fetch(`http://localhost:3100/user/${user._id}?apikey=${apiKey}`);
         if (response.ok) {
           const data = await response.json();
           if (data.length > 0) {
