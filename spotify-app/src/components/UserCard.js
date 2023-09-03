@@ -14,7 +14,7 @@ export default function UserCard(props) {
       <CardActionArea>
         <Avatar src={props.user.image} alt={props.user.name} sx={{ width: "100%", height: "10rem" }} />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div" className='artist-name'>
+          <Typography style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}} gutterBottom variant="h5" component="div" className='artist-name'>
             {props.user.profile_name}
           </Typography>
         </CardContent>

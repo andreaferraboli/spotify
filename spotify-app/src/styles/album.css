@@ -18,8 +18,5 @@
   margin-bottom: 16px;
 }
 .album-name{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis !important;
-  font-size: 1rem !important;
+  font-size: 1.5rem !important;
 }

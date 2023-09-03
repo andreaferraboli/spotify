@@ -25,6 +25,7 @@ export function formatDuration(milliseconds) {
   return `${hours} ore e ${minutes} minuti`;
 }
 const Playlist = ({ user, onBack, snackbar }) => {
+  console.log(user)
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
   const [editing, setEditing] = useState(false);
@@ -404,7 +405,7 @@ const Playlist = ({ user, onBack, snackbar }) => {
                     Smetti di seguire
                   </Button>
                 ) : (
-                  playlist?.type === "public" && (!playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) && (
+                  playlist?.type === "public" && (Object.keys(user).length !== 0) && (!playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) && (
                     <Button
                       variant="outlined"
                       className="add-button"
@@ -446,7 +447,7 @@ const Playlist = ({ user, onBack, snackbar }) => {
           <div className="top-tracks-section">
             <Grid container spacing={2} >
               {playlist?.tracks.map((track, index) => (
-                <Track key={track.id} userPlaylists={user.my_playlists.concat(user.playlists)} track={track} index={index + 1} snackbar={snackbar}></Track>
+                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} track={track} index={index + 1} snackbar={snackbar}></Track>
 
               ))}
             </Grid>

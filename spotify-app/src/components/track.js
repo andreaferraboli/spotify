@@ -78,7 +78,7 @@ const Track = (props) => {
         </Grid>
         <Grid style={{ paddingLeft: "3%" }}  sm={7} >
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <Typography variant="h6" style={{ marginBottom: "8px" }} >
+            <Typography variant="h6" style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginBottom: "8px" }} >
               <span key={props.track.id}>
                 <Link to={`/track/${props.track.id}`}>{props.track.name}</Link>
               </span>
@@ -107,7 +107,7 @@ const Track = (props) => {
             onClose={handleMenuClose}
 
           >
-            <MenuItem onClick={()=>searchTrack(props.track.id)}>Cerca nelle playlist</MenuItem>
+            <MenuItem className="menu-heading " onClick={()=>searchTrack(props.track.id)}>Cerca nelle playlist</MenuItem>
             <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
             {props.userPlaylists?.map((playlist) => (
               <MenuItem className="menu-heading " key={playlist?.id} onClick={() => handlePlaylistSelect(playlist?.id, playlist?.collaborative !== undefined ? "public" : "private")}>

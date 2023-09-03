@@ -22,7 +22,7 @@ export default function ArtistCard(props) {
           <img src={props.artist.image} alt={props.artist.name} />
         </div>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div" className='artist-name'>
+          <Typography style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}} gutterBottom variant="h5" component="div" className='artist-name'>
             {props.artist.name}
           </Typography>
         </CardContent>

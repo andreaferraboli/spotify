@@ -441,7 +441,7 @@ async function uploadToFirebaseStorage(filePath, id, directory) {
   }
 }
 
-app.post('/setUserImage/:userId',authenticateApiKey, async (req, res) => {
+app.post('/setUserImage/:userId', authenticateApiKey, async (req, res) => {
   try {
     const userId = req.params.userId;
     const { fileUrl } = req.body;
@@ -471,7 +471,7 @@ app.post('/setUserImage/:userId',authenticateApiKey, async (req, res) => {
     res.status(500).json({ message: 'An error occurred' });
   }
 });
-app.post('/uploadFile/:idUser',authenticateApiKey, async (req, res) => {
+app.post('/uploadFile/:idUser', authenticateApiKey, async (req, res) => {
   try {
     const id = req.params.idUser;
     const uploadedFile = req.files.file; // Assuming you're using a FormData with a 'file' field
@@ -498,7 +498,7 @@ app.post('/uploadFile/:idUser',authenticateApiKey, async (req, res) => {
   }
 });
 
-app.post('/upload',authenticateApiKey, async (req, res) => {
+app.post('/upload', authenticateApiKey, async (req, res) => {
   try {
     // const dataUrl = req.body.blobUrl;
     let dataUrl = req.body.dataUrl
@@ -520,7 +520,7 @@ app.put("/users/:id", authenticateApiKey, function (req, res) {
   updateUser(res, req.params.id, req.body);
 });
 
-app.delete("/users/:id", authenticateApiKey,  function (req, res) {
+app.delete("/users/:id", authenticateApiKey, function (req, res) {
   deleteUser(res, req.params.id);
 });
 
@@ -528,7 +528,7 @@ app.get("/", authenticateApiKey, function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
 });
 
-app.get('/check-email/:email',authenticateApiKey, async (req, res) => {
+app.get('/check-email/:email', authenticateApiKey, async (req, res) => {
   const email = req.params.email;
 
   try {
@@ -664,7 +664,7 @@ app.post("/playlist", authenticateApiKey, async (req, res) => {
     res.status(404).json({ message: 'Errore nel caricamento della playlist nel server' });
   }
 });
-app.delete('/playlist/:id',authenticateApiKey, async (req, res) => {
+app.delete('/playlist/:id', authenticateApiKey, async (req, res) => {
   const playlistId = req.params.id;
 
   try {
@@ -687,7 +687,7 @@ app.delete('/playlist/:id',authenticateApiKey, async (req, res) => {
   }
 });
 
-app.post('/playlists/:playlistId/add-track',authenticateApiKey, async (req, res) => {
+app.post('/playlists/:playlistId/add-track', authenticateApiKey, async (req, res) => {
   const playlistId = req.params.playlistId;
   const trackData = req.body.trackData;
   const type = req.body.type
@@ -800,19 +800,20 @@ async function searchAlbums(query) {
 async function searchPlaylists(query, id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
-
+    let userPlaylistsCursor;
     // Search for user playlists using aggregation
-    var userPlaylistsCursor = await pwmClient
-      .db("spotify")
-      .collection("users")
-      .aggregate([
-        { $match: { _id: new ObjectId(id) } },
-        { $unwind: '$my_playlists' },
-        { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
-        { $project: { my_playlists: 1 } }
-      ])
-      .toArray();
-
+    if (id ?? '') { userPlaylistsCursor = [] } else {
+      userPlaylistsCursor = await pwmClient
+        .db("spotify")
+        .collection("users")
+        .aggregate([
+          { $match: { _id: new ObjectId(id) } },
+          { $unwind: '$my_playlists' },
+          { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
+          { $project: { my_playlists: 1 } }
+        ])
+        .toArray();
+    }
     var userPlaylists = userPlaylistsCursor.map(item => ({
       ...item.my_playlists,
       type: "private"
@@ -844,17 +845,20 @@ async function searchTags(query, id) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
 
+    let userPlaylistsCursor
     // Search for user playlists using aggregation
-    const userPlaylistsCursor = await pwmClient
-      .db("spotify")
-      .collection("users")
-      .aggregate([
-        { $match: { _id: new ObjectId(id) } },
-        { $unwind: '$my_playlists' },
-        { $match: { 'my_playlists.tags': { $in: [query] } } },
-        { $project: { my_playlists: 1 } } // Seleziona solo l'array 'my_playlists'
-      ])
-      .toArray();
+    if (id ?? '') { userPlaylistsCursor = [] } else {
+      userPlaylistsCursor = await pwmClient
+        .db("spotify")
+        .collection("users")
+        .aggregate([
+          { $match: { _id: new ObjectId(id) } },
+          { $unwind: '$my_playlists' },
+          { $match: { 'my_playlists.tags': { $in: [query] } } },
+          { $project: { my_playlists: 1 } } // Seleziona solo l'array 'my_playlists'
+        ])
+        .toArray();
+    }
     var userPlaylists = userPlaylistsCursor.map(item => ({
       ...item.my_playlists,
       type: "private"
@@ -904,19 +908,24 @@ app.get("/searchTracks/:query", authenticateApiKey, async (req, res) => {
 app.get("/searchTrack/:idTrack", authenticateApiKey, async (req, res) => {
   id_track = req.params.idTrack
   const id = req.query.id;
+  console.log("id:", id)
   var pwmClient = await new mongoClient(uri).connect();
+  let userPlaylistsCursor;
+  if (id ?? '') {
+    userPlaylistsCursor = [];
+  } else {
+    userPlaylistsCursor = await pwmClient
+      .db("spotify")
+      .collection("users")
+      .aggregate([
+        { $match: { _id: new ObjectId(id) } },
+        { $unwind: '$my_playlists' },
+        { $match: { 'my_playlists.tracks.id': id_track } },
+        { $project: { _id: 0, 'my_playlists': 1 } }
+      ])
+      .toArray();
+  }
 
-  // Search for user playlists using aggregation
-  var userPlaylistsCursor = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .aggregate([
-      { $match: { _id: new ObjectId(id) } },
-      { $unwind: '$my_playlists' },
-      { $match: { 'my_playlists.tracks.id': id_track } },
-      { $project: { _id: 0, 'my_playlists': 1 } }
-    ])
-    .toArray();
   const playlistsCollection = await pwmClient
     .db("spotify")
     .collection("public_playlists").
@@ -956,7 +965,7 @@ app.get("/searchTracksArtist/:id/:query", authenticateApiKey, async (req, res) =
   res.status(200).send(tracks)
 
 })
-app.get('/relatedPlaylists/:userId',authenticateApiKey, async (req, res) => {
+app.get('/relatedPlaylists/:userId', authenticateApiKey, async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -983,7 +992,7 @@ app.get('/relatedPlaylists/:userId',authenticateApiKey, async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.post('/changeTag',authenticateApiKey, async (req, res) => {
+app.post('/changeTag', authenticateApiKey, async (req, res) => {
   const { playlistId, tag, action } = req.body;
 
   try {
@@ -1033,7 +1042,7 @@ app.post('/changeTag',authenticateApiKey, async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.put('/changeGenres',authenticateApiKey, async (req, res) => {
+app.put('/changeGenres', authenticateApiKey, async (req, res) => {
   const { id, genres } = req.body;
   try {
     let pwmClient = await new mongoClient(uri).connect();
@@ -1054,7 +1063,7 @@ app.put('/changeGenres',authenticateApiKey, async (req, res) => {
 
   }
 });
-app.put('/updatePlaylistFollowers/:playlistId/:followerId',authenticateApiKey, async (req, res) => {
+app.put('/updatePlaylistFollowers/:playlistId/:followerId', authenticateApiKey, async (req, res) => {
   const playlistId = req.params.playlistId;
   const followerId = req.params.followerId;
   const action = req.query.action; // Legge l'azione dalla query string
@@ -1099,7 +1108,7 @@ app.put('/updatePlaylistFollowers/:playlistId/:followerId',authenticateApiKey, a
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
-app.put('/updatePlaylist',authenticateApiKey, async (req, res) => {
+app.put('/updatePlaylist', authenticateApiKey, async (req, res) => {
   const { name, description, playlistId } = req.body;
 
   try {

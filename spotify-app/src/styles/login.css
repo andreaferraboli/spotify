@@ -100,6 +100,10 @@ body,
 }
 .link {
   color: var(--secondary-color) !important;
+
+}
+.link:hover{
+  text-decoration: underline;
 }
 .button:hover {
   background-color: var(--secondary-color) !important;

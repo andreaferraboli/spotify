@@ -10,6 +10,7 @@ import InputBase from "@mui/material/InputBase";
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import SearchIcon from "@mui/icons-material/Search";
+import NavigationButtons from './NavigationButtons';
 import "../styles/navbar.css";
 
 const Search = styled("div")(({ theme }) => ({
@@ -72,6 +73,7 @@ export default function Navbar(props) {
                 <MenuIcon />
               </IconButton>
             )}
+            <NavigationButtons></NavigationButtons>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
