@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState} from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
@@ -20,13 +20,6 @@ const RegisterPage = ({ snackbar }) => {
   const [loadGenres, setLoadGenres] = useState(false);
   const [loadArtist, setLoadArtist] = useState(false);
 
-
-  const fileInputRef = useRef(null);
-
-  useEffect(() => {
-    // Focus the file input when the component mounts
-    fileInputRef.current.focus();
-  }, []);
 
   const getFavouriteArtists = () => {
     return favouriteArtists.length;
@@ -68,8 +61,6 @@ const RegisterPage = ({ snackbar }) => {
 
     if (selectedFile) {
       setImageFile(selectedFile)
-
-      // Puoi anche mostrare il nome del file all'utente, ad esempio aggiungendolo a uno stato o visualizzandolo nella UI.
     }
   };
   async function publicFile(selectedFile, userId) {
@@ -219,13 +210,12 @@ const RegisterPage = ({ snackbar }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input" />
+              <Typography style={{paddingLeft:"10%"}} variant="body2">Immagine Profilo</Typography>
             <TextField
               type="file"
-              label="Carica immagine del profilo"
               variant="outlined"
               fullWidth
               onChange={(e) => handleProfileImageChange(e)}
-              inputRef={fileInputRef}
               className="input" />
             <Button
               variant="contained"

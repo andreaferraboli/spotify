@@ -116,19 +116,24 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         } catch (error) {
             // Handle error
-            snackbar(error, "error");
+            snackbar("error:"+error, "error");
         }
     };
 
     const handleChangePassword = async () => {
         try {
+            if (oldPassword !== confirmPassword) {
+                snackbar("La vecchia password e la conferma della nuova password non corrispondono", "error");
+                return; // Esci dalla funzione in caso di errore
+            }
+    
             const changePasswordUrl = `http://localhost:3100/changePassword?apikey=${apiKey}`;
             const response = await axios.post(changePasswordUrl, {
                 "id": user._id,
                 "oldPassword": oldPassword,
                 "newPassword": newPassword,
             });
-
+    
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
                 handleLogin(user);
@@ -136,10 +141,21 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 snackbar(response.data.message, "error");
             }
         } catch (error) {
-            // Handle error
-            snackbar(error, "error");
+            if (error.response ?? '') {
+                if (error.response.status === 400) {
+                    snackbar(error.response.data.message, "warning");
+    
+                } else if (error.message.includes("Network Error")) {
+                    snackbar("Impossibile raggiungere il server", "error");
+                } else {
+                    snackbar('Errore durante la richiesta di login:' + error.message, "error");
+                }
+            } else {
+                snackbar('Errore, server non raggiungibile', "error");
+            }
         }
     };
+    
 
 
     const changeGenres = async (genres) => {
@@ -158,7 +174,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         } catch (error) {
             // Handle error
-            snackbar(error, "error");
+            snackbar("error:"+error, "error");
         }
     };
 
@@ -176,7 +192,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         } catch (error) {
             // Handle error
-            snackbar(error, "error");
+            snackbar("error:"+error, "error");
         }
     };
 
@@ -218,16 +234,19 @@ const Account = ({ user, handleLogin, snackbar }) => {
                         className="account-textfield"
                         value={name}
                         onChange={(e) => setName(e.target.value)} />
+                    <br></br>
                     <TextField
                         label="Cognome"
                         className="account-textfield"
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)} />
+                    <br></br>
                     <TextField
                         label="Nome Profilo"
                         className="account-textfield"
                         value={profileName}
                         onChange={(e) => setProfileName(e.target.value)} />
+                    <br></br>
                     <Button variant="contained" className="add-button" onClick={handleSaveInfo}>
                         Salva Modifiche
                     </Button>

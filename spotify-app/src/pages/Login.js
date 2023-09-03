@@ -7,8 +7,8 @@ import "../styles/login.css";
 const LoginPage = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  
+
+
   const handleLogin = async () => {
     const apiKey = process.env.REACT_APP_API_KEY;
     try {
@@ -16,7 +16,7 @@ const LoginPage = (props) => {
         email,
         password,
       });
-    
+
       if (response.status === 200) {
         props.snackbar("Login avvenuto con successo!", "success");
         props.handleLogin(response.data);
@@ -26,18 +26,18 @@ const LoginPage = (props) => {
         props.snackbar("Errore durante la richiesta di login", "error");
       }
     } catch (error) {
-      if (error.response) {
+      if (error.response ?? '') {
         if (error.response.status === 404) {
           props.snackbar("Combinazione email/password errata", "warning");
+
+        } else if (error.message.includes("Network Error")) {
+          props.snackbar("Impossibile raggiungere il server", "error");
         } else {
-          props.snackbar("Errore durante la richiesta di login", "error");
+          props.snackbar('Errore durante la richiesta di login:' + error.message, "error");
         }
-      } else if (error.message.includes("Network Error")) {
-        props.snackbar("Impossibile raggiungere il server", "error");
       } else {
-        props.snackbar("Errore sconosciuto", "error");
+        props.snackbar('Errore,server non raggiungibile', "error");
       }
-      props.snackbar('Errore durante la richiesta di login:'+ error.message,"errore");
     }
   };
 
@@ -88,8 +88,8 @@ const LoginPage = (props) => {
         </Grid>
       </Grid>
     </div>
-    
-      </>
+
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Typography, Avatar, Grid, TextField } from '@mui/material';
+import { Typography, Avatar, Grid, TextField, Button } from '@mui/material';
 import "../styles/artist.css";
 import axios from 'axios';
 import Carousel from "react-multi-carousel";
@@ -8,7 +8,7 @@ import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
 import Album from "../components/Album"
 import Track from "../components/track"
-const Artist = ({ user, onBack, snackbar }) => {
+const Artist = ({ user, snackbar }) => {
   const { artistId } = useParams(); // Ottieni l'id dell'artista dall'URL della pagina
   const [artist, setArtist] = useState([{}]);
   const [query, setQuery] = useState("");
@@ -60,7 +60,20 @@ const Artist = ({ user, onBack, snackbar }) => {
     fetchQuery();
   }, [query, artist.top_tracks, artistId]);
 
+  async function changeFollow( userId, action) {
+    try {
+      const response = await axios.put(`http://localhost:3100/updateFavouriteArtists/${userId}?action=${action}&apikey=${apiKey}`,{artist:artist.info});
 
+      if (response.status === 200) {
+        snackbar(response.data.message, "success");
+        window.location.href = "/artist/" + artistId;
+      } else {
+        snackbar(response.data.message, "error");
+      }
+    } catch (error) {
+      snackbar(error.message, "error");
+    }
+  }
   function addDotsToNumberString(str) {
     return new String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
@@ -76,6 +89,26 @@ const Artist = ({ user, onBack, snackbar }) => {
                 <Typography variant="h3">{artist.info?.name}</Typography>
                 <Typography variant="h5">Popolarità: {artist.info?.popularity}</Typography>
                 <Typography variant="h5">Followers: {addDotsToNumberString(artist.info?.followers)}</Typography>
+                {user?.favourite_artists.some(favoriteArtist => favoriteArtist.id === artist.info?.id) ? (
+                  <Button
+                    variant="outlined"
+                    className="delete-button"
+                    onClick={() => changeFollow( user._id, "remove")}
+                  >
+                    Smetti di seguire
+                  </Button>
+                ) : (
+                  user?.favourite_artists && (
+                    <Button
+                      variant="outlined"
+                      className="add-button"
+                      onClick={() => changeFollow( user._id, "add")}
+                    >
+                      Segui Artista
+                    </Button>
+                  )
+                )}
+
               </div>
             </div>
           </div>
@@ -123,8 +156,7 @@ const Artist = ({ user, onBack, snackbar }) => {
       {/* Mostra la pagina dell'artista */}
 
 
-      {/* Pulsante per tornare alla pagina Home */}
-      <button onClick={onBack}>Torna alla Home</button>
+     
     </>
   );
 };

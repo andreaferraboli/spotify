@@ -15,7 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from 'axios';
 import { formatDuration } from "../pages/Playlist"
 
-function NewPlaylist({ user, onBack, snackbar }) {
+function NewPlaylist({ user, snackbar }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
@@ -35,7 +35,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
                 const id = await searchId();
                 setPlaylistId(id);
             } catch (error) {
-                console.error('Error fetching new id:', error);
+                snackbar('Error fetching new id:', error);
             }
         }
         fetchPlaylistId();
@@ -120,7 +120,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
 
     const handleSavePlaylist = async () => {
         try {
-            let response = await axios.post("http://localhost:3100/upload", {
+            let response = await axios.post(`http://localhost:3100/upload?apikey=${apiKey}`, {
                 dataUrl: document.getElementById("playlist_image").src,
                 id: playlistId,
                 "apikey": apiKey
@@ -129,7 +129,7 @@ function NewPlaylist({ user, onBack, snackbar }) {
             localPlaylist.id = playlistId;
             localPlaylist.image = response.data.imageUrl;
 
-            response = await axios.post(`http://localhost:3100/playlist`, {
+            response = await axios.post(`http://localhost:3100/playlist?apikey=${apiKey}`, {
                 "playlist": localPlaylist,
                 "userId": user._id,
                 "apikey": apiKey
@@ -314,9 +314,6 @@ function NewPlaylist({ user, onBack, snackbar }) {
                     </Grid>
                 )}
 
-                {/* Qui puoi aggiungere la visualizzazione della lista di tracce nella nuova playlist */}
-
-                <button onClick={onBack}>Torna alla Home</button>
             </div>
 
         </>

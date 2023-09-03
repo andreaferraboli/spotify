@@ -1,27 +1,25 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useHistory } from 'react-router-dom';
-
+import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
+import { useNavigate } from 'react-router-dom';
+import "../styles/navbar.css";
 function NavigationButtons() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleGoBack = () => {
-    history.goBack();
+    navigate(-1); // Naviga all'indietro nella cronologia
   };
 
   const handleGoForward = () => {
-    history.goForward();
+    navigate(1); // Naviga avanti nella cronologia
   };
 
   return (
     <div>
-      <Button onClick={handleGoBack} startIcon={<ArrowBackIcon />}>
-        Indietro
+      <Button onClick={handleGoBack} startIcon={<ArrowBackIosRoundedIcon className='history-icon' />}>
       </Button>
-      <Button onClick={handleGoForward} endIcon={<ArrowForwardIcon />}>
-        Avanti
+      <Button onClick={handleGoForward} endIcon={<ArrowForwardIosRoundedIcon className='history-icon'/>}>
       </Button>
     </div>
   );

@@ -28,7 +28,7 @@ const LoadArtist = (props) => {
       } else {
         const genres = props.favouriteGenres.map(genre => genre.name);
         const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));
-        const response = await axios.post('http://localhost:3100/genre', {
+        const response = await axios.post(`http://localhost:3100/genre?apikey=${apiKey}`, {
           genres: genres,
           limit: limit
         });
@@ -38,8 +38,7 @@ const LoadArtist = (props) => {
         }
       }
     } catch (error) {
-      console.error('An error occurred:', error);
-      props.snackbar('An error occurred while fetching data. Please try again later.');
+      props.snackbar('An error occurred while fetching data '+error,"error");
     }
   };
 
@@ -85,7 +84,7 @@ const LoadArtist = (props) => {
       props.snackbar("artisti caricati correttamente");
       props.register();
     } catch (error) {
-      console.error("Errore durante la registrazione:", error);
+      props.snackbar("Errore durante la registrazione:"+ error,"error");
       // Gestire l'errore in qualche modo
     }
   };

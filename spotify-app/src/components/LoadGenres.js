@@ -17,12 +17,12 @@ const LoadGenres = (props) => {
                     setGenres(response.data);
                     setAllGenres(response.data);
                 } else {
-                    console.error('Error fetching genres:', response.statusText);
+                    props.snackbar('Error fetching genres:'+ response.statusText,"error");
                     // Aggiungi qui il codice per gestire l'errore nella richiesta
                 }
             })
             .catch(error => {
-                console.error('Error fetching genres:', error);
+                props.snackbar('Error fetching genres:'+ error,"error");
                 // Aggiungi qui il codice per gestire l'errore nella richiesta
             });
     }, []); // Array di dipendenze vuoto

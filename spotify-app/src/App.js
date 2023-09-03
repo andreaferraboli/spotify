@@ -14,6 +14,7 @@ import Track from '../src/pages/Track';
 import Playlist from '../src/pages/Playlist';
 import Artist from '../src/pages/Artist';
 import Account from '../src/pages/Account';
+import Library from '../src/pages/Library';
 import { useMediaQuery, Drawer } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserPage from '../src/pages/User';
@@ -62,10 +63,10 @@ function App() {
               localStorage.setItem('user', JSON.stringify(data[0]));
             }
           } else {
-            showSnackbar('Errore nella richiesta',"error");
+            showSnackbar('Errore nella richiesta', "error");
           }
         } catch (error) {
-          showSnackbar(error,"error");
+          showSnackbar(error, "error");
         }
       };
 
@@ -108,10 +109,10 @@ function App() {
             setUser(data[0]);
           }
         } else {
-          showSnackbar('Errore nella richiesta di login',"error");
+          showSnackbar('Errore nella richiesta di login', "error");
         }
       } catch (error) {
-        showSnackbar(error,"error");
+        showSnackbar(error, "error");
       }
 
     } else {
@@ -166,41 +167,38 @@ function App() {
                     )}
                   </Grid>
                 )}
-                <Grid style={{ height: "100%" }} item xs={12} md={10} lg={10}>
+                <Grid style={{ height: "100%",paddingBottom:"5%" }} item xs={12} md={10} lg={10}>
                   {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} onDrawerToggle={handleDrawerToggle} isSmallScreen={isSmallScreen} />}
                   <Routes>
                     <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
                     <Route path="/register" element={<Register snackbar={showSnackbar} />} />
                     <Route path="/search/:query" element={<Search user={user} snackbar={showSnackbar} />} />
-                    <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} />} />
+                    <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} snackbar={showSnackbar} />} />
 
-                    <Route path="/newPlaylist" element={<NewPlaylist user={user} onBack={handleBackToHome} snackbar={showSnackbar} />} />
-                    <Route path="/myAccount" element={<Account user={user} onBack={handleBackToHome} handleLogin={handleLogin} snackbar={showSnackbar} />} />
-                    <Route path="/user/:userId" element={<UserPage user={user} onBack={handleBackToHome} />} />
+                    <Route path="/newPlaylist" element={<NewPlaylist user={user} snackbar={showSnackbar} />} />
+                    <Route path="/myAccount" element={<Account user={user} handleLogin={handleLogin} snackbar={showSnackbar} />} />
+                    <Route path="/myLibrary" element={<Library user={user} snackbar={showSnackbar} />} />
+                    <Route path="/user/:userId" element={<UserPage user={user} snackbar={showSnackbar}/>} />
                     <Route
                       path="/playlist/:playlistId"
                       element={<Playlist
                         user={user}
                         playlistId={selectedPlaylistId}
-                        onBack={handleBackToHome}
                         snackbar={showSnackbar} />} />
                     <Route
                       path="/album/:albumId"
                       element={<Album
                         user={user}
-                        onBack={handleBackToHome}
                         snackbar={showSnackbar} />} />
                     <Route
                       path="/track/:trackId"
                       element={<Track
-                        onBack={handleBackToHome}
                         snackbar={showSnackbar} />} />
                     <Route
                       path="/artist/:artistId"
                       element={<Artist
                         user={user}
                         artistId={selectedArtistId}
-                        onBack={handleBackToHome}
                         snackbar={showSnackbar} />} />
                     <Route
                       path="/"

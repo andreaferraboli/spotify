@@ -9,7 +9,7 @@ import axios from 'axios';
 import { formatDuration } from "./Playlist"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const Album = ({ user, onBack, snackbar }) => {
+const Album = ({ user, snackbar }) => {
     const { albumId } = useParams();
     const [album, setAlbum] = useState();
 
@@ -85,7 +85,6 @@ const Album = ({ user, onBack, snackbar }) => {
                     </div>
                 </Grid>
             </div>
-            <button onClick={onBack}>Torna alla Home</button>
         </>
     );
 };

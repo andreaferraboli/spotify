@@ -24,7 +24,7 @@ export function formatDuration(milliseconds) {
 
   return `${hours} ore e ${minutes} minuti`;
 }
-const Playlist = ({ user, onBack, snackbar }) => {
+const Playlist = ({ user, snackbar }) => {
   console.log(user)
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
@@ -207,7 +207,7 @@ const Playlist = ({ user, onBack, snackbar }) => {
         setNewTag('');
         // Aggiorna lo stato della playlist per riflettere i cambiamenti
       } catch (error) {
-        console.error('Error adding tag:', error);
+        snackbar('Error adding tag:', error);
       }
     }
   };
@@ -217,12 +217,12 @@ const Playlist = ({ user, onBack, snackbar }) => {
       await changeTag(playlist.id, tag, 'remove');
       // Aggiorna lo stato della playlist per riflettere i cambiamenti
     } catch (error) {
-      console.error('Error removing tag:', error);
+      snackbar('Error removing tag:', error);
     }
   };
   return (
     <>
-      <Grid container style={{ margin: 0 }} spacing={1}>
+      <Grid container style={{ margin: 0}} spacing={1}>
         <Grid item xs={12} sm={3}>
           <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image" />
         </Grid>
@@ -456,7 +456,6 @@ const Playlist = ({ user, onBack, snackbar }) => {
 
       </div>
 
-      <button onClick={onBack}>Torna alla Home</button>
     </>
   );
 };

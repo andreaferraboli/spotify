@@ -56,7 +56,7 @@ export default function Navbar(props) {
   let profile = props.user ?? {};
 
   const profileLink = profile.profile_name ? "/myAccount" : "/login";
-  const profile_name = profile.profile_name ?? "guest";
+  const profile_name = profile.profile_name ?? "ACCEDI";
   const image = profile.image ?? "https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png";
   return (
     <>

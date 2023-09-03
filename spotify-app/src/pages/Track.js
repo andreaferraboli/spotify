@@ -9,7 +9,7 @@ import axios from 'axios';
 import { formatDuration } from "../components/track"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const TrackPage = ({ onBack, snackbar }) => {
+const TrackPage = ({ snackbar }) => {
     const { trackId } = useParams();
     const [track, setTrack] = useState();
     const [trackColors, setTrackColors] = useState([]);

@@ -10,7 +10,7 @@ import Album from '../components/Album';
 import "../styles/search.css";
 
 
-export default function SearchResults({ user }) {
+export default function SearchResults({ user,snackbar }) {
     const { idTrack } = useParams(); // Preleva la query dall'URL
     const [searchResults, setSearchResults] = useState(null);
 
@@ -24,7 +24,7 @@ export default function SearchResults({ user }) {
             setSearchResults(response.data); // Imposta i risultati della ricerca
         })
         .catch(error => {
-            console.error('Error fetching search results:', error);
+            snackbar('Error fetching search results:'+ error, "error");
         });
     }, [idTrack]);
     

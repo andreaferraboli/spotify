@@ -43,7 +43,7 @@ const Track = (props) => {
 
   const handlePlaylistSelect = (playlistId, type) => {
     const apiKey = process.env.REACT_APP_API_KEY;
-    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track`, {
+    axios.post(`http://localhost:3100/playlists/${playlistId}/add-track?apikey=${apiKey}`, {
         trackData: props.track,
         type: type,
         "apikey": apiKey

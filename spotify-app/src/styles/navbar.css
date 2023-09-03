@@ -5,3 +5,7 @@
   .customLabel{
     color: var(--text-color) !important
   }
+
+  .history-icon{
+    color: var(--text-color) !important
+  }

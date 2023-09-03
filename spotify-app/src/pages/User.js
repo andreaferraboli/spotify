@@ -12,7 +12,7 @@ import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
 import "../styles/user.css"; // Assumi che tu abbia uno stile CSS per l'user
 
-const User = ({ onBack, snackbar }) => {
+const User = ({ snackbar }) => {
     const { userId } = useParams();
     const [user, setUser] = useState();
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -76,7 +76,6 @@ const User = ({ onBack, snackbar }) => {
                     </Carousel>
                 </div>
             )}
-            <button onClick={onBack}>Torna alla Home</button>
         </>
     );
 };
