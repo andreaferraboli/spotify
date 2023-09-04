@@ -57,23 +57,23 @@ export const responsiveArtist = {
   }
 };
 
-export default function SearchResults({ user,snackbar }) {
+export default function SearchResults({ user, snackbar }) {
   const { query } = useParams(); // Preleva la query dall'URL
   const [searchResults, setSearchResults] = useState(null);
 
-
+  const apiKey = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
-    const apiKey = process.env.REACT_APP_API_KEY;
+
     // Invia la richiesta al server con l'API key nell'URL come query parameter
     axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`)
-    .then(response => {
+      .then(response => {
         setSearchResults(response.data); // Imposta i risultati della ricerca
-    })
-    .catch(error => {
-        snackbar('Error fetching search results:'+ error,"error");
-    });
-}, [query]);
+      })
+      .catch(error => {
+        snackbar('Error fetching search results:' + error, "error");
+      });
+  }, [query, apiKey, snackbar]);
 
   return (
     <div>
@@ -94,15 +94,15 @@ export default function SearchResults({ user,snackbar }) {
           {/* Sezione Album */}
           {searchResults.albums && searchResults.albums.length > 0 && (
             <>
-            <h2>Album</h2>
-            <Carousel showDots={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
+              <h2>Album</h2>
+              <Carousel showDots={true} itemClass="carousel-item-album" containerClass="carousel-container" responsive={responsive}>
 
-              {searchResults.albums?.map(album => (
-                <Link key={album.id} to={`/album/${album.id}`}>
-                  <Album album={album} />
-                </Link>
-              ))}
-            </Carousel></>
+                {searchResults.albums?.map(album => (
+                  <Link key={album.id} to={`/album/${album.id}`}>
+                    <Album album={album} />
+                  </Link>
+                ))}
+              </Carousel></>
           )}
 
           {/* Sezione Playlist */}
@@ -159,7 +159,7 @@ export default function SearchResults({ user,snackbar }) {
           )}
           {searchResults.tags && searchResults.tags.length > 0 && (
             <>
-            
+
               <h2>Tags</h2>
               <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container" responsive={responsive}>
                 {searchResults.tags?.map(playlist => (

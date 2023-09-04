@@ -8,12 +8,14 @@ import "react-multi-carousel/lib/styles.css";
 import { responsive } from "./Search"
 import Album from "../components/Album"
 import Track from "../components/track"
+
 const Artist = ({ user, snackbar }) => {
   const { artistId } = useParams(); // Ottieni l'id dell'artista dall'URL della pagina
   const [artist, setArtist] = useState([{}]);
   const [query, setQuery] = useState("");
   const [tracks, setTracks] = useState([]);
   const apiKey = process.env.REACT_APP_API_KEY;
+
   useEffect(() => {
     const fetchArtist = async () => {
       try {
@@ -37,7 +39,7 @@ const Artist = ({ user, snackbar }) => {
     };
 
     fetchArtist();
-  }, [artistId]);
+  }, [artistId , apiKey, snackbar]);
 
 
   useEffect(() => {
@@ -58,7 +60,7 @@ const Artist = ({ user, snackbar }) => {
       }
     };
     fetchQuery();
-  }, [query, artist.top_tracks, artistId]);
+  }, [query, artist.top_tracks, artistId, apiKey, snackbar]);
 
   async function changeFollow( userId, action) {
     try {
@@ -66,7 +68,7 @@ const Artist = ({ user, snackbar }) => {
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/artist/" + artistId;
+        window.location.reload();
       } else {
         snackbar(response.data.message, "error");
       }
@@ -75,8 +77,14 @@ const Artist = ({ user, snackbar }) => {
     }
   }
   function addDotsToNumberString(str) {
-    return new String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const number = parseFloat(str); // Converte la stringa in un numero, se necessario
+    if (!isNaN(number)) {
+      return number.toLocaleString();
+    } else {
+      return str; // Restituisce la stringa originale se non è un numero valido
+    }
   }
+  
   return (
     <>
       {artist.info ? (

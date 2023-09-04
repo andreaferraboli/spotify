@@ -60,45 +60,47 @@ export default function Navbar(props) {
   const image = profile.image ?? "https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png";
   return (
     <>
-      <AppBar position="static">
-        <div className="myAppBar">
-          <Toolbar>
-            {props.isSmallScreen && ( // Renderizza il pulsante solo quando lo schermo è md
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                onClick={props.onDrawerToggle}
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <NavigationButtons></NavigationButtons>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-                onChange={(event) => props.setQuery(event.target.value)} // Aggiungi questa riga
-              />
-            </Search>
-            <Box sx={{ flexGrow: 1 }} />
-            <Box >
-              <Link to={profileLink} style={{ textDecoration: 'none' }}>
-                <Chip
-                  avatar={<Avatar alt={profile_name} src={image} />}
-                  label={profile_name}
-                  variant="outlined"
-                  className="customLabel"
+      <div className="navbar-height">
+        <AppBar position="static">
+          <div className="myAppBar">
+            <Toolbar>
+              {props.isSmallScreen && ( // Renderizza il pulsante solo quando lo schermo è md
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={props.onDrawerToggle}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
+              <NavigationButtons></NavigationButtons>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  onChange={(event) => props.setQuery(event.target.value)} // Aggiungi questa riga
                 />
-              </Link>
-            </Box>
+              </Search>
+              <Box sx={{ flexGrow: 1 }} />
+              <Box >
+                <Link to={profileLink} style={{ textDecoration: 'none' }}>
+                  <Chip
+                    avatar={<Avatar alt={profile_name} src={image} />}
+                    label={profile_name}
+                    variant="outlined"
+                    className="customLabel"
+                  />
+                </Link>
+              </Box>
 
-          </Toolbar>
-        </div>
-      </AppBar>
+            </Toolbar>
+          </div>
+        </AppBar>
+      </div>
     </>
   );
 }

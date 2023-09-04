@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
     TextField,
     Grid,
-    IconButton,
     Button
 } from '@mui/material';
 import { AddCircleOutline } from '@mui/icons-material';
@@ -18,20 +17,21 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
     const apiKey = process.env.REACT_APP_API_KEY;
+
     const handleSearch = async (query) => {
         try {
             if (query.trim() === '') {
                 setSearchResults([]);
                 return;
             }
-    
+
             const response = await axios.get(`http://localhost:3100/searchTracks/${query}?apikey=${apiKey}`);
             setSearchResults(response.data);
         } catch (error) {
-            snackbar('Error searching tracks:'+ error, "error");
+            snackbar('Error searching tracks:' + error, "error");
         }
     };
-    
+
     const handleRemoveTrack = (trackId) => {
         setLocalPlaylist((prevPlaylist) => ({
             ...prevPlaylist,
@@ -69,12 +69,19 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
         }
     };
     const handleAddTrackToPlaylist = async (track) => {
-        setLocalPlaylist((prevPlaylist) => ({
-            ...prevPlaylist,
-            tracks: [...prevPlaylist.tracks, track]
-        }));
-        setSearchValue('');
-        setSearchResults([]);
+        // Verifica se la traccia è già presente nella playlist tramite l'ID
+        if (!localPlaylist.tracks.some((existingTrack) => existingTrack.id === track.id)) {
+            // Se la traccia non è presente, aggiungila alla playlist
+            setLocalPlaylist((prevPlaylist) => ({
+                ...prevPlaylist,
+                tracks: [...prevPlaylist.tracks, track]
+            }));
+            setSearchValue('');
+            setSearchResults([]);
+        } else {
+            // Se la traccia è già presente, puoi gestire questa situazione come preferisci
+            snackbar('La traccia è già presente nella playlist.', "error");
+        }
     };
 
     const handleSaveChanges = async () => {
@@ -83,22 +90,22 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                 dataUrl: document.getElementById("playlist_image").src,
                 id: localPlaylist.id
             });
-    
+
             localPlaylist.image = response.data.imageUrl;
-            
+
             response = await axios.put(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`, localPlaylist);
-    
+
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
-                window.location.href = "/playlist/" + localPlaylist.id;
+                window.location.reload()
             } else {
                 snackbar(response.data.message, "error");
             }
         } catch (error) {
-            snackbar('Error saving changes:'+ error,"error");
+            snackbar('Error saving changes:' + error, "error");
         }
     };
-    
+
     function createImageCollage(imageUrls) {
         if (imageUrls.length !== 0) {
             const uniqueImageUrls = [...new Set(imageUrls)];
@@ -203,8 +210,8 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                                     <Track
                                         userPlaylists={user.my_playlists.concat(user.playlists)}
                                         track={track}
-                                        index={index + 1} 
-                                        snackbar={snackbar}/>
+                                        index={index + 1}
+                                        snackbar={snackbar} />
                                 </div>
                             </Grid>
                             <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">

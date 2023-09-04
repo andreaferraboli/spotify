@@ -90,22 +90,8 @@ async function authenticateAndRenewToken() {
 }
 
 
-/* #swagger.parameters['id'] = {
-    in: 'path',
-    description: 'User\'s ID',
-    required: true,
-    type: 'string'
-} */
-/* #swagger.responses[200] = {
-    description: 'User successfully obtained.',
-    schema: {
-        name: 'Jhon Doe',
-        age: 29,
-        about: ''
-    }
-} */
+
 app.get("/user/:id", authenticateApiKey, async function (req, res) {
-  // Retrieve user data from the database
   var id = req.params.id;
   var user = await getUser(id);
   let pwmClient = await new mongoClient(uri).connect();
@@ -114,29 +100,15 @@ app.get("/user/:id", authenticateApiKey, async function (req, res) {
     .collection("public_playlists");
 
   // Retrieve user's playlists from the database
-  user[0].playlists = await playlistsCollection.find({ 'owner.id': id }).toArray();
+  if (id ?? '')
+    user[0].playlists = await playlistsCollection.find({ 'owner.id': id }).toArray();
+  else
+    user.playlists = await playlistsCollection.find().toArray();
   res.json(user);
 });
 
-/* #swagger.parameters['id'] = {
-    in: 'path',
-    description: 'User\'s ID',
-    required: true,
-    type: 'string'
-} */
-/* #swagger.responses[200] = {
-    description: 'User with playlists successfully obtained.',
-    schema: {
-        name: 'Jhon Doe',
-        age: 29,
-        about: '',
-        playlists: [
-            {
-                // Playlist schema here
-            }
-        ]
-    }
-} */
+
+
 app.get("/showUser/:id", authenticateApiKey, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
@@ -166,6 +138,7 @@ app.get("/showUser/:id", authenticateApiKey, async function (req, res) {
   res.json(user);
 });
 
+
 app.post("/login", authenticateApiKey, async (req, res) => {
   login = req.body;
 
@@ -190,7 +163,7 @@ app.post("/login", authenticateApiKey, async (req, res) => {
       .findOne(filter);
 
     if (loggedUser == null) {
-      res.status(404).send("sbagliata combinazione");
+      res.status(404).send("Wrong combination");
     } else {
       res.status(200).json(loggedUser);
     }
@@ -198,8 +171,9 @@ app.post("/login", authenticateApiKey, async (req, res) => {
     console.error("An error occurred:", error);
     res.status(500).send("Internal Server Error");
   }
-
 });
+
+
 
 app.post("/register", authenticateApiKey, async (req, res) => {
 
@@ -224,12 +198,13 @@ app.post("/register", authenticateApiKey, async (req, res) => {
 
   } catch (e) {
     if (e.code == 11000) {
-      res.status(400).send("Utente già presente");
+      res.status(400).send("User already exists");
       return;
     }
-    res.status(500).send(`Errore generico: ${e}`);
+    res.status(500).send(`Generic error: ${e}`);
   }
 });
+
 
 
 app.post('/setUserImage/:userId', authenticateApiKey, async (req, res) => {
@@ -307,13 +282,6 @@ app.post('/upload', authenticateApiKey, async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching the Blob URL.' });
   }
 });
-app.put("/users/:id", authenticateApiKey, function (req, res) {
-  updateUser(res, req.params.id, req.body);
-});
-
-app.delete("/users/:id", authenticateApiKey, function (req, res) {
-  deleteUser(res, req.params.id);
-});
 
 app.get("/", authenticateApiKey, function (req, res) {
   res.sendFile(path.join(__dirname, "./spotify-app/build", "/index.html"));
@@ -387,25 +355,29 @@ app.get("/playlist/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
   var pwmClient = await new mongoClient(uri).connect();
-  var playlist = await pwmClient
-    .db("spotify")
-    .collection("users").aggregate([
-      { $unwind: "$my_playlists" },
-      { $match: { "my_playlists.id": id } },
-      { $project: { my_playlists: 1 } }
-    ]).toArray();
-  if (playlist.length === 0) {
-    playlist = await pwmClient
+  if (id ?? '') {
+    var playlist = await pwmClient
       .db("spotify")
-      .collection("public_playlists").findOne(
-        { "id": id }
-      )
-    playlist.type = "public"
-  } else {
-    playlist[0].my_playlists.type = "private"
-    playlist = playlist[0].my_playlists
+      .collection("users").aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": id } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+    if (playlist.length === 0) {
+      playlist = await pwmClient
+        .db("spotify")
+        .collection("public_playlists").findOne(
+          { "id": id }
+        )
+        if (playlist) {
+          playlist.type = "public";
+        }
+    } else {
+      playlist[0].my_playlists.type = "private"
+      playlist = playlist[0].my_playlists
+    }
+    res.json(playlist);
   }
-  res.json(playlist);
 });
 app.get("/newId", authenticateApiKey, async (req, res) => {
   let newId;
@@ -600,7 +572,6 @@ app.get("/searchTracks/:query", authenticateApiKey, async (req, res) => {
 app.get("/searchTrack/:idTrack", authenticateApiKey, async (req, res) => {
   id_track = req.params.idTrack
   const id = req.query.id;
-  console.log("id:", id)
   var pwmClient = await new mongoClient(uri).connect();
   let userPlaylistsCursor;
   if (id ?? '') {
@@ -1071,15 +1042,6 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
     res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });
   }
 });
-function ms_to_minute(milliseconds) {
-  // Convert milliseconds to minutes and seconds
-  const minutes = Math.floor(milliseconds / 60000);
-  const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-
-  // Format the result as minutes:seconds
-  const formattedTime = `${minutes}:${seconds.padStart(2, "0")}`;
-  return formattedTime;
-}
 
 app.listen(3100, "0.0.0.0", () => {
   console.log("Server partito porta 3100");
@@ -1155,31 +1117,6 @@ function filterArtist(artist) {
   };
   return filteredArtist;
 }
-async function getArtistNameFromId(id_artist) {
-  try {
-    const artist = await spotifyApi.getArtist(`${id_artist}`);
-    return artist.body.name;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-function getPlaylist(id_playlist) {
-  spotifyApi.getPlaylist(`${id_playlist}`).then(
-    function (data) {
-      let playlist = data.body;
-      playlist.tracks.items.forEach(async function (item) {
-        let track = await getTrack(item.track.id);
-        track.artist.forEach(async (artist) => {
-          const artistName = await getArtistNameFromId(artist);
-        });
-      });
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
-}
 async function getAlbum(id_album) {
   let album = await spotifyApi.getAlbum(id_album);
   return album.body
@@ -1209,59 +1146,6 @@ async function searchTracksFromArtist(query, name_artist, id_artist) {
 }
 function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
-}
-
-
-function deleteUser(res, id) {
-  let index = users.findIndex((user) => user.id == id);
-  if (index == -1) {
-    res.status(404).send("User not found");
-    return;
-  }
-  users = users.filter((user) => user.id != id);
-
-  res.json(users);
-}
-async function updateUser(res, id, updatedUser) {
-  if (updatedUser.name == undefined) {
-    res.status(400).send("Missing Name");
-    return;
-  }
-  if (updatedUser.surname == undefined) {
-    res.status(400).send("Missing Surname");
-    return;
-  }
-  if (updatedUser.email == undefined) {
-    res.status(400).send("Missing Email");
-    return;
-  }
-  if (updatedUser.password == undefined) {
-    res.status(400).send("Missing Password");
-    return;
-  }
-  updatedUser.password = hash(updatedUser.password);
-  try {
-    var pwmClient = await new mongoClient(uri).connect();
-
-    var filter = { _id: new ObjectId(id) };
-
-    var updatedUserToInsert = {
-      $set: updatedUser,
-    };
-
-    var item = await pwmClient
-      .db("pwm")
-      .collection("users")
-      .updateOne(filter, updatedUserToInsert);
-
-    res.send(item);
-  } catch (e) {
-    if (e.code == 11000) {
-      res.status(400).send("Utente già presente");
-      return;
-    }
-    res.status(500).send(`Errore generico: ${e}`);
-  }
 }
 
 async function searchArtists(query) {
@@ -1300,18 +1184,18 @@ async function searchPlaylists(query, id) {
     var pwmClient = await new mongoClient(uri).connect();
     let userPlaylistsCursor;
     // Search for user playlists using aggregation
-    if (id ?? '') { 
+    if (id ?? '') {
       userPlaylistsCursor = await pwmClient
-      .db("spotify")
-      .collection("users")
-      .aggregate([
-        { $match: { _id: new ObjectId(id) } },
-        { $unwind: '$my_playlists' },
-        { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
-        { $project: { my_playlists: 1 } }
-      ])
-      .toArray();
-     } else {
+        .db("spotify")
+        .collection("users")
+        .aggregate([
+          { $match: { _id: new ObjectId(id) } },
+          { $unwind: '$my_playlists' },
+          { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
+          { $project: { my_playlists: 1 } }
+        ])
+        .toArray();
+    } else {
       userPlaylistsCursor = []
     }
     var userPlaylists = userPlaylistsCursor.map(item => ({

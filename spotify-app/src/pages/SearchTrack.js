@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import Track from '../components/track';
 import PlaylistCard from '../components/PlaylistCard';
-import { Grid } from '@mui/material'; // Import the Grid component from Material-UI
-import ArtistCard from '../components/ArtistCard';
-import UserCard from '../components/UserCard';
-import Album from '../components/Album';
+import { Grid } from '@mui/material';
 import "../styles/search.css";
 
 

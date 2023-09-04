@@ -4,6 +4,7 @@ import { Grid, TextField, Button, Typography } from '@mui/material';
 import axios from 'axios';
 import LoadArtist from "../components/LoadArtist"
 import LoadGenres from "../components/LoadGenres"
+import {  useNavigate } from "react-router-dom";
 
 import "../styles/login.css"; // Importa il file CSS con gli stili personalizzati
 
@@ -20,7 +21,7 @@ const RegisterPage = ({ snackbar }) => {
   const [loadGenres, setLoadGenres] = useState(false);
   const [loadArtist, setLoadArtist] = useState(false);
 
-
+  const navigate = useNavigate();
   const getFavouriteArtists = () => {
     return favouriteArtists.length;
   };
@@ -47,7 +48,7 @@ const RegisterPage = ({ snackbar }) => {
           await publicFile(imageFile, response.data.userId);
         }
         snackbar('Registrazione effettuata con successo!', "success");
-        window.location.href = "/login";
+        navigate( "/login")
       } else {
         snackbar('Errore durante la registrazione', "error");
       }
@@ -80,7 +81,7 @@ const RegisterPage = ({ snackbar }) => {
         const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
         if (responseImage.status === 200) {
           snackbar("immagine caricata correttamente", "success")
-          window.location.href = "/login"
+          navigate( "/login")
         } else {
           snackbar("immagine non caricata correttamente", "error")
         }

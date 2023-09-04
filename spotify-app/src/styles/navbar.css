@@ -2,6 +2,10 @@
 .myAppBar {
   background-color:var(--primary-color);
   }
+
+  .navbar-height{
+    height: 6vh;
+  }
   .customLabel{
     color: var(--text-color) !important
   }

@@ -30,7 +30,7 @@ const User = ({ snackbar }) => {
             }
         };
         fetchUser();
-    }, [userId]);
+    }, [userId, apiKey, snackbar]);
     
     return (
         <>

@@ -5,7 +5,6 @@ import {
     Button, Typography,
     Avatar
 } from '@mui/material';
-
 import { AddCircleOutline } from '@mui/icons-material';
 import Track from "./track";
 import "../styles/playlist.css";
@@ -29,36 +28,39 @@ function NewPlaylist({ user, snackbar }) {
     const [playlistId, setPlaylistId] = useState('');
     const apiKey = process.env.REACT_APP_API_KEY;
 
+
     useEffect(() => {
         async function fetchPlaylistId() {
+          async function searchId() {
             try {
-                const id = await searchId();
-                setPlaylistId(id);
+              const response = await axios.get(`http://localhost:3100/newId?apikey=${apiKey}`);
+              if (response.status === 200) {
+                return response.data.id;
+              } else {
+                snackbar('Errore durante la ricerca del nuovo ID', 'error');
+              }
             } catch (error) {
-                snackbar('Error fetching new id:', error);
+              snackbar('Errore durante la ricerca del nuovo ID', 'error');
             }
+          }
+      
+          try {
+            const id = await searchId();
+            setPlaylistId(id);
+          } catch (error) {
+            snackbar('Error fetching new id:', error);
+          }
         }
         fetchPlaylistId();
-    }, []);
+      }, [apiKey, snackbar]);
+      
 
-    async function searchId() {
-        try {
-            const response = await axios.get(`http://localhost:3100/newId?apikey=${apiKey}`);
 
-            if (response.status === 200) {
-                return response.data.id;
-            } else {
-                snackbar('Errore durante la ricerca del nuovo ID', "error");
-            }
-        } catch (error) {
-            snackbar('Errore durante la ricerca del nuovo ID', "error");
-        }
-    }
 
 
     useEffect(() => {
         createImageCollage(localPlaylist.tracks.map((track) => track.image));
-    }, [localPlaylist.tracks]);
+    }, [localPlaylist.tracks, apiKey, snackbar]);
     const handleSearch = async (query) => {
         try {
             if (query.trim() === '') {
@@ -109,14 +111,22 @@ function NewPlaylist({ user, snackbar }) {
             tracks: prevPlaylist.tracks.filter((track) => track.id !== trackId),
         }));
     };
-    const handleAddTrackToPlaylist = (track) => {
-        setLocalPlaylist((prevPlaylist) => ({
-            ...prevPlaylist,
-            tracks: [...prevPlaylist.tracks, track]
-        }));
-        setSearchValue('');
-        setSearchResults([]);
+    const handleAddTrackToPlaylist = async (track) => {
+        // Verifica se la traccia è già presente nella playlist tramite l'ID
+        if (!localPlaylist.tracks.some((existingTrack) => existingTrack.id === track.id)) {
+            // Se la traccia non è presente, aggiungila alla playlist
+            setLocalPlaylist((prevPlaylist) => ({
+                ...prevPlaylist,
+                tracks: [...prevPlaylist.tracks, track]
+            }));
+            setSearchValue('');
+            setSearchResults([]);
+        } else {
+            // Se la traccia è già presente, puoi gestire questa situazione come preferisci
+            snackbar('La traccia è già presente nella playlist.', "error");
+        }
     };
+
 
     const handleSavePlaylist = async () => {
         try {
@@ -137,7 +147,7 @@ function NewPlaylist({ user, snackbar }) {
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
-                window.location.href = "/playlist/" + playlistId;
+                window.location.reload()
             } else {
                 snackbar(response.data.message, "error");
             }

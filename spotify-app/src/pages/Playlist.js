@@ -13,6 +13,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import axios from 'axios';
+import {  useNavigate } from "react-router-dom";
+
 import "../styles/playlist.css";
 
 export function formatDuration(milliseconds) {
@@ -25,7 +27,6 @@ export function formatDuration(milliseconds) {
   return `${hours} ore e ${minutes} minuti`;
 }
 const Playlist = ({ user, snackbar }) => {
-  console.log(user)
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState();
   const [editing, setEditing] = useState(false);
@@ -33,6 +34,7 @@ const Playlist = ({ user, snackbar }) => {
   const [newTag, setNewTag] = useState('');
   const apiKey = process.env.REACT_APP_API_KEY;
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
@@ -47,7 +49,7 @@ const Playlist = ({ user, snackbar }) => {
       }
     };
     fetchPlaylist();
-  }, [playlistId]);
+  }, [playlistId, apiKey, snackbar]);
 
   const handleEditPlaylist = () => {
     setEditing(true);
@@ -78,7 +80,7 @@ const Playlist = ({ user, snackbar }) => {
         // Handle success response from the server
         if (response.status === 200) {
           snackbar(response.data.message, "success");
-          window.location.href = "/playlist/" + playlistId;
+          window.location.reload(true);;
         } else {
           snackbar("Errore nell'aggiornamento della playlist", "error");
         }
@@ -96,10 +98,12 @@ const Playlist = ({ user, snackbar }) => {
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        navigate("/");
+        window.location.reload(true);
       } else {
         snackbar("Errore nell'eliminazione della playlist", "error");
-        window.location.href = "/";
+        navigate( "/")
+        
       }
     } catch (error) {
       snackbar("Errore durante l'eliminazione della playlist: " + error.message, "error");
@@ -114,7 +118,7 @@ const Playlist = ({ user, snackbar }) => {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        window.location.reload(true);;
       } else {
         snackbar("Errore nel pubblicare la playlist", "error");
       }
@@ -131,7 +135,7 @@ const Playlist = ({ user, snackbar }) => {
       const response = await axios.put(url, requestData);
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        window.location.reload(true);;
       } else {
         snackbar("Errore nel rendere la playlist privata", "error");
       }
@@ -146,7 +150,7 @@ const Playlist = ({ user, snackbar }) => {
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        window.location.reload(true);;
       } else {
         snackbar(response.data.message, "error");
       }
@@ -161,7 +165,7 @@ const Playlist = ({ user, snackbar }) => {
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        window.location.reload(true);;
       } else {
         snackbar(response.data.message, "error");
       }
@@ -181,7 +185,7 @@ const Playlist = ({ user, snackbar }) => {
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
-        window.location.href = "/playlist/" + playlistId;
+        window.location.reload(true);;
       } else {
         snackbar("Errore durante l'operazione", "error");
       }
@@ -337,15 +341,18 @@ const Playlist = ({ user, snackbar }) => {
             <div>
               <Typography variant="body1">
                 {playlist?.type === 'public' ? (
+                  <>
                   <Link to={`/user/${playlist?.owner.id}`}>
                     {playlist?.owner.profile_name}
                   </Link>
+                  {" • "+playlist?.followers.length+ " followers"}
+                  </>
                 ) : (
                   <Link to={`/user/${user._id}`}>
                     {user.profile_name}
                   </Link>
                 )}{" "}
-                - {playlist?.tracks.length} brani, circa{" "}
+                • {playlist?.tracks.length} brani, circa{" "}
                 {formatDuration(
                   playlist?.tracks.reduce((total, song) => total + song.duration, 0)
                 )}

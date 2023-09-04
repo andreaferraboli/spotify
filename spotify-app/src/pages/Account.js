@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Grid, Avatar, TextField, Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
+import { useNavigate } from "react-router-dom";
 
 import "../styles/account.css";
 const Account = ({ user, handleLogin, snackbar }) => {
@@ -18,6 +19,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const apiKey = process.env.REACT_APP_API_KEY;
 
+    const navigate = useNavigate();
     const handleAvatarClick = () => {
         setIsDialogOpen(true);
     };
@@ -34,7 +36,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 setAllGenres(response.data);
             })
             .catch(error => snackbar("errore caricamento generi" + error, "error"));
-    }, []);
+    }, [apiKey, snackbar]);
 
     const handleGenreSelect = (genre) => {
         if (genre !== null && genre !== undefined) {
@@ -85,7 +87,9 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
                 if (responseImage.status === 200) {
                     snackbar("Immagine caricata correttamente", "success");
-                    window.location.href = "/";
+                    navigate("/")
+                    window.location.reload(true);;
+
                 } else {
                     snackbar("Immagine non caricata correttamente", "error");
                 }
@@ -116,7 +120,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         } catch (error) {
             // Handle error
-            snackbar("error:"+error, "error");
+            snackbar("error:" + error, "error");
         }
     };
 
@@ -126,14 +130,14 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 snackbar("La vecchia password e la conferma della nuova password non corrispondono", "error");
                 return; // Esci dalla funzione in caso di errore
             }
-    
+
             const changePasswordUrl = `http://localhost:3100/changePassword?apikey=${apiKey}`;
             const response = await axios.post(changePasswordUrl, {
                 "id": user._id,
                 "oldPassword": oldPassword,
                 "newPassword": newPassword,
             });
-    
+
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
                 handleLogin(user);
@@ -144,7 +148,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             if (error.response ?? '') {
                 if (error.response.status === 400) {
                     snackbar(error.response.data.message, "warning");
-    
+
                 } else if (error.message.includes("Network Error")) {
                     snackbar("Impossibile raggiungere il server", "error");
                 } else {
@@ -155,7 +159,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         }
     };
-    
+
 
 
     const changeGenres = async (genres) => {
@@ -174,7 +178,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             }
         } catch (error) {
             // Handle error
-            snackbar("error:"+error, "error");
+            snackbar("error:" + error, "error");
         }
     };
 
@@ -185,14 +189,13 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
-                handleLogin(user);
                 handleLogout();
             } else {
                 snackbar(response.data.message, "error");
             }
         } catch (error) {
             // Handle error
-            snackbar("error:"+error, "error");
+            snackbar("error:" + error, "error");
         }
     };
 
@@ -229,6 +232,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
                 {/* Sezione Info Utente */}
                 <Grid container xs={12} sm={2} style={{ paddingTop: "2%", paddingBottom: "2%", display: "flex", alignItems: "left", justifyContent: "space-around" }} direction="column">
+                    <br></br>
                     <TextField
                         label="Nome"
                         className="account-textfield"

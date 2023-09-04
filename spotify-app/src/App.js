@@ -16,6 +16,7 @@ import Artist from '../src/pages/Artist';
 import Account from '../src/pages/Account';
 import Library from '../src/pages/Library';
 import { useMediaQuery, Drawer } from '@mui/material';
+import Scrollbar from "react-scrollbars-custom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import UserPage from '../src/pages/User';
 import Box from '@mui/material/Box';
@@ -144,7 +145,7 @@ function App() {
             <Box className="home-box">
               <Grid container spacing={0}>
                 {!isLoginPage && !isRegisterPage && (
-                  <Grid item xs={0} md={2} lg={2}>
+                  <Grid item xs={0} md={1.5} lg={1.5}>
                     {isSmallScreen ? (
                       <Drawer
                         anchor="left"
@@ -167,48 +168,57 @@ function App() {
                     )}
                   </Grid>
                 )}
-                <Grid style={{ height: "100%",paddingBottom:"5%" }} item xs={12} md={10} lg={10}>
-                  {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} onDrawerToggle={handleDrawerToggle} isSmallScreen={isSmallScreen} />}
-                  <Routes>
-                    <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
-                    <Route path="/register" element={<Register snackbar={showSnackbar} />} />
-                    <Route path="/search/:query" element={<Search user={user} snackbar={showSnackbar} />} />
-                    <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} snackbar={showSnackbar} />} />
 
-                    <Route path="/newPlaylist" element={<NewPlaylist user={user} snackbar={showSnackbar} />} />
-                    <Route path="/myAccount" element={<Account user={user} handleLogin={handleLogin} snackbar={showSnackbar} />} />
-                    <Route path="/myLibrary" element={<Library user={user} snackbar={showSnackbar} />} />
-                    <Route path="/user/:userId" element={<UserPage user={user} snackbar={showSnackbar}/>} />
-                    <Route
-                      path="/playlist/:playlistId"
-                      element={<Playlist
-                        user={user}
-                        playlistId={selectedPlaylistId}
-                        snackbar={showSnackbar} />} />
-                    <Route
-                      path="/album/:albumId"
-                      element={<Album
-                        user={user}
-                        snackbar={showSnackbar} />} />
-                    <Route
-                      path="/track/:trackId"
-                      element={<Track
-                        snackbar={showSnackbar} />} />
-                    <Route
-                      path="/artist/:artistId"
-                      element={<Artist
-                        user={user}
-                        artistId={selectedArtistId}
-                        snackbar={showSnackbar} />} />
-                    <Route
-                      path="/"
-                      element={<Home
-                        user={user}
-                        onPlaylistClick={handlePlaylistClick}
-                        onArtistClick={handleArtistClick}
-                        snackbar={showSnackbar} />} />
-                  </Routes>
+                <Grid style={{ height: "100vh" }} item xs={12} md={10.5} lg={10.5}>
+                  {!isLoginPage && !isRegisterPage && <Navbar user={user} setQuery={setQuery} onDrawerToggle={handleDrawerToggle} isSmallScreen={isSmallScreen} />}
+
+                  <Scrollbar style={{ height: "94vh", marginBottom: "5%" }}>
+                    <Routes>
+                      <Route path="/login" element={<Login handleLogin={handleLogin} snackbar={showSnackbar} />} />
+                      <Route path="/register" element={<Register snackbar={showSnackbar} />} />
+                      <Route path="/search/:query" element={<Search user={user} snackbar={showSnackbar} />} />
+                      <Route path="/searchTrack/:idTrack" element={<SearchTrack user={user} snackbar={showSnackbar} />} />
+
+                      <Route path="/newPlaylist" element={<NewPlaylist user={user} snackbar={showSnackbar} />} />
+                      <Route path="/myAccount" element={<Account user={user} handleLogin={handleLogin} snackbar={showSnackbar} />} />
+                      <Route path="/myLibrary" element={<Library user={user} snackbar={showSnackbar} />} />
+                      <Route path="/user/:userId" element={<UserPage user={user} snackbar={showSnackbar} />} />
+                      <Route
+                        path="/playlist/:playlistId"
+                        element={<Playlist
+                          user={user}
+                          playlistId={selectedPlaylistId}
+                          snackbar={showSnackbar} />} />
+                      <Route
+                        path="/album/:albumId"
+                        element={<Album
+                          user={user}
+                          snackbar={showSnackbar} />} />
+                      <Route
+                        path="/track/:trackId"
+                        element={<Track
+                          snackbar={showSnackbar} />} />
+                      <Route
+                        path="/artist/:artistId"
+                        element={<Artist
+                          user={user}
+                          artistId={selectedArtistId}
+                          snackbar={showSnackbar} />} />
+                      <Route
+                        path="/"
+                        element={
+                          <Home
+                            user={user}
+                            onPlaylistClick={handlePlaylistClick}
+                            onArtistClick={handleArtistClick}
+                            snackbar={showSnackbar} />
+                        } />
+                    </Routes>
+                    <div style={{height:"5vh"}}>
+                    </div>
+                  </Scrollbar>
                 </Grid>
+
               </Grid>
             </Box>
           )}

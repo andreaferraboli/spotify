@@ -36,6 +36,9 @@ const Home = (props) => {
 
   return (
     <>
+     
+
+     
       {props.user?.my_playlists?.length > 0 && (
         <div className='home-section'>
           <h2>Le mie PLAYLIST</h2>

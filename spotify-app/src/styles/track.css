@@ -14,16 +14,20 @@
   background-position: center;
 }
 
-.css-3dzjca-MuiPaper-root-MuiPopover-paper-MuiMenu-paper {
-  background-color: #0b0808 !important;
-}
+
 
 .menu-heading {
   font-weight: bold;
   color: var(--text-color) !important;
   padding: 8px 16px;
 }
-
+.custom-menu{
+  background-color: var(--primary-color) ;
+  padding:0
+}
+.MuiList-root{
+  padding:0 !important
+}
 /* Stile per l'icona Play al centro dell'immagine */
 .image-container-wrapper {
   position: relative; /* Crea un contesto di posizionamento relativo */
