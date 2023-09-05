@@ -147,7 +147,7 @@ function NewPlaylist({ user, snackbar }) {
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
-                window.location.reload()
+                window.location.href="https://spotify-7a2ad.web.app/playlist/"+playlistId
             } else {
                 snackbar(response.data.message, "error");
             }

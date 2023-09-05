@@ -126,7 +126,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
 
     const handleChangePassword = async () => {
         try {
-            if (oldPassword !== confirmPassword) {
+            if (newPassword !== confirmPassword) {
                 snackbar("La vecchia password e la conferma della nuova password non corrispondono", "error");
                 return; // Esci dalla funzione in caso di errore
             }

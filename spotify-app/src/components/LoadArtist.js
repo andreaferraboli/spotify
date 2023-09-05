@@ -12,6 +12,7 @@ const LoadArtist = (props) => {
   const [artists, setArtists] = useState([]);
   const [query, setQuery] = useState('');
   const [noResults, setNoResults] = useState(false);
+  const [isRegistrationInProgress,setIsRegistrationInProgress] = useState(false);;
   const apiKey = process.env.REACT_APP_API_KEY;
 
   const fetchData = async () => {
@@ -38,7 +39,7 @@ const LoadArtist = (props) => {
         }
       }
     } catch (error) {
-      props.snackbar('An error occurred while fetching data '+error,"error");
+      props.snackbar('An error occurred while fetching data ' + error, "error");
     }
   };
 
@@ -59,38 +60,29 @@ const LoadArtist = (props) => {
     }
 
   };
+
+
   const handleRegisterClick = async () => {
+    const nextButton = document.getElementById("next-button");
     try {
-      // Mostra i puntini nel pulsante
-      const nextButton = document.getElementById("next-button");
-      const originalButtonText = nextButton.textContent;
-      nextButton.textContent = "...";
+      if (!isRegistrationInProgress) {
+        setIsRegistrationInProgress(true)
+        nextButton.textContent = "conferma registrazione";
+        await props.setFavouriteArtists(selectedAvatars);
 
-      await props.setFavouriteArtists(selectedAvatars); // Attendere il completamento di setFavouriteArtists
-
-      while (selectedAvatars.length !== props.getFavouriteArtists()) {
-        // Aggiungi animazione dei puntini
-        nextButton.textContent = "...";
-        await wait(500); // Attendi 500ms
-        nextButton.textContent = "..";
-        await wait(500);
-        nextButton.textContent = ".";
-        await wait(500);
+        props.snackbar("Artisti caricati correttamente");
+      } else {
+        console.log("premuto due");
+        // Second click: Call props.register
+        props.register();
       }
-
-      // Ripristina il testo originale nel pulsante
-      nextButton.textContent = originalButtonText;
-
-      props.snackbar("artisti caricati correttamente");
-      props.register();
     } catch (error) {
-      props.snackbar("Errore durante la registrazione:"+ error,"error");
-      // Gestire l'errore in qualche modo
+      isRegistrationInProgress = false;
+      props.snackbar("Errore durante la registrazione: " + error, "error");
+      // Handle the error in some way
     }
   };
-
-  // Funzione di utilità per l'attesa
-  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  
 
   return (
     <Container>
