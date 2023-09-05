@@ -54,15 +54,18 @@ const uri =
   "mongodb+srv://andrewferro04:valerio1234pwm@pwm.lisrj23.mongodb.net/?retryWrites=true&w=majority";
 // Credenziali del client fornite da Spotify
 
+// Creazione di un oggetto SpotifyWebApi con le credenziali del client
 const spotifyApi = new SpotifyWebApi({
   clientId: "2671048b97804e938412fcbe2810b373",
   clientSecret: "3b8081f11e264df7bc3b45bdbd23ebf1",
 });
 
+// Funzione asincrona per l'autenticazione e il rinnovo del token
 async function authenticateAndRenewToken() {
   try {
+    // Verifica se il token di accesso è già presente
     if (!spotifyApi.getAccessToken()) {
-      // Se il token di accesso non è presente, ottieni uno nuovo
+      // Se il token di accesso non è presente, richiedi un nuovo token
       const { data } = await axios({
         method: "post",
         url: "https://accounts.spotify.com/api/token",
@@ -73,21 +76,24 @@ async function authenticateAndRenewToken() {
         data: "grant_type=client_credentials",
       });
 
+      // Se viene ricevuto un token di accesso valido, impostalo
       if (data.access_token) {
-        // Imposta il nuovo token di accesso
         spotifyApi.setAccessToken(data.access_token);
       } else {
+        // Se non viene ricevuto un token valido, genera un errore
         throw new Error("Failed to obtain access token");
       }
     }
 
-    // Token di accesso valido, procedi
+    // Token di accesso valido, procedi con l'autenticazione
     return true;
   } catch (error) {
+    // Gestisci gli errori di autenticazione
     console.error("Authentication Error:", error);
     return false;
   }
 }
+
 
 
 
