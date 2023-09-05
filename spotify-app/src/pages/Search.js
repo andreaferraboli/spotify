@@ -66,7 +66,7 @@ export default function SearchResults({ user, snackbar }) {
   useEffect(() => {
 
     // Invia la richiesta al server con l'API key nell'URL come query parameter
-    axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`)
+    axios.get(`https://spotify-server-kohl.vercel.app/search/${query}?id=${user._id}&apikey=${apiKey}`)
       .then(response => {
         setSearchResults(response.data); // Imposta i risultati della ricerca
       })

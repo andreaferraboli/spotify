@@ -38,7 +38,7 @@ const Playlist = ({ user, snackbar }) => {
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
-        const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=${apiKey}`);
+        const response = await axios.get(`https://spotify-server-kohl.vercel.app/playlist/${playlistId}?apikey=${apiKey}`);
         if (response.status === 200) {
           setPlaylist(response.data);
         } else {
@@ -71,7 +71,7 @@ const Playlist = ({ user, snackbar }) => {
     }
   };
   const updatePlaylistOnServer = (newName, newDescription) => {
-    axios.put(`http://localhost:3100/updatePlaylist?apikey=${apiKey}`, {
+    axios.put(`https://spotify-server-kohl.vercel.app/updatePlaylist?apikey=${apiKey}`, {
       name: newName,
       description: newDescription,
       playlistId: playlistId
@@ -94,7 +94,7 @@ const Playlist = ({ user, snackbar }) => {
 
   const handleDeletePlaylist = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`);
+      const response = await axios.delete(`https://spotify-server-kohl.vercel.app/playlist/${playlist.id}?apikey=${apiKey}`);
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
@@ -111,7 +111,7 @@ const Playlist = ({ user, snackbar }) => {
   };
 
   async function publishPlaylist() {
-    const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
+    const url = `https://spotify-server-kohl.vercel.app/movePlaylist/${playlist.id}?apikey=${apiKey}`;
     const requestData = { user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private' };
 
     try {
@@ -128,7 +128,7 @@ const Playlist = ({ user, snackbar }) => {
   }
 
   async function makePlaylistPrivate(playlist) {
-    const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
+    const url = `https://spotify-server-kohl.vercel.app/movePlaylist/${playlist.id}?apikey=${apiKey}`;
     const requestData = { user_id: user._id, type: 'public' };
 
     try {
@@ -146,7 +146,7 @@ const Playlist = ({ user, snackbar }) => {
 
   const handleSetCollaborative = async (collaborative) => {
     try {
-      const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
+      const response = await axios.put(`https://spotify-server-kohl.vercel.app/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
@@ -161,7 +161,7 @@ const Playlist = ({ user, snackbar }) => {
 
   async function changeFollow(playlistId, userId, action) {
     try {
-      const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}&apikey=${apiKey}`);
+      const response = await axios.put(`https://spotify-server-kohl.vercel.app/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}&apikey=${apiKey}`);
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");
@@ -177,7 +177,7 @@ const Playlist = ({ user, snackbar }) => {
 
   const changeTag = async (playlistId, tag, action) => {
     try {
-      const response = await axios.post(`http://localhost:3100/changeTag?apikey=${apiKey}`, {
+      const response = await axios.post(`https://spotify-server-kohl.vercel.app/changeTag?apikey=${apiKey}`, {
         playlistId: playlistId,
         tag: tag,
         action: action,

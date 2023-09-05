@@ -30,7 +30,7 @@ const RegisterPage = ({ snackbar }) => {
     const apiKey = process.env.REACT_APP_API_KEY;
     try {
       // Effettua la richiesta POST al server Node
-      let response = await axios.post(`http://localhost:3100/register?apikey=${apiKey}`, {
+      let response = await axios.post(`https://spotify-server-kohl.vercel.app/register?apikey=${apiKey}`, {
         "name": firstName,
         "surname": lastName,
         "profile_name": username,
@@ -70,7 +70,7 @@ const RegisterPage = ({ snackbar }) => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await axios.post(`http://localhost:3100/uploadFile/${userId}?apikey=${apiKey}`, formData, {
+      const response = await axios.post(`https://spotify-server-kohl.vercel.app/uploadFile/${userId}?apikey=${apiKey}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -78,7 +78,7 @@ const RegisterPage = ({ snackbar }) => {
 
       if (response.status === 200) {
         snackbar("informazioni caricate correttamente", "success")
-        const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
+        const responseImage = await axios.post(`https://spotify-server-kohl.vercel.app/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
         if (responseImage.status === 200) {
           snackbar("immagine caricata correttamente", "success")
           navigate( "/login")
@@ -117,7 +117,7 @@ const RegisterPage = ({ snackbar }) => {
   const checkDuplicateEmail = async (email) => {
     const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      const response = await axios.get(`http://localhost:3100/check-email/${email}?apikey=${apiKey}`);
+      const response = await axios.get(`https://spotify-server-kohl.vercel.app/check-email/${email}?apikey=${apiKey}`);
       // Controlla la risposta dal server
       if (response.data.exists === true) {
         return true;

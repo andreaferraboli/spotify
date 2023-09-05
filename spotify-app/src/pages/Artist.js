@@ -19,7 +19,7 @@ const Artist = ({ user, snackbar }) => {
   useEffect(() => {
     const fetchArtist = async () => {
       try {
-        const response = await axios.get(`http://localhost:3100/artist/${artistId}?apikey=${apiKey}`);
+        const response = await axios.get(`https://spotify-server-kohl.vercel.app/artist/${artistId}?apikey=${apiKey}`);
 
         if (response.status === 200) {
           const { artist } = response.data;
@@ -46,7 +46,7 @@ const Artist = ({ user, snackbar }) => {
     const fetchQuery = async () => {
       if (query.trim() !== '' && query !== null) {
         try {
-          const response = await axios.get(`http://localhost:3100/searchTracksArtist/${artistId}/${query}?apikey=${apiKey}`);
+          const response = await axios.get(`https://spotify-server-kohl.vercel.app/searchTracksArtist/${artistId}/${query}?apikey=${apiKey}`);
           if (response.status === 200) {
             setTracks(response.data);
           } else {
@@ -64,7 +64,7 @@ const Artist = ({ user, snackbar }) => {
 
   async function changeFollow( userId, action) {
     try {
-      const response = await axios.put(`http://localhost:3100/updateFavouriteArtists/${userId}?action=${action}&apikey=${apiKey}`,{artist:artist.info});
+      const response = await axios.put(`https://spotify-server-kohl.vercel.app/updateFavouriteArtists/${userId}?action=${action}&apikey=${apiKey}`,{artist:artist.info});
 
       if (response.status === 200) {
         snackbar(response.data.message, "success");

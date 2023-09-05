@@ -25,7 +25,7 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:3100/searchTracks/${query}?apikey=${apiKey}`);
+            const response = await axios.get(`https://spotify-server-kohl.vercel.app/searchTracks/${query}?apikey=${apiKey}`);
             setSearchResults(response.data);
         } catch (error) {
             snackbar('Error searching tracks:' + error, "error");
@@ -86,14 +86,14 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
 
     const handleSaveChanges = async () => {
         try {
-            let response = await axios.post(`http://localhost:3100/upload?apikey=${apiKey}`, {
+            let response = await axios.post(`https://spotify-server-kohl.vercel.app/upload?apikey=${apiKey}`, {
                 dataUrl: document.getElementById("playlist_image").src,
                 id: localPlaylist.id
             });
 
             localPlaylist.image = response.data.imageUrl;
 
-            response = await axios.put(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`, localPlaylist);
+            response = await axios.put(`https://spotify-server-kohl.vercel.app/playlist/${playlist.id}?apikey=${apiKey}`, localPlaylist);
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");

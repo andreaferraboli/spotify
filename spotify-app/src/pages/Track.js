@@ -18,7 +18,7 @@ const TrackPage = ({ snackbar }) => {
     const apiKey = process.env.REACT_APP_API_KEY;
     const fetchTrack = async () => {
         try {
-            const response = await axios.get(`http://localhost:3100/track/${trackId}?apikey=${apiKey}`);
+            const response = await axios.get(`https://spotify-server-kohl.vercel.app/track/${trackId}?apikey=${apiKey}`);
             setTrack(response.data);
             if (response.data.album.images[0]?.url) {
                 const image = new Image();

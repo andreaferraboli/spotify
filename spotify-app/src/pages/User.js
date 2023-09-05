@@ -22,7 +22,7 @@ const User = ({ snackbar }) => {
         const fetchUser = async () => {
             if (userId ?? "") {
                 try {
-                    const response = await axios.get(`http://localhost:3100/showUser/${userId}?apikey=${apiKey}`);
+                    const response = await axios.get(`https://spotify-server-kohl.vercel.app/showUser/${userId}?apikey=${apiKey}`);
                     setUser(response.data);
                 } catch (error) {
                     snackbar(error,"error");

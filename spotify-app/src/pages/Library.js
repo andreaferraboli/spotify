@@ -16,7 +16,7 @@ export default function Library({ user, snackbar }) {
   const GetRelatedPlaylists = async (userId) => {
     const apiKey = process.env.REACT_APP_API_KEY;
     try {
-      const response = await axios.get(`http://localhost:3100/relatedPlaylists/${userId}?apikey=${apiKey}`);
+      const response = await axios.get(`https://spotify-server-kohl.vercel.app/relatedPlaylists/${userId}?apikey=${apiKey}`);
       if (response.status === 200) {
         const data = response.data;
         setFollowedPlaylists(data.followed_playlists || []);
