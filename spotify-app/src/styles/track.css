@@ -1,53 +1,51 @@
 @import url("palette.css");
 
 .track {
-    background-color: var(--background-color) !important;
-    color: var(--text-color) !important;
-    height: 10% !important;
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+  height: 10% !important;
 }
 
 
 .image-container {
-    width: 100%;
-    padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
-    background-size: cover;
-    background-position: center;
+  width: 100%;
+  padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
+  background-size: cover;
+  background-position: center;
 }
+
 
 
 .menu-heading {
-    font-weight: bold;
-    color: var(--text-color) !important;
-    padding: 8px 16px;
+  font-weight: bold;
+  color: var(--text-color) !important;
+  padding: 8px 16px;
 }
-
-.custom-menu {
-    background-color: var(--primary-color);
-    padding: 0
+.custom-menu{
+  background-color: var(--primary-color) ;
+  padding:0
 }
-
-.MuiList-root {
-    padding: 0 !important
+.MuiList-root{
+  padding:0 !important
 }
-
 /* Stile per l'icona Play al centro dell'immagine */
 .image-container-wrapper {
-    position: relative; /* Crea un contesto di posizionamento relativo */
+  position: relative; /* Crea un contesto di posizionamento relativo */
 }
 
 .play-icon-div {
-    position: absolute; /* Posizionamento assoluto sopra l'immagine */
-    top: 50%; /* Posiziona verticalmente al centro */
-    left: 50%; /* Posiziona orizzontalmente al centro */
-    transform: translate(-50%, -50%); /* Centra l'elemento rispetto al centro */
-    z-index: 1; /* Posiziona sopra l'immagine */
-    /* Stili per l'icona */
+  position: absolute; /* Posizionamento assoluto sopra l'immagine */
+  top: 50%; /* Posiziona verticalmente al centro */
+  left: 50%; /* Posiziona orizzontalmente al centro */
+  transform: translate(-50%, -50%); /* Centra l'elemento rispetto al centro */
+  z-index: 1; /* Posiziona sopra l'immagine */
+  /* Stili per l'icona */
 }
 
 .play-icon {
-    font-size: 3rem !important;
-    color: white;
-    z-index: 1;
-    /* Altri stili per l'icona */
+  font-size: 3rem !important;
+  color: white;
+  z-index: 1;
+  /* Altri stili per l'icona */
 }
 

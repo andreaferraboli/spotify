@@ -1,104 +1,84 @@
 @import url("palette.css");
-
 .artist-container {
-    width: 100%;
-    height: 60vh;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .artist-avatar-info {
-    display: flex;
-    align-items: center;
-    height: 60vh;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* Imposta l'opacità del colore nero come sfondo per l'avatar e le informazioni */
+  display: flex;
+  align-items: center;
+  height: 60vh;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Imposta l'opacità del colore nero come sfondo per l'avatar e le informazioni */
 }
 
 .artist-avatar {
-    margin: 20px;
-    width: 20% !important;
-    height: auto !important;
+  margin: 20px;
+width: 20% !important;
+  height: auto !important;
 }
 
 .artist-info {
-    padding-left: 5%; /* Spazio tra l'avatar e le informazioni */
-    color: white; /* Testo bianco per contrastare con lo sfondo scuro */
+  padding-left: 5%; /* Spazio tra l'avatar e le informazioni */
+  color: white; /* Testo bianco per contrastare con lo sfondo scuro */
 }
-
 .playlist-image {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .playlist-info-container {
-    color: var(--text-color) !important;
-    margin-left: 5%;
-    display: flex;
-    align-items: center;
+  color: var(--text-color) !important;
+  margin-left:5%;
+  display: flex;
+  align-items: center;
+}
+.carousel-item-album{
+  margin-right: 15px;
 }
 
-.carousel-item-album {
-    margin-right: 15px;
-}
-
-.top-tracks-section {
+.top-tracks-section{
     width: 100%;
     color: var(--text-color) !important;
 }
-
 .input {
-
-&
-input {
+  & input {
     color: var(--text-color);
     border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
-}
-
-&
-label {
+  }
+  & label {
     color: var(--text-color);
-    border-radius: 500px;
-
-/* Cambia il colore del testo di default (label) */
-&
-.MuiInputLabel-shrink {
-    color: var(
-            --text-color
-    ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
-}
-
-}
-&
-.MuiOutlinedInput-notchedOutline {
+    border-radius: 500px; /* Cambia il colore del testo di default (label) */
+    &.MuiInputLabel-shrink {
+      color: var(
+        --text-color
+      ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+    }
+  }
+  & .MuiOutlinedInput-notchedOutline {
     border-color: var(--text-color);
     border-radius: 500px; /* Cambia il colore del bordo dell'input */
-}
-
-&
-.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  }
+  & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: var(
-            --text-color
+      --text-color
     ); /* Cambia il colore del bordo quando l'input è in hover */
-}
-
-&
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  }
+  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: var(
-            --text-color
+      --text-color
     ); /* Cambia il colore del bordo quando l'input ha il focus */
-}
-
-&
-.MuiFormHelperText-root {
+  }
+  & .MuiFormHelperText-root {
     color: var(
-            --text-color
+      --text-color
     ); /* Cambia il colore del testo dell'helper text (se presente) */
-}
-
+  }
 }
