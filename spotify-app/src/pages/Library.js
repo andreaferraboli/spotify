@@ -34,7 +34,7 @@ export default function Library({user, snackbar}) {
             {user?.my_playlists?.length > 0 && (
                 <div className='home-section'>
                     <h2>Le mie PLAYLIST</h2>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} style={{marginLeft:"0px"}}>
                         {user.my_playlists.map((playlist) => (
                             <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                 <Link to={`/playlist/${playlist.id}`}>
