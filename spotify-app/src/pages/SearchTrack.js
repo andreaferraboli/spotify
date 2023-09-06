@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import axios from 'axios';
 import PlaylistCard from '../components/PlaylistCard';
-import { Grid } from '@mui/material';
+import {Grid} from '@mui/material';
 import "../styles/search.css";
 
 
-export default function SearchResults({ user,snackbar }) {
-    const { idTrack } = useParams(); // Preleva la query dall'URL
+export default function SearchResults({user, snackbar}) {
+    const {idTrack} = useParams(); // Preleva la query dall'URL
     const [searchResults, setSearchResults] = useState(null);
-
 
 
     useEffect(() => {
         const apiKey = process.env.REACT_APP_API_KEY;
         // Invia la richiesta al server con l'API key nell'URL come query parameter
         axios.get(`https://spotify-server-kohl.vercel.app/searchTrack/${idTrack}?id=${user._id}&apikey=${apiKey}`)
-        .then(response => {
-            setSearchResults(response.data); // Imposta i risultati della ricerca
-        })
-        .catch(error => {
-            snackbar('Error fetching search results:'+ error, "error");
-        });
+            .then(response => {
+                setSearchResults(response.data); // Imposta i risultati della ricerca
+            })
+            .catch(error => {
+                snackbar('Error fetching search results:' + error, "error");
+            });
     }, [idTrack]);
-    
+
 
     return (
         <div>

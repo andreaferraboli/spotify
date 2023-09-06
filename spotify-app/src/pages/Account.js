@@ -1,11 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Container, Grid, Avatar, TextField, Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {
+    Avatar,
+    Button,
+    Container,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    TextField,
+    Typography
+} from "@mui/material";
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import "../styles/account.css";
-const Account = ({ user, handleLogin, snackbar }) => {
+
+const Account = ({user, handleLogin, snackbar}) => {
 
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
@@ -68,6 +80,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
         await publicFile(newImage, user._id)
         handleCloseDialog();
     };
+
     async function publicFile(selectedFile, userId) {
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -83,12 +96,12 @@ const Account = ({ user, handleLogin, snackbar }) => {
             if (response.status === 200) {
                 snackbar("Informazioni caricate correttamente", "success");
                 const setImageUrlUrl = `https://spotify-server-kohl.vercel.app/setUserImage/${userId}?apikey=${apiKey}`;
-                let responseImage = await axios.post(setImageUrlUrl, { "fileUrl": response.data.fileUrl });
+                let responseImage = await axios.post(setImageUrlUrl, {"fileUrl": response.data.fileUrl});
 
                 if (responseImage.status === 200) {
                     snackbar("Immagine caricata correttamente", "success");
                     navigate("/")
-                    window.location.reload(true);;
+                    window.location.reload(true);
 
                 } else {
                     snackbar("Immagine non caricata correttamente", "error");
@@ -161,7 +174,6 @@ const Account = ({ user, handleLogin, snackbar }) => {
     };
 
 
-
     const changeGenres = async (genres) => {
         try {
             const changeGenresUrl = `https://spotify-server-kohl.vercel.app/changeGenres?apikey=${apiKey}`;
@@ -209,9 +221,15 @@ const Account = ({ user, handleLogin, snackbar }) => {
         <><Container>
             <Grid container spacing={3}>
                 {/* Sezione Avatar */}
-                <Grid item xs={12} sm={4} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Grid item xs={12} sm={4} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                     <Avatar
-                        style={{ width: "auto", height: "100%", maxHeight: "300px", maxWidth: "300px", cursor: 'pointer' }}
+                        style={{
+                            width: "auto",
+                            height: "100%",
+                            maxHeight: "300px",
+                            maxWidth: "300px",
+                            cursor: 'pointer'
+                        }}
                         alt={profileName}
                         src={user.image}
                         onClick={handleAvatarClick}
@@ -220,7 +238,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                         <DialogTitle>Modifica foto profilo</DialogTitle>
                         <DialogContent>
                             {/* File input for selecting a new image */}
-                            <input type="file" accept="image/*" onChange={handleChangeImage} />
+                            <input type="file" accept="image/*" onChange={handleChangeImage}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseDialog} color="primary">
@@ -231,25 +249,31 @@ const Account = ({ user, handleLogin, snackbar }) => {
                 </Grid>
 
                 {/* Sezione Info Utente */}
-                <Grid container xs={12} sm={2} style={{ paddingTop: "2%", paddingBottom: "2%", display: "flex", alignItems: "left", justifyContent: "space-around" }} direction="column">
+                <Grid container xs={12} sm={2} style={{
+                    paddingTop: "2%",
+                    paddingBottom: "2%",
+                    display: "flex",
+                    alignItems: "left",
+                    justifyContent: "space-around"
+                }} direction="column">
                     <br></br>
                     <TextField
                         label="Nome"
                         className="account-textfield"
                         value={name}
-                        onChange={(e) => setName(e.target.value)} />
+                        onChange={(e) => setName(e.target.value)}/>
                     <br></br>
                     <TextField
                         label="Cognome"
                         className="account-textfield"
                         value={surname}
-                        onChange={(e) => setSurname(e.target.value)} />
+                        onChange={(e) => setSurname(e.target.value)}/>
                     <br></br>
                     <TextField
                         label="Nome Profilo"
                         className="account-textfield"
                         value={profileName}
-                        onChange={(e) => setProfileName(e.target.value)} />
+                        onChange={(e) => setProfileName(e.target.value)}/>
                     <br></br>
                     <Button variant="contained" className="add-button" onClick={handleSaveInfo}>
                         Salva Modifiche
@@ -265,44 +289,45 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     className="account-textfield"
                     label="Vecchia Password"
                     value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)} />
+                    onChange={(e) => setOldPassword(e.target.value)}/>
                 <TextField
                     type="password"
                     label="Nuova Password"
                     className="account-textfield"
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)} />
+                    onChange={(e) => setNewPassword(e.target.value)}/>
                 <TextField
                     type="password"
                     label="Conferma Password"
                     className="account-textfield"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)} />
+                    onChange={(e) => setConfirmPassword(e.target.value)}/>
                 <Button variant="contained" className="add-button" onClick={handleChangePassword}>
                     Cambia Password
                 </Button>
             </Grid>
             <br></br>
             <br></br>
-            <div style={{ height: "5vh" }}>
+            <div style={{height: "5vh"}}>
                 <TextField
                     label="Cerca generi musicali"
                     fullWidth
                     className='input'
                     onChange={(event) => {
                         updateGenres(event.target.value);
-                    }} />
+                    }}/>
             </div>
             <br></br>
             <br></br>
             <h2 className='subtitle'>Generi Musicali</h2>
             <br></br>
-            <Scrollbar style={{ height: '30vh' }}>
+            <Scrollbar style={{height: '30vh'}}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
                         <Grid xs={2} item>
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
+                                <div
+                                    className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -313,12 +338,13 @@ const Account = ({ user, handleLogin, snackbar }) => {
             <br></br>
             <h2 className='subtitle'>Generi Musicali Selezionati</h2>
             <br></br>
-            <Scrollbar style={{ height: '25vh' }}>
+            <Scrollbar style={{height: '25vh'}}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
                         <Grid xs={2} item>
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
+                                <div
+                                    className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -326,11 +352,13 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     ))}
                 </Grid>
             </Scrollbar>
-            <div style={{ height: '10vh' }}>
+            <div style={{height: '10vh'}}>
                 <Button
                     variant="contained"
                     fullWidth
-                    onClick={() => { changeGenres(selectedGenres); }}
+                    onClick={() => {
+                        changeGenres(selectedGenres);
+                    }}
                     className="button"
                 >
                     Cambia Generi

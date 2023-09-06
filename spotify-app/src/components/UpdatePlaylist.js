@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-    TextField,
-    Grid,
-    Button
-} from '@mui/material';
-import { AddCircleOutline } from '@mui/icons-material';
+import React, {useEffect, useState} from 'react';
+import {Button, Grid, TextField} from '@mui/material';
+import {AddCircleOutline} from '@mui/icons-material';
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -12,7 +8,7 @@ import Track from "./track";
 import "../styles/playlist.css";
 import axios from 'axios'; // Assicurati di aver importato correttamente Axios
 
-function UpdatePlaylist({ playlist, user, snackbar }) {
+function UpdatePlaylist({playlist, user, snackbar}) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
@@ -144,8 +140,7 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                             document.getElementById("playlist_image").src = dataURL; // Append the collage image to the document
                         }
 
-                    }
-                    else {
+                    } else {
                         ctx.drawImage(image, 0, 0, quadrantSize, quadrantSize);
                         dataURL = canvas.toDataURL('image/png');
 
@@ -160,9 +155,10 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
         // Remove duplicate image URLs
 
     }
+
     return (
         <div>
-            <div style={{ marginBottom: "4%", backgroundColor: "inherit" }}>
+            <div style={{marginBottom: "4%", backgroundColor: "inherit"}}>
                 <TextField
                     label="Search Track"
                     variant="outlined"
@@ -185,15 +181,15 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                         <React.Fragment key={track.id}>
                             <Grid item xs={10}>
                                 <div>
-                                    <Track track={track} snackbar={snackbar} />
+                                    <Track track={track} snackbar={snackbar}/>
                                 </div>
                             </Grid>
-                            <Grid item xs={2} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Grid item xs={2} style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                                 <Button
                                     variant="contained"
                                     className='add-button'
                                     onClick={() => handleAddTrackToPlaylist(track)}
-                                    startIcon={<AddCircleOutline />}
+                                    startIcon={<AddCircleOutline/>}
                                 >
                                     Aggiungi
                                 </Button>
@@ -211,24 +207,30 @@ function UpdatePlaylist({ playlist, user, snackbar }) {
                                         userPlaylists={user.my_playlists.concat(user.playlists)}
                                         track={track}
                                         index={index + 1}
-                                        snackbar={snackbar} />
+                                        snackbar={snackbar}/>
                                 </div>
                             </Grid>
-                            <Grid style={{ display: "flex", margin: "auto", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                            <Grid style={{
+                                display: "flex",
+                                margin: "auto",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }} item xs={1} className="icon-section">
                                 <DeleteIcon
                                     className="icon-button delete-icon"
-                                    onClick={() => handleRemoveTrack(track.id)} />
+                                    onClick={() => handleRemoveTrack(track.id)}/>
                             </Grid>
-                            <Grid style={{ display: "flex", alignItems: "center", justifyContent: "center" }} item xs={1} className="icon-section">
+                            <Grid style={{display: "flex", alignItems: "center", justifyContent: "center"}} item xs={1}
+                                  className="icon-section">
                                 {index !== 0 && (
                                     <KeyboardArrowUpIcon
                                         className="icon-button"
-                                        onClick={() => handleMoveTrackUp(index)} />
+                                        onClick={() => handleMoveTrackUp(index)}/>
                                 )}
                                 {index !== localPlaylist.tracks.length - 1 && (
                                     <KeyboardArrowDownIcon
                                         className="icon-button"
-                                        onClick={() => handleMoveTrackDown(index)} />
+                                        onClick={() => handleMoveTrackDown(index)}/>
                                 )}
                             </Grid>
                         </>

@@ -1,34 +1,38 @@
 @import url("palette.css");
+
 .sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  color: var(--text-color);
-  background-color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    color: var(--text-color);
+    background-color: var(--primary-color);
 }
 
 .sidebar__title {
-  margin-left: 10px;
-  padding: 5px;
-  font-size: 12px;
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 12px;
 }
 
 .sidebar__logo {
-  margin-right: auto;
-  object-fit: contain;
-  height: 100%;
-  width: 100%;
+    margin-right: auto;
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
 }
 
-.div-playlists{
-  height: 45vh;
+.div-playlists {
+    height: 45vh;
 }
-.div-icons{
-  height: 32vh;
+
+.div-icons {
+    height: 32vh;
 }
-.div-img{
-  height: 10vh;
+
+.div-img {
+    height: 10vh;
 }
-.div.text{
-  height: 5vh;
+
+.div.text {
+    height: 5vh;
 }

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Grid, Container, Typography, Button } from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {Button, Container, Grid, TextField, Typography} from '@mui/material';
 import axios from 'axios';
 import Scrollbar from "react-scrollbars-custom";
 import "../styles/login.css";
+
 const LoadGenres = (props) => {
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [genres, setGenres] = useState([]);
@@ -17,16 +18,16 @@ const LoadGenres = (props) => {
                     setGenres(response.data);
                     setAllGenres(response.data);
                 } else {
-                    props.snackbar('Error fetching genres:'+ response.statusText,"error");
+                    props.snackbar('Error fetching genres:' + response.statusText, "error");
                     // Aggiungi qui il codice per gestire l'errore nella richiesta
                 }
             })
             .catch(error => {
-                props.snackbar('Error fetching genres:'+ error,"error");
+                props.snackbar('Error fetching genres:' + error, "error");
                 // Aggiungi qui il codice per gestire l'errore nella richiesta
             });
     }, []); // Array di dipendenze vuoto
-    
+
 
     const handleGenreSelect = (genre) => {
         if (genre !== null && genre !== undefined) {
@@ -54,10 +55,10 @@ const LoadGenres = (props) => {
     }
     return (
         <Container>
-            <div style={{ height: "20vh" }}>
+            <div style={{height: "20vh"}}>
                 <Typography variant="h6" gutterBottom className='title'>
                     Benvenuto
-                </Typography >
+                </Typography>
                 <Typography className='title' paragraph>
                     Scegli i tuoi generi musicali preferiti per consigli più personalizzati!
                 </Typography>
@@ -68,16 +69,17 @@ const LoadGenres = (props) => {
                     onChange={(event) => {
                         updateGenres(event.target.value)
                     }
-                    } />
+                    }/>
             </div>
 
             <h2 className='subtitle'>Generi Musicali</h2>
-            <Scrollbar style={{ height: '30vh' }}>
+            <Scrollbar style={{height: '30vh'}}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
-                        <Grid xs={2} item >
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
+                        <Grid xs={2} item>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
+                                <div
+                                    className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -87,12 +89,13 @@ const LoadGenres = (props) => {
             </Scrollbar>
 
             <h2 className='subtitle'>Generi Musicali Selezionati</h2>
-            <Scrollbar style={{ height: '25vh' }}>
+            <Scrollbar style={{height: '25vh'}}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
-                        <Grid xs={2} item >
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
-                                <div className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
+                        <Grid xs={2} item>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
+                                <div
+                                    className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
                                 </div>
                             </div>
@@ -100,11 +103,14 @@ const LoadGenres = (props) => {
                     ))}
                 </Grid>
             </Scrollbar>
-            <div style={{ height: '10vh' }}>
+            <div style={{height: '10vh'}}>
                 <Button
                     variant="contained"
                     fullWidth
-                    onClick={() => { props.setFavouriteGenres(selectedGenres); props.loadArtist() }}
+                    onClick={() => {
+                        props.setFavouriteGenres(selectedGenres);
+                        props.loadArtist()
+                    }}
                     className="button"
                 >
                     Avanti

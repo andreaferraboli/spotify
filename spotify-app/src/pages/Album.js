@@ -1,42 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useParams} from "react-router-dom";
 import Track from "../components/track";
-import {
-    Typography,
-    Grid,
-} from "@mui/material";
+import {Grid, Typography,} from "@mui/material";
 import axios from 'axios';
-import { formatDuration } from "./Playlist"
+import {formatDuration} from "./Playlist"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const Album = ({ user, snackbar }) => {
-    const { albumId } = useParams();
+const Album = ({user, snackbar}) => {
+    const {albumId} = useParams();
     const [album, setAlbum] = useState();
 
     useEffect(() => {
         const fetchAlbum = async () => {
-        const apiKey = process.env.REACT_APP_API_KEY;
+            const apiKey = process.env.REACT_APP_API_KEY;
             try {
                 const response = await axios.get(`https://spotify-server-kohl.vercel.app/album/${albumId}?apikey=${apiKey}`);
-                
+
                 if (response.status === 200) {
                     setAlbum(response.data);
                 } else {
                     snackbar("Error fetching album details", "error");
                 }
             } catch (error) {
-                snackbar("Error:"+ error, "error");
+                snackbar("Error:" + error, "error");
             }
         };
-        
+
         fetchAlbum();
     }, [albumId]);
-    
+
     return (
         <>
-            <Grid container style={{ margin: 0 }} spacing={1}>
+            <Grid container style={{margin: 0}} spacing={1}>
                 <Grid item xs={12} sm={3}>
-                    <img id="playlist_image" src={album?.image} alt="album" className="playlist-image" />
+                    <img id="playlist_image" src={album?.image} alt="album" className="playlist-image"/>
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
                     <div className="playlist-info-container vh33">
@@ -68,17 +65,18 @@ const Album = ({ user, snackbar }) => {
                     </div>
                 </Grid>
             </Grid>
-            <div >
+            <div>
                 <Grid item xs={12}>
                     <Typography variant="h4" className="title-section">
                         Tracks
                     </Typography>
                 </Grid>
-                <Grid container spacing={2} style={{ margin: 0 }}>
+                <Grid container spacing={2} style={{margin: 0}}>
                     <div className="top-tracks-section">
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2}>
                             {album?.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists.concat(user.playlists)} track={track} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists.concat(user.playlists)}
+                                       track={track} index={index + 1} snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

@@ -1,15 +1,17 @@
 @import url("palette.css");
+
 .myAppBar {
-  background-color:var(--primary-color);
-  }
+    background-color: var(--primary-color);
+}
 
-  .navbar-height{
+.navbar-height {
     height: 6vh;
-  }
-  .customLabel{
-    color: var(--text-color) !important
-  }
+}
 
-  .history-icon{
+.customLabel {
     color: var(--text-color) !important
-  }
+}
+
+.history-icon {
+    color: var(--text-color) !important
+}

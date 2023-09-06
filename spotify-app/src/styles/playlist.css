@@ -1,64 +1,78 @@
 @import url("palette.css");
-.icon-button{
+
+.icon-button {
     color: var(--text-color) !important;
     font-size: xx-large !important;
 }
-.icon-button-small{
+
+.icon-button-small {
     color: var(--text-color) !important;
     font-size: medium !important;
 }
-.top-tracks-section{
+
+.top-tracks-section {
     background-color: var(--background-color);
 }
-.add-button{
-  color: var(--secondary-color) !important;
-  background-color: inherit !important;
-  border-radius: 500px !important;
-  border:solid 1px  var(--secondary-color) !important;
+
+.add-button {
+    color: var(--secondary-color) !important;
+    background-color: inherit !important;
+    border-radius: 500px !important;
+    border: solid 1px var(--secondary-color) !important;
 }
-.info-button,.info-admin-button{
-  color: var(--secondary-color) !important;
-  background-color: inherit !important;
-  border-radius: 500px !important;
-  border:solid 1px  var(--secondary-color) !important;
+
+.info-button, .info-admin-button {
+    color: var(--secondary-color) !important;
+    background-color: inherit !important;
+    border-radius: 500px !important;
+    border: solid 1px var(--secondary-color) !important;
 }
-.delete-icon{
+
+.delete-icon {
     color: var(--delete-color) !important;
 }
-.edit-button{
-  background-color: inherit !important;
-  color: var(--edit-color) !important;
-  border-radius: 500px !important;
-  border:solid 1px  var(--edit-color) !important;
+
+.edit-button {
+    background-color: inherit !important;
+    color: var(--edit-color) !important;
+    border-radius: 500px !important;
+    border: solid 1px var(--edit-color) !important;
 }
-.delete-button{
-  background-color: inherit !important;
-  color: var(--delete-color) !important;
-  border-radius: 500px !important;
-  border:solid 1px  var(--delete-color) !important;
+
+.delete-button {
+    background-color: inherit !important;
+    color: var(--delete-color) !important;
+    border-radius: 500px !important;
+    border: solid 1px var(--delete-color) !important;
 }
-.add-button:hover{
-  background-color: var(--secondary-color) !important;
-  color: white !important;
+
+.add-button:hover {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
 }
-.delete-button:hover{
-  background-color: var(--delete-color) !important;
-  color: white !important;
+
+.delete-button:hover {
+    background-color: var(--delete-color) !important;
+    color: white !important;
 }
-.info-admin-button:hover{
-  background-color: var(--delete-color) !important;
-  color: white !important;
-  border:solid 1px  var(--delete-color) !important;
+
+.info-admin-button:hover {
+    background-color: var(--delete-color) !important;
+    color: white !important;
+    border: solid 1px var(--delete-color) !important;
 }
-.edit-button:hover{
-  color: white !important;
-  background-color: var(--edit-color) !important;
+
+.edit-button:hover {
+    color: white !important;
+    background-color: var(--edit-color) !important;
 }
-.title-section{
-    margin:4% !important;
+
+.title-section {
+    margin: 4% !important;
     color: var(--text-color)
 }
-.save-changes{
+
+.save-changes {
     padding: 15px !important;
     margin: 1% 0% 1% 5% !important;
     margin-bottom: 10px !important;
@@ -66,6 +80,7 @@
     height: 50%;
     background-color: var(--secondary-color) !important;
 }
+
 .input-playlist {
     width: 70% !important;
     padding: 10px;
@@ -73,65 +88,86 @@
     margin-bottom: 10px;
     font-size: 14px;
     border-radius: 500px;
-    
-  }
-  .input-new-playlist{
-    width: 40% !important;
-  }
-  .input-playlist,.input-new-playlist, .input-add-tags {
-    & input {
-      color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
-    }
-    & label {
-      color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del testo di default (label) */
-      &.MuiInputLabel-shrink {
-        color: var(
-          --text-color
-        ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
-      }
-    }
-    & .MuiOutlinedInput-notchedOutline {
-      border-color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del bordo dell'input */
-    }
-    & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-      border-color: var(
-        --text-color
-      ); /* Cambia il colore del bordo quando l'input è in hover */
-    }
-    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: var(
-        --text-color
-      ); /* Cambia il colore del bordo quando l'input ha il focus */
-    }
-    & .MuiFormHelperText-root {
-      color: var(
-        --text-color
-      ); /* Cambia il colore del testo dell'helper text (se presente) */
-    }
-  }
 
-  .css-mhc70k-MuiGrid-root {
-    margin-top: 0px !important; 
-     margin-left: 0px !important;
-     width: 100% !important;
+}
+
+.input-new-playlist {
+    width: 40% !important;
+}
+
+.input-playlist, .input-new-playlist, .input-add-tags {
+
+&
+input {
+    color: var(--text-color);
+    border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
+}
+
+&
+label {
+    color: var(--text-color);
+    border-radius: 500px;
+
+/* Cambia il colore del testo di default (label) */
+&
+.MuiInputLabel-shrink {
+    color: var(
+            --text-color
+    ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+}
+
+}
+&
+.MuiOutlinedInput-notchedOutline {
+    border-color: var(--text-color);
+    border-radius: 500px; /* Cambia il colore del bordo dell'input */
+}
+
+&
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(
+            --text-color
+    ); /* Cambia il colore del bordo quando l'input è in hover */
+}
+
+&
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(
+            --text-color
+    ); /* Cambia il colore del bordo quando l'input ha il focus */
+}
+
+&
+.MuiFormHelperText-root {
+    color: var(
+            --text-color
+    ); /* Cambia il colore del testo dell'helper text (se presente) */
+}
+
+}
+
+.css-mhc70k-MuiGrid-root {
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+    width: 100% !important;
 }
 
 .css-a5rdam-MuiGrid-root {
-  width: 100% !important;
+    width: 100% !important;
 }
 
-.vh20{
-  height: 20%;
+.vh20 {
+    height: 20%;
 }
-.vh30{
-  height: 30%;
+
+.vh30 {
+    height: 30%;
 }
-.vh33{
-  height: 33.3%;
+
+.vh33 {
+    height: 33.3%;
 }
-.vh10{
-  height: 10%;
+
+.vh10 {
+    height: 10%;
 }
