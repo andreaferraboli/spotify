@@ -135,3 +135,14 @@
 .vh10{
   height: 10%;
 }
+.playlist-name {
+  font-size: 2.5rem !important;
+}
+@media screen and (max-width: 767px) {
+  .info-section {
+    height: 35vh;
+  }
+  .playlist-name {
+    font-size: 1.5rem !important;
+  }
+}

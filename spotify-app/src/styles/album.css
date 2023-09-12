@@ -20,3 +20,24 @@
 .album-name{
   font-size: 1.5rem !important;
 }
+.album-card {
+  width: 300px;
+  height: 300px; /* Regola le dimensioni del card come preferisci */
+  /* Aggiungi altri stili desiderati per il card */
+}
+
+.album-image.skeleton {
+  width: 100%;
+  height: 200px; /* Altezza immagine */
+}
+
+.album-name.skeleton {
+  width: 80%; /* Larghezza testo nome album */
+  height: 20px; /* Altezza testo nome album */
+  margin-bottom: 10px; /* Spazio tra nome album e anno */
+}
+
+.album-year.skeleton {
+  width: 60%; /* Larghezza testo anno */
+  height: 16px; /* Altezza testo anno */
+}

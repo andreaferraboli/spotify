@@ -21,15 +21,10 @@ function Sidebar(props) {
             <div></div>
 
             <div className="div-icons">
-                <br/>
                 <SidebarOption Icon={HomeIcon} option="Home" navigateTo="/"/>
-                <br/>
                 <SidebarOption Icon={SearchIcon} option="Search" navigateTo="/search"/>
-                <br/>
                 <SidebarOption Icon={LibraryMusicIcon} option="Your Library" navigateTo="/myLibrary"/>
-                <br/>
                 <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" navigateTo="/newPlaylist"/>
-                <br/>
 
             </div>
             <div className="div-text">

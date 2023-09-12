@@ -231,7 +231,7 @@ const Playlist = ({user, snackbar}) => {
                             variant="body1">{playlist?.type === "private" ? "Playlist" : "Playlist Pubblica"}</Typography>
                     </div>
                     <div className="playlist-info-container vh30">
-                        <Typography variant="h3">
+                        <Typography className="playlist-name" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                             {playlist?.name}
 
 

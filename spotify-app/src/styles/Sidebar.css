@@ -1,7 +1,6 @@
 @import url("palette.css");
 .sidebar {
-  display: flex;
-  flex-direction: column;
+
   height: 100vh;
   color: var(--text-color);
   background-color: var(--primary-color);
@@ -24,7 +23,8 @@
   height: 45vh;
 }
 .div-icons{
-  height: 32vh;
+  height: 35vh;
+  margin: 2.5vh 0 2.5vh 0;
 }
 .div-img{
   height: 10vh;
