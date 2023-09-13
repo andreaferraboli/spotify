@@ -20,11 +20,7 @@
 .album-name{
   font-size: 1.5rem !important;
 }
-.album-card {
-  width: 300px;
-  height: 300px; /* Regola le dimensioni del card come preferisci */
-  /* Aggiungi altri stili desiderati per il card */
-}
+
 
 .album-image.skeleton {
   width: 100%;
