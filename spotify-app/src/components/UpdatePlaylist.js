@@ -173,6 +173,9 @@ function UpdatePlaylist({playlist, user, snackbar}) {
                 <Button className='save-changes' variant="contained" color="primary" onClick={handleSaveChanges}>
                     Salva modifiche
                 </Button>
+                <Button className='cancel-changes' variant="contained" color="primary" onClick={()=>{window.location.reload()}}>
+                    Annulla modifiche
+                </Button>
             </div>
 
             {searchResults.length > 0 ? (

@@ -198,6 +198,7 @@ export default function SearchResults({ user, snackbar }) {
                         <AlbumSkeleton></AlbumSkeleton>
                         <AlbumSkeleton></AlbumSkeleton>
                         <AlbumSkeleton></AlbumSkeleton>
+                        <AlbumSkeleton></AlbumSkeleton>
 
                     </Carousel>
 

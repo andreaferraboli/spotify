@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { alpha, styled } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -51,6 +51,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar(props) {
+    const [searchText, setSearchText] = useState('');
+
+    useEffect(() => {
+        // Imposta un ritardo di 500 millisecondi (0.5 secondi) prima di eseguire la query
+        const delay = setTimeout(() => {
+            props.setQuery(searchText);
+        }, 1000);
+
+        // Cancella il timer precedente se l'utente continua a scrivere
+        return () => clearTimeout(delay);
+    }, [searchText, props]);
+
+    const handleInputChange = (event) => {
+        setSearchText(event.target.value);
+    };
     let profile = props.user ?? {};
 
     const profileLink = profile.profile_name ? "/myAccount" : "/login";
@@ -75,7 +90,7 @@ export default function Navbar(props) {
                                     <MenuIcon />
                                 </IconButton>
                             )}
-                                    <NavigationButtons />
+                            <NavigationButtons />
                             <Box
                                 sx={{
                                     display: "flex",
@@ -91,9 +106,7 @@ export default function Navbar(props) {
                                     <StyledInputBase
                                         placeholder="Search…"
                                         inputProps={{ "aria-label": "search" }}
-                                        onChange={(event) =>
-                                            props.setQuery(event.target.value)
-                                        }
+                                        onChange={handleInputChange}
                                     />
                                 </Search>
                             </Box>

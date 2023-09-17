@@ -66,6 +66,14 @@
     height: 50%;
     background-color: var(--secondary-color) !important;
 }
+.cancel-changes{
+  padding: 15px !important;
+  margin: 1% 0% 1% 1% !important;
+  margin-bottom: 10px !important;
+  border-radius: 500px !important;
+  height: 50%;
+  background-color: var(--edit-color) !important;
+}
 .input-playlist {
     width: 70% !important;
     padding: 10px;

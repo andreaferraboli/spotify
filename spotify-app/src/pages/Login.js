@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
-import {Button, Grid, TextField, Typography} from '@mui/material';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import "../styles/login.css";
 
@@ -48,9 +48,13 @@ const LoginPage = (props) => {
 
                 <Grid container direction="column" alignItems="center" spacing={3} className="container">
                     <Grid item>
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/800px-Spotify_logo_with_text.svg.png"
-                            alt="Spotify Logo" className="logo"/>
+                        <Link to="/">
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/spotify-7a2ad.appspot.com/o/ScreenShot_20230917174348-transformed.png?alt=media&token=34269302-a665-4cf8-9622-f72d95d25727"
+                                alt="Spotify Logo"
+                                className="logo"
+                            />
+                        </Link>
                     </Grid>
                     <Grid item>
                         <Typography variant="h4" className="title">
@@ -65,7 +69,7 @@ const LoginPage = (props) => {
                             fullWidth
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="input"/>
+                            className="input" />
 
                         <TextField
                             label="Password"
@@ -74,7 +78,7 @@ const LoginPage = (props) => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="input"/>
+                            className="input" />
                         <Button
                             variant="contained"
                             fullWidth

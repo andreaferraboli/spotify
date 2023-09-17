@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {Avatar, Button, Grid, TextField, Typography} from '@mui/material';
-import {AddCircleOutline} from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
+import { Avatar, Button, Grid, TextField, Typography } from '@mui/material';
+import { AddCircleOutline } from '@mui/icons-material';
 import Track from "./track";
 import "../styles/playlist.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from 'axios';
-import {formatDuration} from "../pages/Playlist"
+import { formatDuration } from "../pages/Playlist"
 
-function NewPlaylist({user, snackbar}) {
+function NewPlaylist({ user, snackbar }) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
@@ -22,8 +22,6 @@ function NewPlaylist({user, snackbar}) {
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
     const apiKey = process.env.REACT_APP_API_KEY;
-
-
     useEffect(() => {
         async function fetchPlaylistId() {
             async function searchId() {
@@ -140,7 +138,10 @@ function NewPlaylist({user, snackbar}) {
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
-                window.location.href = "https://spotify-7a2ad.web.app/playlist/" + playlistId
+                const currentURL = window.location.href;
+                const urlObject = new URL(currentURL);
+                const domain = urlObject.origin;
+                window.location.href = domain + "/playlist/" + playlistId
             } else {
                 snackbar(response.data.message, "error");
             }
@@ -207,7 +208,7 @@ function NewPlaylist({user, snackbar}) {
         <>
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={3}>
-                    <img id='playlist_image' src={localPlaylist?.image} alt="Playlist" className="playlist-image"/>
+                    <img id='playlist_image' src={localPlaylist?.image} alt="Playlist" className="playlist-image" />
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
                     <div className="playlist-info-container vh33">
@@ -220,14 +221,14 @@ function NewPlaylist({user, snackbar}) {
                             fullWidth
                             className='input-new-playlist'
                             value={localPlaylist?.name}
-                            onChange={(e) => setLocalPlaylist({...localPlaylist, name: e.target.value})}
+                            onChange={(e) => setLocalPlaylist({ ...localPlaylist, name: e.target.value })}
                         />
                     </div>
                     <div className="playlist-info-container vh33">
                         <Avatar
                             src={user.image}
                             alt={user.profile_name}
-                            style={{marginRight: "10px"}}
+                            style={{ marginRight: "10px" }}
                         />
                         <div>
                             <Typography variant="body1">
@@ -244,7 +245,7 @@ function NewPlaylist({user, snackbar}) {
                 </Grid>
             </Grid>
             <div>
-                <div style={{marginBottom: "4%", backgroundColor: "inherit"}}>
+                <div style={{ marginBottom: "4%", backgroundColor: "inherit" }}>
                     <TextField
                         label="Search Track"
                         variant="outlined"
@@ -254,7 +255,7 @@ function NewPlaylist({user, snackbar}) {
                         onChange={(e) => {
                             setSearchValue(e.target.value);
                             handleSearch(e.target.value);
-                        }}/>
+                        }} />
                     <Button className='save-changes' variant="contained" color="primary" onClick={handleSavePlaylist}>
                         Salva playlist
                     </Button>
@@ -266,16 +267,16 @@ function NewPlaylist({user, snackbar}) {
                             <React.Fragment key={track.id}>
                                 <Grid item xs={10}>
                                     <div>
-                                        <Track track={track} snackbar={snackbar}/>
+                                        <Track track={track} snackbar={snackbar} />
                                     </div>
                                 </Grid>
                                 <Grid item xs={2}
-                                      style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                    style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     <Button
                                         variant="contained"
                                         className='add-button'
                                         onClick={() => handleAddTrackToPlaylist(track)}
-                                        startIcon={<AddCircleOutline/>}
+                                        startIcon={<AddCircleOutline />}
                                     >
                                         Aggiungi
                                     </Button>
@@ -292,7 +293,7 @@ function NewPlaylist({user, snackbar}) {
                                         userPlaylists={user.my_playlists.concat(user.playlists)}
                                         track={track}
                                         index={index + 1}
-                                        snackbar={snackbar}/>
+                                        snackbar={snackbar} />
                                 </div>
                             </Grid>
                                 <Grid style={{
@@ -303,19 +304,19 @@ function NewPlaylist({user, snackbar}) {
                                 }} item xs={1} className="icon-section">
                                     <DeleteIcon
                                         className="icon-button delete-icon"
-                                        onClick={() => handleRemoveTrack(track.id)}/>
+                                        onClick={() => handleRemoveTrack(track.id)} />
                                 </Grid>
-                                <Grid style={{display: "flex", alignItems: "center", justifyContent: "center"}} item
-                                      xs={1} className="icon-section">
+                                <Grid style={{ display: "flex", alignItems: "center", justifyContent: "center" }} item
+                                    xs={1} className="icon-section">
                                     {index !== 0 && (
                                         <KeyboardArrowUpIcon
                                             className="icon-button"
-                                            onClick={() => handleMoveTrackUp(index)}/>
+                                            onClick={() => handleMoveTrackUp(index)} />
                                     )}
                                     {index !== localPlaylist.tracks.length - 1 && (
                                         <KeyboardArrowDownIcon
                                             className="icon-button"
-                                            onClick={() => handleMoveTrackDown(index)}/>
+                                            onClick={() => handleMoveTrackDown(index)} />
                                     )}
                                 </Grid>
                             </>
