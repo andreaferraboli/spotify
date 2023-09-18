@@ -33,7 +33,7 @@ const Playlist = ({ user, snackbar }) => {
     useEffect(() => {
         const fetchPlaylist = async () => {
             try {
-                const response = await axios.get(`https://spotify-server-kohl.vercel.app/playlist/${playlistId}?apikey=${apiKey}`);
+                const response = await axios.get(`https://spotify-server-kohl.vercel.app/playlist/${playlistId}?apikey=${apiKey}&idUser=${user._id}`);
                 if (response.status === 200) {
                     setPlaylist(response.data);
                 } else {

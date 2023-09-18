@@ -394,12 +394,13 @@ app.get("/artist/:id", authenticateApiKey, async (req, res) => {
 app.get("/playlist/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
+  var idUser = req.query.idUser
   var pwmClient = await new mongoClient(uri).connect();
   var playlist = await pwmClient
     .db("spotify")
     .collection("users").aggregate([
       { $unwind: "$my_playlists" },
-      { $match: { "my_playlists.id": id } },
+      { $match: { "my_playlists.id": id, "_id": new ObjectId(idUser) } },
       { $project: { my_playlists: 1 } }
     ]).toArray();
   if (playlist.length === 0) {
@@ -1074,14 +1075,14 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
       .db("spotify").collection('users').findOneAndDelete({
         _id: new ObjectId(userId),
       });
-      await pwmClient.db("spotify").collection('public_playlists').updateMany(
-        { "followers": userId },
-        { $pull: { "followers": userId } }
-      )
-      await pwmClient.db("spotify").collection('public_playlists').deleteMany(
-        { "owner.id": userId }
-      )
-      
+    await pwmClient.db("spotify").collection('public_playlists').updateMany(
+      { "followers": userId },
+      { $pull: { "followers": userId } }
+    )
+    await pwmClient.db("spotify").collection('public_playlists').deleteMany(
+      { "owner.id": userId }
+    )
+
     res.status(200).json({ message: "Profilo eliminato con successo." });
   } catch (error) {
     res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });
@@ -1265,18 +1266,18 @@ async function searchPlaylists(query, id) {
     var pwmClient = await new mongoClient(uri).connect();
     let userPlaylistsCursor;
     // Search for user playlists using aggregation
-    if (id ?? '') { 
+    if (id ?? '') {
       userPlaylistsCursor = await pwmClient
-      .db("spotify")
-      .collection("users")
-      .aggregate([
-        { $match: { _id: new ObjectId(id) } },
-        { $unwind: '$my_playlists' },
-        { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
-        { $project: { my_playlists: 1 } }
-      ])
-      .toArray();
-     } else {
+        .db("spotify")
+        .collection("users")
+        .aggregate([
+          { $match: { _id: new ObjectId(id) } },
+          { $unwind: '$my_playlists' },
+          { $match: { 'my_playlists.name': { $regex: query, $options: 'i' } } },
+          { $project: { my_playlists: 1 } }
+        ])
+        .toArray();
+    } else {
       userPlaylistsCursor = []
     }
     var userPlaylists = userPlaylistsCursor.map(item => ({
