@@ -32,7 +32,7 @@ export default function SearchResults({user, snackbar}) {
                     {searchResults?.playlists && searchResults.playlists.length > 0 && (
                         <>
                             <h2>Nelle Tue Playlist Private</h2>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} style={{marginLeft:"0px"}}>
                                 {searchResults.playlists.map(playlist => (
                                     <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                         <Link to={`/playlist/${playlist.id}`}>
@@ -53,7 +53,7 @@ export default function SearchResults({user, snackbar}) {
                     {searchResults?.public_playlists && searchResults.public_playlists.length > 0 && (
                         <>
                             <h2>Nelle Playlist Pubbliche</h2>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} style={{marginLeft:"0px"}}>
                                 {searchResults.public_playlists.map(playlist => (
                                     <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                         <Link to={`/playlist/${playlist.id}`}>
