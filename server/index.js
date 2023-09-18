@@ -322,16 +322,9 @@ app.post('/upload', authenticateApiKey, async (req, res) => {
     res.status(500).json({ error: 'Si è verificato un errore durante il caricamento del file.' });
   }
 });
-app.put("/users/:id", authenticateApiKey, function (req, res) {
-  updateUser(res, req.params.id, req.body);
-});
-
-app.delete("/users/:id", authenticateApiKey, function (req, res) {
-  deleteUser(res, req.params.id);
-});
 
 app.get("/", function (req, res) {
-  res.send("benvenuto nel server spotify-7a2ad.web.app")
+  res.send("benvenuto nel server snm-ferraboli.web.app")
 });
 
 app.get('/check-email/:email', authenticateApiKey, async (req, res) => {
@@ -1082,8 +1075,11 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
         _id: new ObjectId(userId),
       });
       await pwmClient.db("spotify").collection('public_playlists').updateMany(
-        { "followers": idToRemove },
-        { $pull: { "followers": idToRemove } }
+        { "followers": userId },
+        { $pull: { "followers": userId } }
+      )
+      await pwmClient.db("spotify").collection('public_playlists').deleteMany(
+        { "owner.id": userId }
       )
       
     res.status(200).json({ message: "Profilo eliminato con successo." });
@@ -1232,58 +1228,6 @@ function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
 
-
-function deleteUser(res, id) {
-  let index = users.findIndex((user) => user.id == id);
-  if (index == -1) {
-    res.status(404).send("User not found");
-    return;
-  }
-  users = users.filter((user) => user.id != id);
-
-  res.json(users);
-}
-async function updateUser(res, id, updatedUser) {
-  if (updatedUser.name == undefined) {
-    res.status(400).send("Missing Name");
-    return;
-  }
-  if (updatedUser.surname == undefined) {
-    res.status(400).send("Missing Surname");
-    return;
-  }
-  if (updatedUser.email == undefined) {
-    res.status(400).send("Missing Email");
-    return;
-  }
-  if (updatedUser.password == undefined) {
-    res.status(400).send("Missing Password");
-    return;
-  }
-  updatedUser.password = hash(updatedUser.password);
-  try {
-    var pwmClient = await new mongoClient(uri).connect();
-
-    var filter = { _id: new ObjectId(id) };
-
-    var updatedUserToInsert = {
-      $set: updatedUser,
-    };
-
-    var item = await pwmClient
-      .db("pwm")
-      .collection("users")
-      .updateOne(filter, updatedUserToInsert);
-
-    res.send(item);
-  } catch (e) {
-    if (e.code == 11000) {
-      res.status(400).send("Utente già presente");
-      return;
-    }
-    res.status(500).send(`Errore generico: ${e}`);
-  }
-}
 
 async function searchArtists(query) {
   let artists = await spotifyApi?.searchArtists(query)
