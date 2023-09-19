@@ -21,7 +21,7 @@ const LoadArtist = (props) => {
             setNoResults(false);
 
             if (query !== '') {
-                const response = await axios.get(`https://spotify-server-kohl.vercel.app/artists/${query}?apikey=${apiKey}`);
+                const response = await axios.get(`http://localhost:3100/artists/${query}?apikey=${apiKey}`);
                 const artistsReceived = response.data;
                 if (artistsReceived.length === 0) {
                     setNoResults(true); // Set noResults state if no artists match the query
@@ -30,7 +30,7 @@ const LoadArtist = (props) => {
             } else {
                 const genres = props.favouriteGenres.map(genre => genre.name);
                 const limit = Math.floor(20 / (props.favouriteGenres?.length || 1));
-                const response = await axios.post(`https://spotify-server-kohl.vercel.app/genre?apikey=${apiKey}`, {
+                const response = await axios.post(`http://localhost:3100/genre?apikey=${apiKey}`, {
                     genres: genres,
                     limit: limit
                 });
@@ -73,7 +73,6 @@ const LoadArtist = (props) => {
 
                 props.snackbar("Artisti caricati correttamente");
             } else {
-                console.log("premuto due");
                 // Second click: Call props.register
                 props.register();
             }

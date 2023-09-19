@@ -5,6 +5,7 @@ import { Avatar, Button, Grid, IconButton, TextField, Typography } from "@mui/ma
 import { AddCircleOutline } from '@mui/icons-material';
 import Scrollbar from "react-scrollbars-custom";
 import DeleteIcon from '@mui/icons-material/Delete';
+import io from 'socket.io-client';
 import EditIcon from '@mui/icons-material/Edit';
 import UpdatePlaylist from '../components/UpdatePlaylist';
 import axios from 'axios';
@@ -27,24 +28,65 @@ const Playlist = ({ user, snackbar }) => {
     const [editing, setEditing] = useState(false);
     const [isAddingTag, setIsAddingTag] = useState(false);
     const [newTag, setNewTag] = useState('');
+
     const apiKey = process.env.REACT_APP_API_KEY;
 
     const navigate = useNavigate();
     useEffect(() => {
         const fetchPlaylist = async () => {
             try {
-                const response = await axios.get(`https://spotify-server-kohl.vercel.app/playlist/${playlistId}?apikey=${apiKey}&idUser=${user._id}`);
+                const response = await axios.get(`http://localhost:3100/playlist/${playlistId}?apikey=${apiKey}&idUser=${user._id}`);
                 if (response.status === 200) {
                     setPlaylist(response.data);
                 } else {
-                    snackbar("Errore nella richiesta", "error");
+                    if (response.status === 404)
+                        snackbar(response.data, "error");
+                    else
+                        snackbar("Errore nella richiesta", "error");
+
                 }
             } catch (error) {
-                snackbar("Errore durante la richiesta", "error");
+                if (error.request.status === 404) {
+                    snackbar(error.response.data, "error");
+                    navigate("/")
+                }
+                else
+                    snackbar("Errore durante la richiesta:" + error, "error");
             }
         };
         fetchPlaylist();
-    }, [playlistId, apiKey, snackbar]);
+    }, [playlistId, apiKey, snackbar, navigate, user._id]);
+
+    useEffect(() => {
+        const socket = io('http://localhost:3100'); // Assicurati di utilizzare l'indirizzo corretto del tuo server
+
+        socket.on('connect', () => {
+            console.log('Connesso al server WebSocket');
+        });
+
+        socket.on('playlistUpdated', (data) => {
+            // Verifica se l'ID della playlist aggiornata è quello della pagina visualizzata
+            if (data.playlistId === playlistId) {
+                window.location.reload()
+            }
+        });
+
+        socket.on('playlistDeleted', (data) => {
+            // Verifica se l'ID della playlist eliminata è quello della pagina visualizzata
+            if (data.playlistId === playlistId) {
+                navigate("/")
+                // Esegui l'azione di navigazione appropriata, ad esempio, usando React Router
+            }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnesso dal server WebSocket');
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [playlistId, navigate]);
 
     const handleEditPlaylist = () => {
         setEditing(true);
@@ -66,7 +108,7 @@ const Playlist = ({ user, snackbar }) => {
         }
     };
     const updatePlaylistOnServer = (newName, newDescription) => {
-        axios.put(`https://spotify-server-kohl.vercel.app/updatePlaylist?apikey=${apiKey}`, {
+        axios.put(`http://localhost:3100/updatePlaylist?apikey=${apiKey}`, {
             name: newName,
             description: newDescription,
             playlistId: playlistId
@@ -89,7 +131,7 @@ const Playlist = ({ user, snackbar }) => {
 
     const handleDeletePlaylist = async () => {
         try {
-            const response = await axios.delete(`https://spotify-server-kohl.vercel.app/playlist/${playlist.id}?apikey=${apiKey}`);
+            const response = await axios.delete(`http://localhost:3100/playlist/${playlist.id}?apikey=${apiKey}`);
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
@@ -106,7 +148,7 @@ const Playlist = ({ user, snackbar }) => {
     };
 
     async function publishPlaylist() {
-        const url = `https://spotify-server-kohl.vercel.app/movePlaylist/${playlist.id}?apikey=${apiKey}`;
+        const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
         const requestData = { user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private' };
 
         try {
@@ -123,7 +165,7 @@ const Playlist = ({ user, snackbar }) => {
     }
 
     async function makePlaylistPrivate(playlist) {
-        const url = `https://spotify-server-kohl.vercel.app/movePlaylist/${playlist.id}?apikey=${apiKey}`;
+        const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
         const requestData = { user_id: user._id, type: 'public' };
 
         try {
@@ -141,7 +183,7 @@ const Playlist = ({ user, snackbar }) => {
 
     const handleSetCollaborative = async (collaborative) => {
         try {
-            const response = await axios.put(`https://spotify-server-kohl.vercel.app/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
+            const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
@@ -156,7 +198,7 @@ const Playlist = ({ user, snackbar }) => {
 
     async function changeFollow(playlistId, userId, action) {
         try {
-            const response = await axios.put(`https://spotify-server-kohl.vercel.app/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}&apikey=${apiKey}`);
+            const response = await axios.put(`http://localhost:3100/updatePlaylistFollowers/${playlistId}/${userId}?action=${action}&apikey=${apiKey}`);
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
@@ -172,7 +214,7 @@ const Playlist = ({ user, snackbar }) => {
 
     const changeTag = async (playlistId, tag, action) => {
         try {
-            const response = await axios.post(`https://spotify-server-kohl.vercel.app/changeTag?apikey=${apiKey}`, {
+            const response = await axios.post(`http://localhost:3100/changeTag?apikey=${apiKey}`, {
                 playlistId: playlistId,
                 tag: tag,
                 action: action,
@@ -376,7 +418,7 @@ const Playlist = ({ user, snackbar }) => {
                     {!editing && (
                         <>
                             <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-                                {playlist?.type === "private" || (playlist?.type === "public" && (playlist.collaborative === true || playlist.owner.id === user._id)) ? (
+                                {user._id !== undefined && (playlist?.type === "private" || (playlist?.type === "public" && (playlist.collaborative === true || playlist.owner.id === user._id))) ? (
                                     <Button
                                         variant="outlined"
                                         className="edit-button"
@@ -419,7 +461,7 @@ const Playlist = ({ user, snackbar }) => {
                                         Smetti di seguire
                                     </Button>
                                 ) : (
-                                    playlist?.type === "public" && (Object.keys(user).length !== 0) && (!playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) && (
+                                    playlist?.type === "public" && (user._id !== undefined) && (Object.keys(user).length !== 0) && (!playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) && (
                                         <Button
                                             variant="outlined"
                                             className="add-button"

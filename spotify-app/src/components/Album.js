@@ -17,7 +17,6 @@ const Album = ({ album }) => {
                     {album.name}
                 </Typography>
                 <Typography variant="body2">
-                    {console.log(album.artists)}
                     {album.artists.map((artist, index) => (
                         <span key={artist.id}>
                             <Link to={`/artist/${artist.id}`}>{artist.name}</Link>

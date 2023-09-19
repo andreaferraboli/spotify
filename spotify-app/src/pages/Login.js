@@ -12,7 +12,7 @@ const LoginPage = (props) => {
     const handleLogin = async () => {
         const apiKey = process.env.REACT_APP_API_KEY;
         try {
-            const response = await axios.post(`https://spotify-server-kohl.vercel.app/login?apikey=${apiKey}`, {
+            const response = await axios.post(`http://localhost:3100/login?apikey=${apiKey}`, {
                 email,
                 password,
             });

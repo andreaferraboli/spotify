@@ -55,7 +55,7 @@ function App() {
         if (storedUser && storedUser._id) {
             const fetchUser = async () => {
                 try {
-                    const response = await fetch(`https://spotify-server-kohl.vercel.app/user/${storedUser._id}?apikey=${apiKey}`);
+                    const response = await fetch(`http://localhost:3100/user/${storedUser._id}?apikey=${apiKey}`);
                     if (response.ok) {
                         const data = await response.json();
 
@@ -105,7 +105,7 @@ function App() {
     const handleLogin = async (user) => {
         if (user?._id) {
             try {
-                const response = await fetch(`https://spotify-server-kohl.vercel.app/user/${user._id}?apikey=${apiKey}`);
+                const response = await fetch(`http://localhost:3100/user/${user._id}?apikey=${apiKey}`);
                 if (response.ok) {
                     const data = await response.json();
                     if (data.length > 0) {

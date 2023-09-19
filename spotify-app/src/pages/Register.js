@@ -8,6 +8,7 @@ import LoadGenres from "../components/LoadGenres"
 import "../styles/login.css"; // Importa il file CSS con gli stili personalizzati
 
 const RegisterPage = ({ snackbar }) => {
+    const [userId, setUserId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -25,27 +26,18 @@ const RegisterPage = ({ snackbar }) => {
         return favouriteArtists.length;
     };
 
-    const handleRegister = async () => {
+    const handleUpdateRegister = async () => {
         const apiKey = process.env.REACT_APP_API_KEY;
         try {
             // Effettua la richiesta POST al server Node
-            let response = await axios.post(`https://spotify-server-kohl.vercel.app/register?apikey=${apiKey}`, {
-                "name": firstName,
-                "surname": lastName,
-                "profile_name": username,
-                "image": '',
-                "email": email,
-                "password": password,
+            let response = await axios.put(`http://localhost:3100/register?apikey=${apiKey}`, {
+                "userId": userId,
                 "favourite_genres": favouriteGenres,
-                "favourite_artists": favouriteArtists,
-                "my_playlists": []
+                "favourite_artists": favouriteArtists
             });
 
             // Controlla la risposta del server
             if (response.status === 201) {
-                if (imageFile !== "") {
-                    await publicFile(imageFile, response.data.userId);
-                }
                 snackbar('Registrazione effettuata con successo!', "success");
                 navigate("/login")
             } else {
@@ -70,7 +62,7 @@ const RegisterPage = ({ snackbar }) => {
         formData.append('file', selectedFile);
 
         try {
-            const response = await axios.post(`https://spotify-server-kohl.vercel.app/uploadFile/${userId}?apikey=${apiKey}`, formData, {
+            const response = await axios.post(`http://localhost:3100/uploadFile/${userId}?apikey=${apiKey}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -78,10 +70,9 @@ const RegisterPage = ({ snackbar }) => {
 
             if (response.status === 200) {
                 snackbar("informazioni caricate correttamente", "success")
-                const responseImage = await axios.post(`https://spotify-server-kohl.vercel.app/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
+                const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
                 if (responseImage.status === 200) {
                     snackbar("immagine caricata correttamente", "success")
-                    navigate("/login")
                 } else {
                     snackbar("immagine non caricata correttamente", "error")
                 }
@@ -93,50 +84,45 @@ const RegisterPage = ({ snackbar }) => {
         }
     }
 
-    const validateRegistrationData = async () => {
-        if (!firstName || !lastName || !email || !username || !password || !confirmPassword) {
-            snackbar('Compila tutti i campi.', "warning");
-            return false;
-        }
-
-        if (!validateEmail(email)) {
-            snackbar('Inserisci un indirizzo email valido.', "warning");
-            return false;
-        }
-        if (await checkDuplicateEmail(email) === true) {
-            snackbar("email già presente, prova con un'altra", "warning");
-            return false;
-        }
-        if (password !== confirmPassword) {
-            snackbar('Le password non corrispondono.', "warning");
-            return false;
-        }
-
-        return true;
-    };
-    const checkDuplicateEmail = async (email) => {
+    const handleRegister = async () => {
         const apiKey = process.env.REACT_APP_API_KEY;
         try {
-            const response = await axios.get(`https://spotify-server-kohl.vercel.app/check-email/${email}?apikey=${apiKey}`);
-            // Controlla la risposta dal server
-            if (response.data.exists === true) {
-                return true;
+            // Effettua la richiesta POST al server Node
+            let response = await axios.post(`http://localhost:3100/register?apikey=${apiKey}`, {
+                "name": firstName,
+                "surname": lastName,
+                "profile_name": username,
+                "image": '',
+                "email": email,
+                "password": password,
+                "confirmPassword": confirmPassword,
+                "favourite_genres": [],
+                "favourite_artists": [],
+                "my_playlists": []
+            });
+
+            // Controlla la risposta del server
+            if (response.status === 201) {
+                if (imageFile !== "") {
+                    await publicFile(imageFile, response.data.userId);
+                }
+                setUserId(response.data.userId)
+                snackbar('informazioni e immagine caricate con successo!', "success");
+                return true
             } else {
-                return false;
+                snackbar(response.data.message, "error");
+                return false
             }
         } catch (error) {
-            return true;
+            snackbar(error.response.data, (error.request.status === 400 ? "warning" : "error"));
+            return false
         }
+
     };
 
-    const validateEmail = (email) => {
-        // Utilizza una regex per validare l'email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
+
     const loadedGenres = async () => {
-        if (await validateRegistrationData()) {
-            snackbar("informazioni salvate correttamente", "success")
+        if (await handleRegister()) {
             setLoadGenres(true);
             setLoadArtist(false);
         }
@@ -155,7 +141,7 @@ const RegisterPage = ({ snackbar }) => {
                         favouriteGenres={favouriteGenres}
                         getFavouriteArtists={getFavouriteArtists}
                         setFavouriteArtists={setFavouriteArtists}
-                        register={handleRegister}
+                        register={handleUpdateRegister}
                         snackbar={snackbar}
                     ></LoadArtist>
                 ) : (

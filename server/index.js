@@ -7,14 +7,22 @@ const fsPromises = require('fs').promises;
 const express = require("express");
 const apiKey = "12345667654"
 const swaggerUi = require("swagger-ui-express");
+const socketIo = require('socket.io');
 const swaggerDocument = require("./swagger_output.json");
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
+const http = require('http');
 const path = require('path');
 var SpotifyWebApi = require("spotify-web-api-node");
 const { v4: uuidv4 } = require('uuid');
 const fileUpload = require('express-fileupload');
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: '*', // Accetta richieste da qualsiasi origine
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Abilita le credenziali se necessario
+  },
+});
 const axios = require('axios');
 const cors = require('cors');
 const admin = require('firebase-admin');
@@ -32,9 +40,25 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "../spotify-app", "build")));
 app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use(cors());
+app.use(cors({
+  origin: '*', // Accetta richieste da qualsiasi origine
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Abilita le credenziali se necessario
+  optionsSuccessStatus: 204, // Imposta il codice di stato di successo per le richieste OPTIONS
+}));
 app.use(express.json({ limit: '10mb' }));
 
+io.on('connection', (socket) => {
+  // evento di aggiornamento della playlist
+  socket.on('updatePlaylist', (data) => {
+    // Emetti un evento a tutti i client connessi per notificare l'aggiornamento
+    io.emit('playlistUpdated', data);
+  });
+  socket.on('deletePlaylist', (data) => {
+    io.emit('playlistDeleted', data);
+  });
+
+});
 function authenticateApiKey(req, res, next) {
   const providedApiKey = req.query.apikey;
   if (!providedApiKey) {
@@ -90,20 +114,6 @@ async function authenticateAndRenewToken() {
 }
 
 
-/* #swagger.parameters['id'] = {
-    in: 'path',
-    description: 'User\'s ID',
-    required: true,
-    type: 'string'
-} */
-/* #swagger.responses[200] = {
-    description: 'User successfully obtained.',
-    schema: {
-        name: 'Jhon Doe',
-        age: 29,
-        about: ''
-    }
-} */
 app.get("/user/:id", authenticateApiKey, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
@@ -118,25 +128,6 @@ app.get("/user/:id", authenticateApiKey, async function (req, res) {
   res.json(user);
 });
 
-/* #swagger.parameters['id'] = {
-    in: 'path',
-    description: 'User\'s ID',
-    required: true,
-    type: 'string'
-} */
-/* #swagger.responses[200] = {
-    description: 'User with playlists successfully obtained.',
-    schema: {
-        name: 'Jhon Doe',
-        age: 29,
-        about: '',
-        playlists: [
-            {
-                // Playlist schema here
-            }
-        ]
-    }
-} */
 app.get("/showUser/:id", authenticateApiKey, async function (req, res) {
   // Retrieve user data from the database
   var id = req.params.id;
@@ -203,14 +194,48 @@ app.post("/login", authenticateApiKey, async (req, res) => {
 
 app.post("/register", authenticateApiKey, async (req, res) => {
 
-  register = req.body;
-  if (register.email == undefined) {
+  const register = req.body;
+
+  if (!register.name) {
+    res.status(400).send("Missing First Name");
+    return;
+  }
+
+  if (!register.surname) {
+    res.status(400).send("Missing Last Name");
+    return;
+  }
+
+  if (!register.email) {
     res.status(400).send("Missing Email");
     return;
   }
-  if (register.password == undefined) {
+
+  if (!register.profile_name) {
+    res.status(400).send("Missing profile name");
+    return;
+  }
+
+  if (!register.password) {
     res.status(400).send("Missing Password");
     return;
+  }
+
+  if (!register.confirmPassword) {
+    res.status(400).send("Missing Confirm Password");
+    return;
+  }
+
+
+  if (!validateEmail(register.email)) {
+    const errorMessage = 'Inserisci un indirizzo email valido.';
+    return res.status(400).send(errorMessage);
+  }
+
+
+  if (register.password !== register.confirmPassword) {
+    const errorMessage = 'Le password non corrispondono.';
+    return res.status(400).send(errorMessage);
   }
 
   register.password = hash(register.password);
@@ -230,7 +255,40 @@ app.post("/register", authenticateApiKey, async (req, res) => {
     res.status(500).send(`Errore generico: ${e}`);
   }
 });
+app.put("/register", authenticateApiKey, async (req, res) => {
 
+  const register = req.body;
+  const { favourite_artists, favourite_genres, userId } = register;
+  if (favourite_artists.length > 0 || favourite_genres.length > 0) {
+    var pwmClient = await new mongoClient(uri).connect();
+    try {
+      var items = await pwmClient
+        .db("spotify")
+        .collection("users")
+        .updateOne(
+          { "_id": new ObjectId(userId) }, // Condizione di query per trovare l'utente
+          {
+            $set: {
+              "favourite_artists": favourite_artists,
+              "favourite_genres": favourite_genres
+            }
+          } // Dati da aggiornare
+        );
+
+      if (items.modifiedCount === 1) {
+        res.status(201).send("Gusti musicali inseriti correttamente");
+      } else {
+        res.status(404).send("Utente non trovato");
+      }
+    } catch (error) {
+      console.error('Errore nell\'aggiornamento dei gusti musicali:', error);
+      res.status(500).send("Si è verificato un errore durante l'aggiornamento dei gusti musicali");
+    }
+  } else {
+    res.status(201).send("Gusti musicali inseriti correttamente");
+  }
+
+});
 
 app.post('/setUserImage/:userId', authenticateApiKey, async (req, res) => {
   try {
@@ -327,24 +385,6 @@ app.get("/", function (req, res) {
   res.send("benvenuto nel server snm-ferraboli.web.app")
 });
 
-app.get('/check-email/:email', authenticateApiKey, async (req, res) => {
-  const email = req.params.email;
-
-  try {
-    var pwmClient = await new mongoClient(uri).connect();
-    var user = await pwmClient
-      .db("spotify")
-      .collection("users").findOne({ "email": email });
-    if (user !== null) {
-      res.status(200).json({ exists: true });
-    } else {
-      res.status(200).json({ exists: false });
-    }
-  } catch (error) {
-    console.error('Errore durante la verifica dell\'email:', error);
-    res.status(500).json({ error: 'Errore interno del server' });
-  }
-});
 app.get("/artists/:query", authenticateApiKey, async (req, res) => {
   if (await authenticateAndRenewToken()) {
     // Ricerca nel database
@@ -394,27 +434,36 @@ app.get("/artist/:id", authenticateApiKey, async (req, res) => {
 app.get("/playlist/:id", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
   var id = req.params.id;
-  var idUser = req.query.idUser
   var pwmClient = await new mongoClient(uri).connect();
-  var playlist = await pwmClient
-    .db("spotify")
-    .collection("users").aggregate([
-      { $unwind: "$my_playlists" },
-      { $match: { "my_playlists.id": id, "_id": new ObjectId(idUser) } },
-      { $project: { my_playlists: 1 } }
-    ]).toArray();
+  var playlist = [];
+  var idUser = req.query.idUser ?? ''; // Assegnazione con operatore di nullish coalescence
+  if (idUser !== '' && idUser !== "undefined") {
+    playlist = await pwmClient
+      .db("spotify")
+      .collection("users").aggregate([
+        { $unwind: "$my_playlists" },
+        { $match: { "my_playlists.id": id, "_id": new ObjectId(idUser) } },
+        { $project: { my_playlists: 1 } }
+      ]).toArray();
+  }
+
+
   if (playlist.length === 0) {
     playlist = await pwmClient
       .db("spotify")
       .collection("public_playlists").findOne(
         { "id": id }
       )
-    playlist.type = "public"
+    if (playlist)
+      playlist.type = "public"
   } else {
     playlist[0].my_playlists.type = "private"
     playlist = playlist[0].my_playlists
   }
-  res.json(playlist);
+  if(playlist)
+    res.json(playlist);
+  else
+    res.status(404).send("playlist inesistente")
 });
 app.get("/newId", authenticateApiKey, async (req, res) => {
   let newId;
@@ -447,6 +496,7 @@ app.put("/playlist/:id", authenticateApiKey, async (req, res) => {
       );
 
     if (result.matchedCount === 1) {
+      io.emit('playlistUpdated', { playlistId });
       res.status(200).json({ message: 'Playlist updated successfully' });
     } else {
       result = await pwmClient
@@ -455,15 +505,18 @@ app.put("/playlist/:id", authenticateApiKey, async (req, res) => {
           { 'id': playlistId },
           { $set: { "tracks": updatedPlaylist.tracks, "image": updatedPlaylist.image } }
         );
-      if (result.matchedCount === 1)
+      if (result.matchedCount === 1) {
+        io.emit('playlistUpdated', { playlistId });
         res.status(200).json({ message: 'Playlist updated successfully' });
-      else
+      } else {
         res.status(404).json({ message: 'Playlist not found' });
+      }
     }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
+
 })
 app.post("/playlist", authenticateApiKey, async (req, res) => {
   // Ricerca nel database
@@ -497,9 +550,20 @@ app.delete('/playlist/:id', authenticateApiKey, async (req, res) => {
       );
 
     if (result.modifiedCount === 1) {
+      io.emit('playlistDeleted', { playlistId });
       res.status(200).json({ message: 'Playlist deleted successfully' });
     } else {
-      res.status(404).json({ message: 'Playlist not found' });
+      result = await pwmClient
+        .db("spotify")
+        .collection("public_playlists").deleteOne(
+          { "id": playlistId }
+        );
+      if (result.deletedCount === 1) {
+        io.emit('playlistDeleted', { playlistId });
+        res.status(200).json({ message: 'Playlist deleted successfully' });
+      } else {
+        res.status(404).json({ message: 'Playlist not found' });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -533,8 +597,11 @@ app.post('/playlists/:playlistId/add-track', authenticateApiKey, async (req, res
 
     if (result.modifiedCount === 0) {
       return res.status(404).send({ message: 'Traccia già presente' });
-    } else
+    } else{
+      io.emit('playlistUpdated', { playlistId });
       res.status(200).send({ message: 'Traccia aggiunta alla playlist con successo' });
+    }
+      
   } catch (error) {
     console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
     res.status(500).send({ message: 'Si è verificato un errore interno' });
@@ -609,7 +676,6 @@ app.get("/searchTracks/:query", authenticateApiKey, async (req, res) => {
 app.get("/searchTrack/:idTrack", authenticateApiKey, async (req, res) => {
   id_track = req.params.idTrack
   const id = req.query.id;
-  console.log("id:", id)
   var pwmClient = await new mongoClient(uri).connect();
   let userPlaylistsCursor;
   if (id ?? '') {
@@ -648,13 +714,15 @@ app.get("/search/:query", authenticateApiKey, async (req, res) => {
     let playlists = await searchPlaylists(query, id);
     let users = await searchUsers(query);
     let tags = await searchTags(query, id);
+    let playlistWithSong = await searchTrackNameInPlaylists(query, id)
     let result = {
       "tracks": tracks,
       "albums": albums,
       "artists": artists,
       "playlists": playlists,
       "users": users,
-      "tags": tags
+      "tags": tags,
+      "playlistWithSong": playlistWithSong
     }
     res.status(200).send(result)
   } else {
@@ -745,6 +813,7 @@ app.post('/changeTag', authenticateApiKey, async (req, res) => {
         { "my_playlists.id": playlistId },
         { $set: { "my_playlists.$.tags": playlist.tags } }
       );
+      io.emit('playlistUpdated', { playlistId });
     return res.status(200).json({ message: 'Tag updated successfully' });
 
 
@@ -810,6 +879,7 @@ app.put('/updatePlaylistFollowers/:playlistId/:followerId', authenticateApiKey, 
       );
 
     if (result.matchedCount === 1) {
+      io.emit('playlistUpdated', { playlistId });
       return res.status(200).json({ message: 'Playlist updated successfully' });
     } else {
       return res.status(404).json({ message: 'Playlist not found' });
@@ -909,7 +979,8 @@ app.put('/updatePlaylist', authenticateApiKey, async (req, res) => {
       // Nessun documento è stato modificato, quindi la playlist non è stata trovata
       return res.status(404).send({ message: 'informazioni non aggiornate' });
     }
-    res.status(200).send({ message: "Informazioni aggiornat3 correttamente" });
+    io.emit('playlistUpdated', { playlistId });
+    res.status(200).send({ message: "Informazioni aggiornate correttamente" });
 
 
   } catch (error) {
@@ -960,6 +1031,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
           description: playlist.description
         });
         if (insertedPlaylist.insertedId !== null) {
+          io.emit('playlistUpdated', { playlistId });
           res.status(200).json({ message: "Playlist spostata con successo." });
         } else {
           res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
@@ -981,6 +1053,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
         );
 
         if (insertedPlaylist.modifiedCount > 0) {
+          io.emit('playlistUpdated', { playlistId });
           res.status(200).json({ message: "Playlist spostata con successo." });
         } else {
           res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
@@ -1008,6 +1081,7 @@ app.put("/setCollaborative/:id", authenticateApiKey, async (req, res) => {
         { $set: { "collaborative": collaborative } }
       )
     if (response.modifiedCount > 0) {
+      io.emit('playlistUpdated', { playlistId });
       res.status(200).json({ message: "Aggiornamento riuscito." });
     } else {
       res.status(500).json({ message: "Errore nell'aggiornamento." });
@@ -1098,11 +1172,9 @@ function ms_to_minute(milliseconds) {
   return formattedTime;
 }
 
-app.listen(3100, "0.0.0.0", () => {
-  console.log("Server partito porta 3100");
+server.listen(3100, () => {
+  console.log(`Server in ascolto sulla porta ${3100}`);
 });
-
-
 
 
 async function getTrack(id_track) {
@@ -1229,6 +1301,11 @@ function hash(input) {
   return crypto.createHash("md5").update(input).digest("hex");
 }
 
+const validateEmail = (email) => {
+  // Utilizza una regex per validare l'email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 async function searchArtists(query) {
   let artists = await spotifyApi?.searchArtists(query)
@@ -1299,6 +1376,50 @@ async function searchPlaylists(query, id) {
 
     // Combine user and public playlists
     var allPlaylists = userPlaylists.concat(publicPlaylists);
+
+    return allPlaylists;
+  } catch (error) {
+    console.error('Error searching playlists:', error);
+    return []; // Return an empty array in case of error
+  }
+}
+async function searchTrackNameInPlaylists(query, id) {
+  try {
+    var pwmClient = await new mongoClient(uri).connect();
+    let userPlaylistsCursor;
+    // Search for user playlists using aggregation
+    if (id ?? '') {
+      userPlaylistsCursor = await pwmClient
+        .db("spotify")
+        .collection("users")
+        .aggregate([
+          { $match: { _id: new ObjectId(id) } },
+          { $unwind: '$my_playlists' },
+          { $match: { 'my_playlists.tracks.name': { $regex: query, $options: 'i' } } },
+          { $project: { my_playlists: 1 } }
+        ])
+        .toArray();
+      userPlaylistsCursor = userPlaylistsCursor.map(item => ({
+        ...item.my_playlists,
+        type: "private"
+      }));
+    } else {
+      userPlaylistsCursor = []
+    }
+
+    // Search for public playlists using find()
+    var publicPlaylistsCursor = await pwmClient
+      .db("spotify")
+      .collection("public_playlists")
+      .find({ "tracks.name": { $regex: query, $options: 'i' } })
+      .toArray();
+
+    publicPlaylistsCursor = publicPlaylistsCursor.map(item => ({
+      ...item,
+      type: "public"
+    }));
+    // Combine user and public playlists
+    var allPlaylists = userPlaylistsCursor.concat(publicPlaylistsCursor);
 
     return allPlaylists;
   } catch (error) {

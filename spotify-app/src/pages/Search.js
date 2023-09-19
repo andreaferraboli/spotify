@@ -69,7 +69,7 @@ export default function SearchResults({ user, snackbar }) {
     useEffect(() => {
         setSearchResults(null)
         // Invia la richiesta al server con l'API key nell'URL come query parameter
-        axios.get(`https://spotify-server-kohl.vercel.app/search/${query}?id=${user._id}&apikey=${apiKey}`)
+        axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`)
             .then(response => {
                 setSearchResults(response.data);
             })
@@ -121,6 +121,28 @@ export default function SearchResults({ user, snackbar }) {
                                 responsive={responsive}
                             >
                                 {searchResults.playlists?.map(playlist => (
+                                    <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
+                                        <PlaylistCard
+                                            playlist={playlist}
+                                            owner={playlist.type === "public"
+                                                ? `${playlist.owner.profile_name} • pubblica`
+                                                : user.profile_name}
+                                            selectedPlaylistId={null} />
+                                    </Link>
+                                ))}
+                            </Carousel></>
+                    )}
+                    {console.log(searchResults?.playlistWithSong)}
+                    {searchResults?.playlistWithSong && searchResults.playlistWithSong?.length > 0 && (
+                        <>
+                            <h2>Playlist che contengono una canzone "{query}"</h2>
+                            <Carousel
+                                showDots={true}
+                                itemClass="carousel-item"
+                                containerClass="carousel-container"
+                                responsive={responsive}
+                            >
+                                {searchResults.playlistWithSong?.map(playlist => (
                                     <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
                                         <PlaylistCard
                                             playlist={playlist}

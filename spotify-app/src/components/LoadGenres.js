@@ -12,7 +12,7 @@ const LoadGenres = (props) => {
 
     useEffect(() => {
         // Effettua la chiamata al server solo una volta durante il montaggio iniziale
-        axios.get(`https://spotify-server-kohl.vercel.app/genres?apikey=${apiKey}`)
+        axios.get(`http://localhost:3100/genres?apikey=${apiKey}`)
             .then(response => {
                 if (response.status === 200) {
                     setGenres(response.data);

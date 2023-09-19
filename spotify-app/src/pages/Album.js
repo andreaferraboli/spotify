@@ -14,7 +14,7 @@ const Album = ({user, snackbar}) => {
         const fetchAlbum = async () => {
             const apiKey = process.env.REACT_APP_API_KEY;
             try {
-                const response = await axios.get(`https://spotify-server-kohl.vercel.app/album/${albumId}?apikey=${apiKey}`);
+                const response = await axios.get(`http://localhost:3100/album/${albumId}?apikey=${apiKey}`);
 
                 if (response.status === 200) {
                     setAlbum(response.data);

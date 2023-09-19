@@ -26,7 +26,7 @@ function NewPlaylist({ user, snackbar }) {
         async function fetchPlaylistId() {
             async function searchId() {
                 try {
-                    const response = await axios.get(`https://spotify-server-kohl.vercel.app/newId?apikey=${apiKey}`);
+                    const response = await axios.get(`http://localhost:3100/newId?apikey=${apiKey}`);
                     if (response.status === 200) {
                         return response.data.id;
                     } else {
@@ -59,7 +59,7 @@ function NewPlaylist({ user, snackbar }) {
                 return;
             }
 
-            const response = await axios.get(`https://spotify-server-kohl.vercel.app/searchTracks/${query}?apikey=${apiKey}`);
+            const response = await axios.get(`http://localhost:3100/searchTracks/${query}?apikey=${apiKey}`);
 
             if (response.status === 200) {
                 setSearchResults(response.data);
@@ -121,7 +121,7 @@ function NewPlaylist({ user, snackbar }) {
 
     const handleSavePlaylist = async () => {
         try {
-            let response = await axios.post(`https://spotify-server-kohl.vercel.app/upload?apikey=${apiKey}`, {
+            let response = await axios.post(`http://localhost:3100/upload?apikey=${apiKey}`, {
                 dataUrl: document.getElementById("playlist_image").src,
                 id: playlistId,
                 "apikey": apiKey
@@ -130,7 +130,7 @@ function NewPlaylist({ user, snackbar }) {
             localPlaylist.id = playlistId;
             localPlaylist.image = response.data.imageUrl;
 
-            response = await axios.post(`https://spotify-server-kohl.vercel.app/playlist?apikey=${apiKey}`, {
+            response = await axios.post(`http://localhost:3100/playlist?apikey=${apiKey}`, {
                 "playlist": localPlaylist,
                 "userId": user._id,
                 "apikey": apiKey

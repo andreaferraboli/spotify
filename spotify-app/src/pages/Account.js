@@ -42,7 +42,7 @@ const Account = ({user, handleLogin, snackbar}) => {
 
     useEffect(() => {
         // Effettua la chiamata al server solo una volta durante il montaggio iniziale
-        axios.get(`https://spotify-server-kohl.vercel.app/genres?apikey=${apiKey}`)
+        axios.get(`http://localhost:3100/genres?apikey=${apiKey}`)
             .then(response => {
                 setGenres(response.data);
                 setAllGenres(response.data);
@@ -86,7 +86,7 @@ const Account = ({user, handleLogin, snackbar}) => {
         formData.append('file', selectedFile);
 
         try {
-            const uploadUrl = `https://spotify-server-kohl.vercel.app/uploadFile/${userId}?apikey=${apiKey}`;
+            const uploadUrl = `http://localhost:3100/uploadFile/${userId}?apikey=${apiKey}`;
             const response = await axios.post(uploadUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -95,7 +95,7 @@ const Account = ({user, handleLogin, snackbar}) => {
 
             if (response.status === 200) {
                 snackbar("Informazioni caricate correttamente", "success");
-                const setImageUrlUrl = `https://spotify-server-kohl.vercel.app/setUserImage/${userId}?apikey=${apiKey}`;
+                const setImageUrlUrl = `http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`;
                 let responseImage = await axios.post(setImageUrlUrl, {"fileUrl": response.data.fileUrl});
 
                 if (responseImage.status === 200) {
@@ -117,7 +117,7 @@ const Account = ({user, handleLogin, snackbar}) => {
 
     const handleSaveInfo = async () => {
         try {
-            const updateInfoUrl = `https://spotify-server-kohl.vercel.app/updateInfo?apikey=${apiKey}`;
+            const updateInfoUrl = `http://localhost:3100/updateInfo?apikey=${apiKey}`;
             const response = await axios.post(updateInfoUrl, {
                 "id": user._id,
                 "name": name,
@@ -144,7 +144,7 @@ const Account = ({user, handleLogin, snackbar}) => {
                 return; // Esci dalla funzione in caso di errore
             }
 
-            const changePasswordUrl = `https://spotify-server-kohl.vercel.app/changePassword?apikey=${apiKey}`;
+            const changePasswordUrl = `http://localhost:3100/changePassword?apikey=${apiKey}`;
             const response = await axios.post(changePasswordUrl, {
                 "id": user._id,
                 "oldPassword": oldPassword,
@@ -176,7 +176,7 @@ const Account = ({user, handleLogin, snackbar}) => {
 
     const changeGenres = async (genres) => {
         try {
-            const changeGenresUrl = `https://spotify-server-kohl.vercel.app/changeGenres?apikey=${apiKey}`;
+            const changeGenresUrl = `http://localhost:3100/changeGenres?apikey=${apiKey}`;
             const response = await axios.put(changeGenresUrl, {
                 "id": user._id,
                 "genres": genres
@@ -196,7 +196,7 @@ const Account = ({user, handleLogin, snackbar}) => {
 
     const handleDeleteProfile = async () => {
         try {
-            const deleteProfileUrl = `https://spotify-server-kohl.vercel.app/deleteProfile/${user._id}?apikey=${apiKey}`;
+            const deleteProfileUrl = `http://localhost:3100/deleteProfile/${user._id}?apikey=${apiKey}`;
             const response = await axios.delete(deleteProfileUrl);
 
             if (response.status === 200) {
