@@ -1,81 +1,91 @@
 @import url("palette.css");
 
 .track {
-  background-color: var(--background-color) !important;
-  color: var(--text-color) !important;
-  height: 10% !important;
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    height: 10% !important;
 }
 
 .image-container {
-  width: 100%;
-  padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
-  background-size: cover;
-  background-position: center;
+    width: 100%;
+    padding-bottom: 100%; /* Aspect ratio 1:1 (square) */
+    background-size: cover;
+    background-position: center;
 }
 
 .menu-heading {
-  font-weight: bold;
-  color: var(--text-color) !important;
-  padding: 8px 16px;
+    font-weight: bold;
+    color: var(--text-color) !important;
+    padding: 8px 16px;
 }
+
 .custom-menu {
-  background-color: var(--primary-color);
-  padding: 0;
+    background-color: var(--primary-color);
+    padding: 0;
 }
+
 .MuiList-root {
-  padding: 0 !important;
+    padding: 0 !important;
 }
+
 /* Stile per l'icona Play al centro dell'immagine */
 .image-container-wrapper {
-  position: relative; /* Crea un contesto di posizionamento relativo */
+    position: relative; /* Crea un contesto di posizionamento relativo */
 }
 
 .play-icon-div {
-  position: absolute; /* Posizionamento assoluto sopra l'immagine */
-  top: 50%; /* Posiziona verticalmente al centro */
-  left: 50%; /* Posiziona orizzontalmente al centro */
-  transform: translate(-50%, -50%); /* Centra l'elemento rispetto al centro */
-  z-index: 1; /* Posiziona sopra l'immagine */
-  /* Stili per l'icona */
+    position: absolute; /* Posizionamento assoluto sopra l'immagine */
+    top: 50%; /* Posiziona verticalmente al centro */
+    left: 50%; /* Posiziona orizzontalmente al centro */
+    transform: translate(-50%, -50%); /* Centra l'elemento rispetto al centro */
+    z-index: 1; /* Posiziona sopra l'immagine */
+    /* Stili per l'icona */
 }
-.div-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-.song-title,
-.song-artists {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.song-title {
-  font-size: 1.25rem !important;
-  margin-bottom: 8px;
-}
-.song-artists {
-  font-size: 1rem !important;
-}
-.play-icon {
-  font-size: 3rem !important;
-  color: white;
-  z-index: 1;
-  /* Altri stili per l'icona */
-}
-@media screen and (max-width: 600px) {
-  .song-title {
-    font-size: 0.75rem !important; /* Regola la dimensione del titolo per smartphone */
-    margin-bottom: 0;
-  }
 
-  .song-artists {
-    font-size: 0.6rem !important; /* Regola la dimensione degli artisti per smartphone */
-  }
-  .div-info {
+.div-info {
     display: flex;
     flex-direction: column;
-    align-items: normal;
+    align-items: flex-start;
     width: 100%;
-  }
+}
+
+.song-title,
+.song-artists {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.song-title {
+    font-size: 1.25rem !important;
+    margin-bottom: 8px;
+}
+
+.song-artists {
+    font-size: 1rem !important;
+}
+
+.play-icon {
+    font-size: 3rem !important;
+    color: white;
+    z-index: 1;
+    /* Altri stili per l'icona */
+}
+
+@media screen and (max-width: 600px) {
+    .song-title {
+        font-size: 0.75rem !important; /* Regola la dimensione del titolo per smartphone */
+        margin-bottom: 0;
+    }
+
+    .song-artists {
+        font-size: 0.6rem !important; /* Regola la dimensione degli artisti per smartphone */
+    }
+
+    .div-info {
+        display: flex;
+        flex-direction: column;
+        align-items: normal;
+        width: 100%;
+    }
 }

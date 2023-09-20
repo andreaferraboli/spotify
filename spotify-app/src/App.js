@@ -96,12 +96,6 @@ function App() {
         navigate(`/artist/${artistId}`);
     };
 
-    const handleBackToHome = () => {
-        setSelectedPlaylistId(null);
-        setSelectedArtistId(null);
-        navigate(`/`);
-    };
-
     const handleLogin = async (user) => {
         if (user?._id) {
             try {

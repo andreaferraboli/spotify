@@ -98,7 +98,7 @@ async function authenticateAndRenewToken() {
         // Imposta il nuovo token di accesso
         spotifyApi.setAccessToken(data.access_token);
       } else {
-        throw new Error("Failed to obtain access token");
+        console.error("Impossibile ottenere il token di accesso.");
       }
     }
 
@@ -994,7 +994,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
   try {
 
     const pwmClient = await new mongoClient(uri).connect();
-    let insertedPlaylist, playlistToRemove, response
+    let insertedPlaylist, playlistToRemove
     // Trova e rimuovi la playlist dalla collezione "users"
     if (playlistType === 'private') {
 
@@ -1006,7 +1006,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
       let playlist = playlistToRemove[0].my_playlists
       if (playlist.id !== null) {
         // Rimuovi la playlist dalla collezione "users"
-        response = await pwmClient.db("spotify").collection("users").updateOne(
+        await pwmClient.db("spotify").collection("users").updateOne(
           { _id: new ObjectId(userId) },
           { $pull: { my_playlists: { id: playlistId } } }
         );
@@ -1127,6 +1127,11 @@ app.post("/changePassword", authenticateApiKey, async (req, res) => {
         { _id: new ObjectId(id) },
         { $set: { password: user.password } }
       )
+      if (update.modifiedCount === 1) {
+        res.status(200).json({ message: "Password cambiata con successo." });
+      } else {
+        res.status(500).json({ message: "Errore durante il cambio password." });
+      }
       res.status(200).json({ message: "Password cambiata con successo." });
     } else {
       res.status(400).json({ message: "Vecchia password errata." });
@@ -1142,22 +1147,33 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
   try {
     const pwmClient = await new mongoClient(uri).connect();
     const user = await pwmClient
-      .db("spotify").collection('users').findOneAndDelete({
-        _id: new ObjectId(userId),
-      });
-    await pwmClient.db("spotify").collection('public_playlists').updateMany(
-      { "followers": userId },
-      { $pull: { "followers": userId } }
-    )
-    await pwmClient.db("spotify").collection('public_playlists').deleteMany(
-      { "owner.id": userId }
-    )
+        .db("spotify").collection('users').findOneAndDelete({
+          _id: new ObjectId(userId),
+        });
 
-    res.status(200).json({ message: "Profilo eliminato con successo." });
+    // Verifica se l'eliminazione dell'utente è avvenuta con successo
+    if (user.value) {
+      await pwmClient.db("spotify").collection('public_playlists').updateMany(
+          { "followers": userId },
+          { $pull: { "followers": userId } }
+      );
+
+      await pwmClient.db("spotify").collection('public_playlists').deleteMany(
+          { "owner.id": userId }
+      );
+
+      res.status(200).json({ message: "Profilo eliminato con successo." });
+    } else {
+      // L'utente non è stato trovato o non è stato eliminato correttamente
+      res.status(404).json({ message: "Utente non trovato o errore nell'eliminazione del profilo." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });
+    // Gestisci eventuali errori durante l'esecuzione delle operazioni
+    console.error("Errore durante l'eliminazione del profilo:", error);
+    res.status(500).json({ message: "Si è verificato un errore durante l'eliminazione del profilo." });
   }
 });
+
 function ms_to_minute(milliseconds) {
   // Convert milliseconds to minutes and seconds
   const minutes = Math.floor(milliseconds / 60000);

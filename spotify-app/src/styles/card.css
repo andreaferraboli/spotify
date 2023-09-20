@@ -1,34 +1,38 @@
 @import url("palette.css");
+
 .circular-image {
-  width: 15rem; /* Imposta la larghezza dell'area circolare */
-  height: 15rem; /* Imposta l'altezza dell'area circolare */
-  border-radius: 50%; /* Rende l'immagine circolare */
-  overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
-  margin: 0 auto; /* Centra l'immagine orizzontalmente */
+    width: 15rem; /* Imposta la larghezza dell'area circolare */
+    height: 15rem; /* Imposta l'altezza dell'area circolare */
+    border-radius: 50%; /* Rende l'immagine circolare */
+    overflow: hidden; /* Nasconde eventuali parti dell'immagine che escono dall'area circolare */
+    margin: 0 auto; /* Centra l'immagine orizzontalmente */
 }
 
 .circular-image img {
-  width: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
-  height: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
+    width: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
+    height: 100%; /* Assicura che l'immagine copra l'intera area circolare senza distorsioni */
 }
 
 .circular-card {
-  width: 100%;
-  border-radius: 50%; /* Rende l'intera card circolare */
-  background-color: var(--background-color) !important;
-  max-width: 250px;
+    width: 100%;
+    border-radius: 50%; /* Rende l'intera card circolare */
+    background-color: var(--background-color) !important;
+    max-width: 250px;
 }
-  .artist-name{
+
+.artist-name {
     font-size: 1.5rem !important;
     text-align: center;
     color: var(--text-color);
-  }
-  .card-playlist{
+}
+
+.card-playlist {
     background-color: var(--background-color) !important;
     color: var(--text-color) !important;
 
-  }
-  .card-media{
+}
+
+.card-media {
     width: 90% !important;
     margin: 5% 5% 5% 5%;
-  }
+}

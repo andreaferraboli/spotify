@@ -1,40 +1,47 @@
 @import url("palette.css");
+
 .home-section {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
+
 .home-section h2 {
-  color: var(--text-color);
-  padding-left: 20px;
+    color: var(--text-color);
+    padding-left: 20px;
 }
+
 .home-box {
-  background-color: var(--primary-color);
-  margin: 0;
-  height: 100% !important;
+    background-color: var(--primary-color);
+    margin: 0;
+    height: 100% !important;
 }
+
 .carousel-item {
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
 }
+
 .carousel-item-playlist {
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
 }
 
 body {
-  margin: 0;
+    margin: 0;
 }
+
 html,
 body,
 #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
+
 .carousel-container {
-  margin-right: auto;
-  overflow: hidden;
-  margin-left: auto;
-  width: 100%;
-  padding: 0 20px; /* Regola questo valore in base alle tue esigenze */
-  box-sizing: border-box;
+    margin-right: auto;
+    overflow: hidden;
+    margin-left: auto;
+    width: 100%;
+    padding: 0 20px; /* Regola questo valore in base alle tue esigenze */
+    box-sizing: border-box;
 }

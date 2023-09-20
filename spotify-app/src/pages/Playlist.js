@@ -124,7 +124,7 @@ const Playlist = ({user, snackbar}) => {
             })
             .catch(error => {
                 // Handle error
-                snackbar('Errore durante l\'aggiornamento della playlist:'+ error, "error");
+                snackbar('Errore durante l\'aggiornamento della playlist:' + error, "error");
             });
     };
 

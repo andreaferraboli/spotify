@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Button, Grid, TextField, Typography} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -14,9 +14,9 @@ const LoginPage = (props) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleShowPassword = () => {
-      setShowPassword(!showPassword);
+        setShowPassword(!showPassword);
     };
-  
+
 
     const handleLogin = async () => {
         const apiKey = process.env.REACT_APP_API_KEY;
@@ -78,7 +78,7 @@ const LoginPage = (props) => {
                             fullWidth
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="input" />
+                            className="input"/>
 
                         <TextField
                             label="Password"
@@ -96,7 +96,8 @@ const LoginPage = (props) => {
                                             onClick={toggleShowPassword}
                                             edge="end"
                                         >
-                                            {showPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                            {showPassword ? <VisibilityIcon className="visible-icon"/> :
+                                                <VisibilityOffIcon className="visible-icon"/>}
                                         </IconButton>
                                     </InputAdornment>
                                 ),

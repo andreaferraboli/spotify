@@ -1,39 +1,41 @@
 @import url("palette.css");
+
 .album-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
-  margin: 1%;
-  background-color: var(--background-color) !important;
-  color: var(--text-color) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    margin: 1%;
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
 }
 
 .album-image {
-  width: 3rem; /* Imposta la larghezza desiderata */
-  height: auto; /* Imposta l'altezza desiderata */
-  object-fit: cover;
+    width: 3rem; /* Imposta la larghezza desiderata */
+    height: auto; /* Imposta l'altezza desiderata */
+    object-fit: cover;
 
-  border-radius: 8px;
-  margin-bottom: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
 }
-.album-name{
-  font-size: 1.5rem !important;
+
+.album-name {
+    font-size: 1.5rem !important;
 }
 
 
 .album-image.skeleton {
-  width: 100%;
-  height: 200px; /* Altezza immagine */
+    width: 100%;
+    height: 200px; /* Altezza immagine */
 }
 
 .album-name.skeleton {
-  width: 80%; /* Larghezza testo nome album */
-  height: 20px; /* Altezza testo nome album */
-  margin-bottom: 10px; /* Spazio tra nome album e anno */
+    width: 80%; /* Larghezza testo nome album */
+    height: 20px; /* Altezza testo nome album */
+    margin-bottom: 10px; /* Spazio tra nome album e anno */
 }
 
 .album-year.skeleton {
-  width: 60%; /* Larghezza testo anno */
-  height: 16px; /* Altezza testo anno */
+    width: 60%; /* Larghezza testo anno */
+    height: 16px; /* Altezza testo anno */
 }

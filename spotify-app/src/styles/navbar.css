@@ -1,22 +1,25 @@
 @import url("palette.css");
+
 .myAppBar {
-  background-color:var(--primary-color);
-  }
+    background-color: var(--primary-color);
+}
 
-  .navbar-height{
+.navbar-height {
     height: 6vh;
-  }
-  .customLabel{
-    color: var(--text-color) !important
-  }
+}
 
-  .history-icon{
+.customLabel {
+    color: var(--text-color) !important
+}
+
+.history-icon {
     color: var(--text-color) !important;
-  }
-  @media screen and (max-width: 767px) {
+}
+
+@media screen and (max-width: 767px) {
     .history-icon {
-      font-size: 16px;
-      width: 30px;
-      min-width: 0 !important;
+        font-size: 16px;
+        width: 30px;
+        min-width: 0 !important;
     }
-  }
+}

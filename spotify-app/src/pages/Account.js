@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Avatar,
     Button,
@@ -17,11 +17,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import axios from "axios";
 import Scrollbar from "react-scrollbars-custom";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import "../styles/account.css";
 
-const Account = ({ user, handleLogin, snackbar }) => {
+const Account = ({user, handleLogin, snackbar}) => {
 
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
@@ -112,7 +112,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
             if (response.status === 200) {
                 snackbar("Informazioni caricate correttamente", "success");
                 const setImageUrlUrl = `http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`;
-                let responseImage = await axios.post(setImageUrlUrl, { "fileUrl": response.data.fileUrl });
+                let responseImage = await axios.post(setImageUrlUrl, {"fileUrl": response.data.fileUrl});
 
                 if (responseImage.status === 200) {
                     snackbar("Immagine caricata correttamente", "success");
@@ -237,7 +237,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
         <><Container>
             <Grid container spacing={3}>
                 {/* Sezione Avatar */}
-                <Grid item xs={12} sm={4} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Grid item xs={12} sm={4} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                     <Avatar
                         style={{
                             width: "auto",
@@ -254,7 +254,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                         <DialogTitle>Modifica foto profilo</DialogTitle>
                         <DialogContent>
                             {/* File input for selecting a new image */}
-                            <input type="file" accept="image/*" onChange={handleChangeImage} />
+                            <input type="file" accept="image/*" onChange={handleChangeImage}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseDialog} color="primary">
@@ -277,19 +277,19 @@ const Account = ({ user, handleLogin, snackbar }) => {
                         label="Nome"
                         className="account-textfield"
                         value={name}
-                        onChange={(e) => setName(e.target.value)} />
+                        onChange={(e) => setName(e.target.value)}/>
                     <br></br>
                     <TextField
                         label="Cognome"
                         className="account-textfield"
                         value={surname}
-                        onChange={(e) => setSurname(e.target.value)} />
+                        onChange={(e) => setSurname(e.target.value)}/>
                     <br></br>
                     <TextField
                         label="Nome Profilo"
                         className="account-textfield"
                         value={profileName}
-                        onChange={(e) => setProfileName(e.target.value)} />
+                        onChange={(e) => setProfileName(e.target.value)}/>
                     <br></br>
                     <Button variant="contained" className="add-button" onClick={handleSaveInfo}>
                         Salva Modifiche
@@ -315,7 +315,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
                                     onClick={toggleShowOldPassword}
                                     edge="end"
                                 >
-                                    {showOldPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                    {showOldPassword ? <VisibilityIcon className="visible-icon"/> :
+                                        <VisibilityOffIcon className="visible-icon"/>}
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -336,7 +337,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
                                     onClick={toggleShowPassword}
                                     edge="end"
                                 >
-                                    {showPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                    {showPassword ? <VisibilityIcon className="visible-icon"/> :
+                                        <VisibilityOffIcon className="visible-icon"/>}
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -357,7 +359,8 @@ const Account = ({ user, handleLogin, snackbar }) => {
                                     onClick={toggleShowConfirmPassword}
                                     edge="end"
                                 >
-                                    {showConfirmPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                    {showConfirmPassword ? <VisibilityIcon className="visible-icon"/> :
+                                        <VisibilityOffIcon className="visible-icon"/>}
                                 </IconButton>
                             </InputAdornment>
                         ),
@@ -370,24 +373,24 @@ const Account = ({ user, handleLogin, snackbar }) => {
             </Grid>
             <br></br>
             <br></br>
-            <div style={{ height: "5vh" }}>
+            <div style={{height: "5vh"}}>
                 <TextField
                     label="Cerca generi musicali"
                     fullWidth
                     className='input'
                     onChange={(event) => {
                         updateGenres(event.target.value);
-                    }} />
+                    }}/>
             </div>
             <br></br>
             <br></br>
             <h2 className='subtitle'>Generi Musicali</h2>
             <br></br>
-            <Scrollbar style={{ height: '30vh' }}>
+            <Scrollbar style={{height: '30vh'}}>
                 <Grid container justifyContent="space-around">
                     {genres?.map((genre) => (
                         <Grid xs={2} item>
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
                                 <div
                                     className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
@@ -400,11 +403,11 @@ const Account = ({ user, handleLogin, snackbar }) => {
             <br></br>
             <h2 className='subtitle'>Generi Musicali Selezionati</h2>
             <br></br>
-            <Scrollbar style={{ height: '25vh' }}>
+            <Scrollbar style={{height: '25vh'}}>
                 <Grid container justifyContent="space-around">
                     {selectedGenres?.map((genre) => (
                         <Grid xs={2} item>
-                            <div onClick={() => handleGenreSelect(genre)} style={{ cursor: 'pointer' }}>
+                            <div onClick={() => handleGenreSelect(genre)} style={{cursor: 'pointer'}}>
                                 <div
                                     className={selectedGenres.some(g => g.id === genre.id) ? 'selected-genre-item' : 'genre-item'}>
                                     {genre.name}
@@ -414,7 +417,7 @@ const Account = ({ user, handleLogin, snackbar }) => {
                     ))}
                 </Grid>
             </Scrollbar>
-            <div style={{ height: '10vh' }}>
+            <div style={{height: '10vh'}}>
                 <Button
                     variant="contained"
                     fullWidth
