@@ -98,7 +98,7 @@ async function authenticateAndRenewToken() {
         // Imposta il nuovo token di accesso
         spotifyApi.setAccessToken(data.access_token);
       } else {
-        console.error("Impossibile ottenere il token di accesso.");
+        throw new Error("Failed to obtain access token");
       }
     }
 
@@ -457,7 +457,7 @@ app.get("/playlist/:id", authenticateApiKey, async (req, res) => {
     playlist[0].my_playlists.type = "private"
     playlist = playlist[0].my_playlists
   }
-  if(playlist)
+  if (playlist)
     res.json(playlist);
   else
     res.status(404).send("playlist inesistente")
@@ -594,11 +594,11 @@ app.post('/playlists/:playlistId/add-track', authenticateApiKey, async (req, res
 
     if (result.modifiedCount === 0) {
       return res.status(404).send({ message: 'Traccia già presente' });
-    } else{
+    } else {
       io.emit('playlistUpdated', { playlistId });
       res.status(200).send({ message: 'Traccia aggiunta alla playlist con successo' });
     }
-      
+
   } catch (error) {
     console.error('Errore durante l\'aggiunta della traccia alla playlist', error);
     res.status(500).send({ message: 'Si è verificato un errore interno' });
@@ -675,7 +675,7 @@ app.get("/searchTrack/:idTrack", authenticateApiKey, async (req, res) => {
   const id = req.query.id;
   var pwmClient = await new mongoClient(uri).connect();
   let userPlaylistsCursor;
-  if (id ?? '') {
+  if (id !== null && id !== undefined && id !== "undefined") {
     userPlaylistsCursor = await pwmClient
       .db("spotify")
       .collection("users")
@@ -803,14 +803,14 @@ app.post('/changeTag', authenticateApiKey, async (req, res) => {
     }
 
 
-    if (playlist.owner ?? "")
+    if (playlist.owner !== null && playlist.owner !== undefined && playlist.owner !== "undefined")
       await playlistsCollection.updateOne({ id: playlistId }, { $set: { tags: playlist.tags } });
     else
       await playlistsCollection.updateOne(
         { "my_playlists.id": playlistId },
         { $set: { "my_playlists.$.tags": playlist.tags } }
       );
-      io.emit('playlistUpdated', { playlistId });
+    io.emit('playlistUpdated', { playlistId });
     return res.status(200).json({ message: 'Tag updated successfully' });
 
 
@@ -963,7 +963,7 @@ app.put('/updatePlaylist', authenticateApiKey, async (req, res) => {
     }
 
     let response;
-    if (playlist.owner ?? "")
+    if (playlist.owner !== null && playlist.owner !== undefined && playlist.owner !== "undefined")
       response = await playlistsCollection.updateOne({ id: playlistId }, { $set: { name: name, description: description } });
     else
       response = await playlistsCollection.updateOne(
@@ -994,7 +994,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
   try {
 
     const pwmClient = await new mongoClient(uri).connect();
-    let insertedPlaylist, playlistToRemove
+    let insertedPlaylist, playlistToRemove, response
     // Trova e rimuovi la playlist dalla collezione "users"
     if (playlistType === 'private') {
 
@@ -1006,7 +1006,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
       let playlist = playlistToRemove[0].my_playlists
       if (playlist.id !== null) {
         // Rimuovi la playlist dalla collezione "users"
-        await pwmClient.db("spotify").collection("users").updateOne(
+        response = await pwmClient.db("spotify").collection("users").updateOne(
           { _id: new ObjectId(userId) },
           { $pull: { my_playlists: { id: playlistId } } }
         );
@@ -1127,11 +1127,6 @@ app.post("/changePassword", authenticateApiKey, async (req, res) => {
         { _id: new ObjectId(id) },
         { $set: { password: user.password } }
       )
-      if (update.modifiedCount === 1) {
-        res.status(200).json({ message: "Password cambiata con successo." });
-      } else {
-        res.status(500).json({ message: "Errore durante il cambio password." });
-      }
       res.status(200).json({ message: "Password cambiata con successo." });
     } else {
       res.status(400).json({ message: "Vecchia password errata." });
@@ -1147,33 +1142,22 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
   try {
     const pwmClient = await new mongoClient(uri).connect();
     const user = await pwmClient
-        .db("spotify").collection('users').findOneAndDelete({
-          _id: new ObjectId(userId),
-        });
+      .db("spotify").collection('users').findOneAndDelete({
+        _id: new ObjectId(userId),
+      });
+    await pwmClient.db("spotify").collection('public_playlists').updateMany(
+      { "followers": userId },
+      { $pull: { "followers": userId } }
+    )
+    await pwmClient.db("spotify").collection('public_playlists').deleteMany(
+      { "owner.id": userId }
+    )
 
-    // Verifica se l'eliminazione dell'utente è avvenuta con successo
-    if (user.value) {
-      await pwmClient.db("spotify").collection('public_playlists').updateMany(
-          { "followers": userId },
-          { $pull: { "followers": userId } }
-      );
-
-      await pwmClient.db("spotify").collection('public_playlists').deleteMany(
-          { "owner.id": userId }
-      );
-
-      res.status(200).json({ message: "Profilo eliminato con successo." });
-    } else {
-      // L'utente non è stato trovato o non è stato eliminato correttamente
-      res.status(404).json({ message: "Utente non trovato o errore nell'eliminazione del profilo." });
-    }
+    res.status(200).json({ message: "Profilo eliminato con successo." });
   } catch (error) {
-    // Gestisci eventuali errori durante l'esecuzione delle operazioni
-    console.error("Errore durante l'eliminazione del profilo:", error);
-    res.status(500).json({ message: "Si è verificato un errore durante l'eliminazione del profilo." });
+    res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });
   }
 });
-
 function ms_to_minute(milliseconds) {
   // Convert milliseconds to minutes and seconds
   const minutes = Math.floor(milliseconds / 60000);
@@ -1210,7 +1194,7 @@ function filterTrack(track) {
   return {
     id: track.id,
     name: track.name,
-    artists: track.artists.map((artist) => ({name: artist.name, id: artist.id})),
+    artists: track.artists.map((artist) => ({ name: artist.name, id: artist.id })),
     album: track.album.name,
     year: track.album.release_date.slice(0, 4),
     image: track.album.images[0]?.url,
@@ -1223,7 +1207,7 @@ function filterAlbum(album) {
   return {
     id: album.id,
     name: album.name,
-    artists: album.artists.map(artist => ({id: artist.id, name: artist.name})),
+    artists: album.artists.map(artist => ({ id: artist.id, name: artist.name })),
     year: album.release_date.slice(0, 4),
     image: album.images[0].url
   };
@@ -1233,13 +1217,13 @@ async function filterFullAlbum(album) {
   return {
     id: album.id,
     name: album.name,
-    artists: album.artists.map(artist => ({id: artist.id, name: artist.name})),
+    artists: album.artists.map(artist => ({ id: artist.id, name: artist.name })),
     release_date: album.release_date,
     image: album.images[0].url,
     tracks: await Promise.all(
-        album.tracks.items.map(async track => {
-          return await getTrack(track.id);
-        }))
+      album.tracks.items.map(async track => {
+        return await getTrack(track.id);
+      }))
   };
 }
 function filterArtist(artist) {
@@ -1333,7 +1317,7 @@ async function searchPlaylists(query, id) {
     var pwmClient = await new mongoClient(uri).connect();
     let userPlaylistsCursor;
     // Search for user playlists using aggregation
-    if (id ?? '') {
+    if (id !== null && id !== undefined && id !== "undefined") {
       userPlaylistsCursor = await pwmClient
         .db("spotify")
         .collection("users")
@@ -1376,7 +1360,7 @@ async function searchTrackNameInPlaylists(query, id) {
     var pwmClient = await new mongoClient(uri).connect();
     let userPlaylistsCursor;
     // Search for user playlists using aggregation
-    if (id ?? '') {
+    if (id !== null && id !== undefined && id !== "undefined") {
       userPlaylistsCursor = await pwmClient
         .db("spotify")
         .collection("users")
@@ -1420,7 +1404,7 @@ async function searchTags(query, id) {
 
     let userPlaylistsCursor
     // Search for user playlists using aggregation
-    if (id ?? '') {
+    if (id !== null && id !== undefined && id !== "undefined") {
       userPlaylistsCursor = await pwmClient
         .db("spotify")
         .collection("users")
@@ -1463,10 +1447,10 @@ async function searchUsers(query) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
     return await pwmClient
-        .db("spotify").collection('users')
-        .find({'profile_name': {$regex: query, $options: 'i'}})
-        .project({'profile_name': 1, '_id': 1, 'image': 1})
-        .toArray(); // Ritorna i risultati degli utenti
+      .db("spotify").collection('users')
+      .find({ 'profile_name': { $regex: query, $options: 'i' } })
+      .project({ 'profile_name': 1, '_id': 1, 'image': 1 })
+      .toArray(); // Ritorna i risultati degli utenti
   } catch (error) {
     console.error('Error searching users:', error);
     return []; // Ritorna un array vuoto in caso di errore
@@ -1477,10 +1461,10 @@ async function searchUsers(query) {
 async function getUser(id) {
   var pwmClient = await new mongoClient(uri).connect();
   return await pwmClient
-      .db("spotify")
-      .collection("users")
-      .find({_id: new ObjectId(id)})
-      .project({password: 0}).toArray();
+    .db("spotify")
+    .collection("users")
+    .find({ _id: new ObjectId(id) })
+    .project({ password: 0 }).toArray();
 }
 
 
