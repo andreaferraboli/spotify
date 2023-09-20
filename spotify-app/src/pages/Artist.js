@@ -46,7 +46,7 @@ const Artist = ({user, snackbar}) => {
 
     useEffect(() => {
         const fetchQuery = async () => {
-            if (query.trim() !== '' && query !== null) {
+            if (query.trim() !== '') {
                 try {
                     const response = await axios.get(`http://localhost:3100/searchTracksArtist/${artistId}/${query}?apikey=${apiKey}`);
                     if (response.status === 200) {
@@ -139,9 +139,12 @@ const Artist = ({user, snackbar}) => {
                         <Grid container spacing={2}>
                             <Typography variant="h4" style={{margin: "4%"}}>Top Tracks</Typography>
                             {tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} currentAudioElement={currentAudioElement}
-                                setCurrentAudioElement={setCurrentAudioElement}
-                                track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                       currentAudioElement={currentAudioElement}
+                                       setCurrentAudioElement={setCurrentAudioElement}
+                                       track={track} currentPlayingIndex={currentPlayingIndex}
+                                       setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                       snackbar={snackbar}></Track>
                             ))}
                         </Grid>
                     </div>

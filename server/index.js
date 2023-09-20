@@ -1,9 +1,6 @@
-const { ServerApiVersion } = require('mongodb');
 const mongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 const crypto = require("crypto");
-const fs = require('fs');
-const fsPromises = require('fs').promises;
 const express = require("express");
 const apiKey = "12345667654"
 const swaggerUi = require("swagger-ui-express");
@@ -160,11 +157,11 @@ app.get("/showUser/:id", authenticateApiKey, async function (req, res) {
 app.post("/login", authenticateApiKey, async (req, res) => {
   login = req.body;
 
-  if (login.email == undefined) {
+  if (login.email === undefined) {
     res.status(400).send("Missing Email");
     return;
   }
-  if (login.password == undefined) {
+  if (login.password === undefined) {
     res.status(400).send("Missing Password");
     return;
   }
@@ -248,7 +245,7 @@ app.post("/register", authenticateApiKey, async (req, res) => {
     res.status(201).send({ "userId": items.insertedId })
 
   } catch (e) {
-    if (e.code == 11000) {
+    if (e.code === 11000) {
       res.status(400).send("Utente già presente");
       return;
     }
@@ -918,8 +915,7 @@ app.put('/updateFavouriteArtists/:userId', authenticateApiKey, async (req, res) 
       }
     } else if (action === 'remove') {
       // Rimuovi l'artista se è presente nell'array
-      const filteredArtists = artists.filter(favoriteArtist => favoriteArtist.id !== artist.id);
-      artists = filteredArtists;
+      artists = artists.filter(favoriteArtist => favoriteArtist.id !== artist.id);
     } else {
       return res.status(400).send({ message: 'Azione non supportata' });
     }
@@ -1168,8 +1164,7 @@ function ms_to_minute(milliseconds) {
   const seconds = ((milliseconds % 60000) / 1000).toFixed(0);
 
   // Format the result as minutes:seconds
-  const formattedTime = `${minutes}:${seconds.padStart(2, "0")}`;
-  return formattedTime;
+  return `${minutes}:${seconds.padStart(2, "0")}`;
 }
 
 server.listen(3100, () => {
@@ -1196,10 +1191,10 @@ async function getFullTrack(id_track) {
   }
 }
 function filterTrack(track) {
-  const filteredTrack = {
+  return {
     id: track.id,
     name: track.name,
-    artists: track.artists.map((artist) => ({ name: artist.name, id: artist.id })),
+    artists: track.artists.map((artist) => ({name: artist.name, id: artist.id})),
     album: track.album.name,
     year: track.album.release_date.slice(0, 4),
     image: track.album.images[0]?.url,
@@ -1207,43 +1202,38 @@ function filterTrack(track) {
     popularity: track.popularity,
     preview_url: track.preview_url
   };
-  return filteredTrack;
 }
 function filterAlbum(album) {
-  const filteredAlbum = {
+  return {
     id: album.id,
     name: album.name,
-    artists: album.artists.map(artist => ({ id: artist.id, name: artist.name })),
+    artists: album.artists.map(artist => ({id: artist.id, name: artist.name})),
     year: album.release_date.slice(0, 4),
     image: album.images[0].url
   };
-  return filteredAlbum;
 }
 
 async function filterFullAlbum(album) {
-  const filteredAlbum = {
+  return {
     id: album.id,
     name: album.name,
-    artists: album.artists.map(artist => ({ id: artist.id, name: artist.name })),
+    artists: album.artists.map(artist => ({id: artist.id, name: artist.name})),
     release_date: album.release_date,
     image: album.images[0].url,
     tracks: await Promise.all(
-      album.tracks.items.map(async track => {
-        const detailedTrack = await getTrack(track.id);
-        return detailedTrack;
-      }))
+        album.tracks.items.map(async track => {
+          return await getTrack(track.id);
+        }))
   };
-  return filteredAlbum;
 }
 function filterArtist(artist) {
-  const filteredArtist = {
+  return {
     id: artist.id,
     name: artist.name,
     image: artist.images[0]?.url,
     popularity: artist.popularity,
     followers: artist.followers.total
   };
-  return filteredArtist;
 }
 async function getArtistNameFromId(id_artist) {
   try {
@@ -1253,22 +1243,6 @@ async function getArtistNameFromId(id_artist) {
     console.error(err);
     throw err;
   }
-}
-function getPlaylist(id_playlist) {
-  spotifyApi.getPlaylist(`${id_playlist}`).then(
-    function (data) {
-      let playlist = data.body;
-      playlist.tracks.items.forEach(async function (item) {
-        let track = await getTrack(item.track.id);
-        track.artist.forEach(async (artist) => {
-          const artistName = await getArtistNameFromId(artist);
-        });
-      });
-    },
-    function (err) {
-      console.error(err);
-    }
-  );
 }
 async function getAlbum(id_album) {
   let album = await spotifyApi.getAlbum(id_album);
@@ -1331,7 +1305,7 @@ async function searchTracks(query) {
       // If query is present in both or in neither, sort by popularity
       return b.popularity - a.popularity; // descending popularity order
     }
-  });;
+  });
 
 }
 async function searchAlbums(query) {
@@ -1375,9 +1349,7 @@ async function searchPlaylists(query, id) {
     }));
 
     // Combine user and public playlists
-    var allPlaylists = userPlaylists.concat(publicPlaylists);
-
-    return allPlaylists;
+    return userPlaylists.concat(publicPlaylists);
   } catch (error) {
     console.error('Error searching playlists:', error);
     return []; // Return an empty array in case of error
@@ -1419,9 +1391,7 @@ async function searchTrackNameInPlaylists(query, id) {
       type: "public"
     }));
     // Combine user and public playlists
-    var allPlaylists = userPlaylistsCursor.concat(publicPlaylistsCursor);
-
-    return allPlaylists;
+    return userPlaylistsCursor.concat(publicPlaylistsCursor);
   } catch (error) {
     console.error('Error searching playlists:', error);
     return []; // Return an empty array in case of error
@@ -1466,9 +1436,7 @@ async function searchTags(query, id) {
     }));
 
     // Combine user and public playlists
-    var allPlaylists = userPlaylists.concat(publicPlaylists);
-
-    return allPlaylists;
+    return userPlaylists.concat(publicPlaylists);
   } catch (error) {
     console.error('Error searching playlists:', error);
     return []; // Return an empty array in case of error
@@ -1478,13 +1446,11 @@ async function searchTags(query, id) {
 async function searchUsers(query) {
   try {
     var pwmClient = await new mongoClient(uri).connect();
-    const users = await pwmClient
-      .db("spotify").collection('users')
-      .find({ 'profile_name': { $regex: query, $options: 'i' } })
-      .project({ 'profile_name': 1, '_id': 1, 'image': 1 })
-      .toArray();
-
-    return users; // Ritorna i risultati degli utenti
+    return await pwmClient
+        .db("spotify").collection('users')
+        .find({'profile_name': {$regex: query, $options: 'i'}})
+        .project({'profile_name': 1, '_id': 1, 'image': 1})
+        .toArray(); // Ritorna i risultati degli utenti
   } catch (error) {
     console.error('Error searching users:', error);
     return []; // Ritorna un array vuoto in caso di errore
@@ -1494,28 +1460,11 @@ async function searchUsers(query) {
 
 async function getUser(id) {
   var pwmClient = await new mongoClient(uri).connect();
-  var user = await pwmClient
-    .db("spotify")
-    .collection("users")
-    .find({ _id: new ObjectId(id) })
-    .project({ password: 0 }).toArray();
-  return user;
+  return await pwmClient
+      .db("spotify")
+      .collection("users")
+      .find({_id: new ObjectId(id)})
+      .project({password: 0}).toArray();
 }
 
-function convertBase64ToPng(base64String, outputFilePath) {
-  try {
-    // Remove the data URL prefix and get the actual base64 data
-    const base64Data = base64String.replace(/^data:image\/png;base64,/, '');
-
-    // Convert base64 to binary data
-    const binaryData = Buffer.from(base64Data, 'base64');
-
-    // Write binary data to a PNG file
-    fs.writeFileSync(outputFilePath, binaryData);
-
-  } catch (error) {
-    console.error('Error converting and saving image:', error);
-  }
-}
-// Funzione per caricare un file su Firebase Cloud Storage
 

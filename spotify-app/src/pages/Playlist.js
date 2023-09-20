@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Track from "../components/track";
-import { Avatar, Button, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { AddCircleOutline } from '@mui/icons-material';
+import {Avatar, Button, Grid, IconButton, TextField, Typography} from "@mui/material";
+import {AddCircleOutline} from '@mui/icons-material';
 import Scrollbar from "react-scrollbars-custom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import io from 'socket.io-client';
@@ -22,8 +22,8 @@ export function formatDuration(milliseconds) {
     return `${hours} ore e ${minutes} minuti`;
 }
 
-const Playlist = ({ user, snackbar }) => {
-    const { playlistId } = useParams();
+const Playlist = ({user, snackbar}) => {
+    const {playlistId} = useParams();
     const [playlist, setPlaylist] = useState();
     const [editing, setEditing] = useState(false);
     const [isAddingTag, setIsAddingTag] = useState(false);
@@ -50,8 +50,7 @@ const Playlist = ({ user, snackbar }) => {
                 if (error.request.status === 404) {
                     snackbar(error.response.data, "error");
                     navigate("/")
-                }
-                else
+                } else
                     snackbar("Errore durante la richiesta:" + error, "error");
             }
         };
@@ -96,7 +95,7 @@ const Playlist = ({ user, snackbar }) => {
     const handleEditName = () => {
         const newName = prompt("Inserisci il nuovo nome della playlist:");
         if (newName) {
-            setPlaylist((prevPlaylist) => ({ ...prevPlaylist, name: newName }));
+            setPlaylist((prevPlaylist) => ({...prevPlaylist, name: newName}));
             updatePlaylistOnServer(newName, playlist.description);
         }
     };
@@ -104,7 +103,7 @@ const Playlist = ({ user, snackbar }) => {
     const handleDescriptionName = () => {
         const newDescription = prompt("Inserisci la nuova descrizione della playlist:");
         if (newDescription) {
-            setPlaylist((prevPlaylist) => ({ ...prevPlaylist, description: newDescription }));
+            setPlaylist((prevPlaylist) => ({...prevPlaylist, description: newDescription}));
             updatePlaylistOnServer(playlist.name, newDescription);
         }
     };
@@ -125,7 +124,7 @@ const Playlist = ({ user, snackbar }) => {
             })
             .catch(error => {
                 // Handle error
-                snackbar('Errore durante l\'aggiornamento della playlist', "error");
+                snackbar('Errore durante l\'aggiornamento della playlist:'+ error, "error");
             });
     };
 
@@ -150,7 +149,7 @@ const Playlist = ({ user, snackbar }) => {
 
     async function publishPlaylist() {
         const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
-        const requestData = { user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private' };
+        const requestData = {user_id: user._id, image: user.image, profile_name: user.profile_name, type: 'private'};
 
         try {
             const response = await axios.put(url, requestData);
@@ -167,7 +166,7 @@ const Playlist = ({ user, snackbar }) => {
 
     async function makePlaylistPrivate(playlist) {
         const url = `http://localhost:3100/movePlaylist/${playlist.id}?apikey=${apiKey}`;
-        const requestData = { user_id: user._id, type: 'public' };
+        const requestData = {user_id: user._id, type: 'public'};
 
         try {
             const response = await axios.put(url, requestData);
@@ -184,7 +183,7 @@ const Playlist = ({ user, snackbar }) => {
 
     const handleSetCollaborative = async (collaborative) => {
         try {
-            const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}?apikey=${apiKey}`, { "collaborative": collaborative });
+            const response = await axios.put(`http://localhost:3100/setCollaborative/${playlistId}?apikey=${apiKey}`, {"collaborative": collaborative});
 
             if (response.status === 200) {
                 snackbar(response.data.message, "success");
@@ -268,9 +267,9 @@ const Playlist = ({ user, snackbar }) => {
     };
     return (
         <>
-            <Grid container style={{ margin: 0 }} spacing={1}>
+            <Grid container style={{margin: 0}} spacing={1}>
                 <Grid item xs={12} sm={3}>
-                    <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image" />
+                    <img id="playlist_image" src={playlist?.image} alt="Playlist" className="playlist-image"/>
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
                     <div className="playlist-info-container vh20">
@@ -278,7 +277,8 @@ const Playlist = ({ user, snackbar }) => {
                             variant="body1">{playlist?.type === "private" ? "Playlist" : "Playlist Pubblica"}</Typography>
                     </div>
                     <div className="playlist-info-container vh30">
-                        <Typography className="playlist-name" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <Typography className="playlist-name"
+                                    style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
                             {playlist?.name}
 
 
@@ -287,12 +287,12 @@ const Playlist = ({ user, snackbar }) => {
 
                         {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
                             <IconButton onClick={handleEditName}>
-                                <EditIcon className="icon-button" />
+                                <EditIcon className="icon-button"/>
                             </IconButton>
                         ) : null}
                         {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
                             <IconButton onClick={handleDeletePlaylist}>
-                                <DeleteIcon className="icon-button" />
+                                <DeleteIcon className="icon-button"/>
                             </IconButton>
                         ) : null}
 
@@ -304,7 +304,7 @@ const Playlist = ({ user, snackbar }) => {
                         </Typography>
                         {playlist?.type === "private" || (playlist?.type === "public" && playlist.owner.id === user._id) ? (
                             <IconButton onClick={handleDescriptionName}>
-                                <EditIcon className="icon-button-small" />
+                                <EditIcon className="icon-button-small"/>
                             </IconButton>
                         ) : null}
                     </div>
@@ -366,7 +366,7 @@ const Playlist = ({ user, snackbar }) => {
                                         className="add-button"
                                         onClick={handleAddTag}
                                     >
-                                        <AddCircleOutline />
+                                        <AddCircleOutline/>
                                     </Button>
                                 )
                             )}
@@ -378,13 +378,13 @@ const Playlist = ({ user, snackbar }) => {
                             <Avatar
                                 src={user.image}
                                 alt={user.profile_name}
-                                style={{ marginRight: "10px" }}
+                                style={{marginRight: "10px"}}
                             />
                         ) : (
                             <Avatar
                                 src={playlist?.owner.image}
                                 alt={playlist?.owner.profile_name}
-                                style={{ marginRight: "10px" }}
+                                style={{marginRight: "10px"}}
                             />
                         )}
 
@@ -412,13 +412,13 @@ const Playlist = ({ user, snackbar }) => {
                 </Grid>
             </Grid>
             <div>
-                <Grid style={{ justifyContent: "flex-start", display: "flex" }} xs={12}>
+                <Grid style={{justifyContent: "flex-start", display: "flex"}} xs={12}>
                     <Typography variant="h4" className="title-section">
                         Tracks
                     </Typography>
                     {!editing && (
                         <>
-                            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                            <div style={{justifyContent: "center", display: "flex", alignItems: "center"}}>
                                 {user._id !== undefined && (playlist?.type === "private" || (playlist?.type === "public" && (playlist.collaborative === true || playlist.owner.id === user._id))) ? (
                                     <Button
                                         variant="outlined"
@@ -430,7 +430,7 @@ const Playlist = ({ user, snackbar }) => {
                                 ) : null}
 
                             </div>
-                            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                            <div style={{justifyContent: "center", display: "flex", alignItems: "center"}}>
                                 {playlist?.type === "private" ? (
                                     <Button
                                         variant="outlined"
@@ -452,7 +452,7 @@ const Playlist = ({ user, snackbar }) => {
                                 )}
 
                             </div>
-                            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                            <div style={{justifyContent: "center", display: "flex", alignItems: "center"}}>
                                 {playlist?.type === "public" && (playlist?.followers.includes(user._id) && playlist?.owner.id !== user._id) ? (
                                     <Button
                                         variant="outlined"
@@ -474,7 +474,7 @@ const Playlist = ({ user, snackbar }) => {
                                 )}
 
                             </div>
-                            <div style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+                            <div style={{justifyContent: "center", display: "flex", alignItems: "center"}}>
                                 {(playlist?.type === "public" && playlist.collaborative === false && playlist.owner.id === user._id) ? (
                                     <Button
                                         variant="outlined"
@@ -501,14 +501,17 @@ const Playlist = ({ user, snackbar }) => {
                 </Grid>
                 {editing ? (
                     <UpdatePlaylist user={user} playlist={playlist} snackbar={snackbar}
-                        onClose={() => setEditing(false)} />
+                                    onClose={() => setEditing(false)}/>
                 ) : (
                     <div className="top-tracks-section">
                         <Grid container spacing={2}>
                             {playlist?.tracks.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} currentAudioElement={currentAudioElement}
-                                    setCurrentAudioElement={setCurrentAudioElement}
-                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                       currentAudioElement={currentAudioElement}
+                                       setCurrentAudioElement={setCurrentAudioElement}
+                                       track={track} currentPlayingIndex={currentPlayingIndex}
+                                       setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                       snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

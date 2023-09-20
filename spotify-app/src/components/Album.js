@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import {Link} from "react-router-dom";
+import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 import "../styles/album.css"; // Importa il file CSS
 
-const Album = ({ album }) => {
+const Album = ({album}) => {
     return (
         <Card className="album-card">
-            <CardMedia className="album-image" component="img" image={album.image} alt={album.name} />
+            <CardMedia className="album-image" component="img" image={album.image} alt={album.name}/>
             <CardContent className="div-info-album">
                 <Typography variant="h6" className="album-name" style={{
                     overflow: "hidden",

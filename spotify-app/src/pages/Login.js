@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Button, Grid, TextField, Typography} from '@mui/material';
 import axios from 'axios';
 import "../styles/login.css";
 
@@ -69,7 +69,7 @@ const LoginPage = (props) => {
                             fullWidth
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="input" />
+                            className="input"/>
 
                         <TextField
                             label="Password"
@@ -78,7 +78,7 @@ const LoginPage = (props) => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="input" />
+                            className="input"/>
                         <Button
                             variant="contained"
                             fullWidth

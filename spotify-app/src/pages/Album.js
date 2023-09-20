@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useParams} from "react-router-dom";
 import Track from "../components/track";
-import { Grid, Typography, } from "@mui/material";
+import {Grid, Typography,} from "@mui/material";
 import axios from 'axios';
-import { formatDuration } from "./Playlist"
+import {formatDuration} from "./Playlist"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const Album = ({ user, snackbar }) => {
-    const { albumId } = useParams();
+const Album = ({user, snackbar}) => {
+    const {albumId} = useParams();
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
     const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const [album, setAlbum] = useState();
@@ -33,9 +33,9 @@ const Album = ({ user, snackbar }) => {
 
     return (
         <>
-            <Grid container style={{ margin: 0 }} spacing={1}>
+            <Grid container style={{margin: 0}} spacing={1}>
                 <Grid item xs={12} sm={3}>
-                    <img id="playlist_image" src={album?.image} alt="album" className="playlist-image" />
+                    <img id="playlist_image" src={album?.image} alt="album" className="playlist-image"/>
                 </Grid>
                 <Grid item xs={12} sm={9} className="info-section">
                     <div className="playlist-info-container vh33">
@@ -73,13 +73,16 @@ const Album = ({ user, snackbar }) => {
                         Tracks
                     </Typography>
                 </Grid>
-                <Grid container spacing={2} style={{ margin: 0 }}>
+                <Grid container spacing={2} style={{margin: 0}}>
                     <div className="top-tracks-section">
                         <Grid container spacing={2}>
                             {album?.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} currentAudioElement={currentAudioElement}
-                                    setCurrentAudioElement={setCurrentAudioElement}
-                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                       currentAudioElement={currentAudioElement}
+                                       setCurrentAudioElement={setCurrentAudioElement}
+                                       track={track} currentPlayingIndex={currentPlayingIndex}
+                                       setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                       snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

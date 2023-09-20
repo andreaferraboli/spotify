@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Grid, Menu, MenuItem, Typography } from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {Grid, Menu, MenuItem, Typography} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
@@ -11,35 +11,34 @@ const Track = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url));
-    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
 
     const navigate = useNavigate();
 
     const toggleAudio = () => {
         if (!props.track.preview_url) {
-          props.snackbar("Anteprima canzone non disponibile", "warning");
-          return;
+            props.snackbar("Anteprima canzone non disponibile", "warning");
+            return;
         }
-    
+
         if (props.currentPlayingIndex === props.index) {
-          // Se la traccia corrente è già in riproduzione, interrompi la riproduzione
-          props.currentAudioElement.pause();
-          setIsPlaying(false);
-          props.setCurrentPlayingIndex(null); // Aggiorna l'indice corrente a null
-          props.setCurrentAudioElement(null); // Imposta l'elemento audio corrente a null
-        } else {
-          // Se c'è un'altra traccia in riproduzione, interrompi la riproduzione
-          if (props.currentAudioElement) {
+            // Se la traccia corrente è già in riproduzione, interrompi la riproduzione
             props.currentAudioElement.pause();
-          }
-    
-          // Avvia la nuova traccia
-          audioElement.play();
-          setIsPlaying(true);
-          props.setCurrentPlayingIndex(props.index); // Imposta l'indice corrente
-          props.setCurrentAudioElement(audioElement); // Imposta l'elemento audio corrente
+            setIsPlaying(false);
+            props.setCurrentPlayingIndex(null); // Aggiorna l'indice corrente a null
+            props.setCurrentAudioElement(null); // Imposta l'elemento audio corrente a null
+        } else {
+            // Se c'è un'altra traccia in riproduzione, interrompi la riproduzione
+            if (props.currentAudioElement) {
+                props.currentAudioElement.pause();
+            }
+
+            // Avvia la nuova traccia
+            audioElement.play();
+            setIsPlaying(true);
+            props.setCurrentPlayingIndex(props.index); // Imposta l'indice corrente
+            props.setCurrentAudioElement(audioElement); // Imposta l'elemento audio corrente
         }
-      };
+    };
 
     useEffect(() => {
         setAudioElement(new Audio(props.track.preview_url));
@@ -80,28 +79,29 @@ const Track = (props) => {
     return (
         <>
             <Grid container spacing={1}
-                style={{ margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                className="track">
-                <Grid item xs={1} sm={1} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  style={{margin: 0, display: "flex", alignItems: "center", justifyContent: "center"}}
+                  className="track">
+                <Grid item xs={1} sm={1} style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
                     <Typography variant="body1">{props.index}</Typography>
                 </Grid>
                 <Grid xs={1} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
-                    <div className={`image-container ${isPlaying && props.currentPlayingIndex === props.index ? 'playing' : ''}`}
-                        style={{ backgroundImage: `url(${props.track.image})` }}>
+                    <div
+                        className={`image-container ${isPlaying && props.currentPlayingIndex === props.index ? 'playing' : ''}`}
+                        style={{backgroundImage: `url(${props.track.image})`}}>
                         {(isPlaying && props.currentPlayingIndex === props.index) ? (
                             <div className="play-icon-div">
                                 {isPlaying ? (
-                                    <PauseCircleOutlineIcon className="play-icon" />
+                                    <PauseCircleOutlineIcon className="play-icon"/>
                                 ) : (
-                                    <PlayCircleOutlineIcon className="play-icon" />
+                                    <PlayCircleOutlineIcon className="play-icon"/>
                                 )}
                             </div>
                         ) : null}
                     </div>
                 </Grid>
-                <Grid style={{ paddingLeft: "3%" }} xs={7} sm={7}>
+                <Grid style={{paddingLeft: "3%"}} xs={7} sm={7}>
                     <div className="div-info">
-                        <Typography className="song-title" >
+                        <Typography className="song-title">
                             <span key={props.track.id}>
                                 <Link to={`/track/${props.track.id}`}>{props.track.name}</Link>
                             </span>
@@ -123,7 +123,7 @@ const Track = (props) => {
                     <Typography variant="body2">{props.track.year}</Typography>
                 </Grid>
                 <Grid item xs={1} sm={1}>
-                    <MoreVertIcon onClick={handleMenuOpen} />
+                    <MoreVertIcon onClick={handleMenuOpen}/>
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
@@ -135,7 +135,7 @@ const Track = (props) => {
                             <MenuItem disabled className="menu-heading ">Aggiungi alla playlist:</MenuItem>
                             {props.userPlaylists?.map((playlist) => (
                                 <MenuItem className="menu-heading " key={playlist?.id}
-                                    onClick={() => handlePlaylistSelect(playlist?.id, playlist?.collaborative !== undefined ? "public" : "private")}>
+                                          onClick={() => handlePlaylistSelect(playlist?.id, playlist?.collaborative !== undefined ? "public" : "private")}>
                                     {playlist?.name}
                                 </MenuItem>
                             ))}

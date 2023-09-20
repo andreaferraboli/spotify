@@ -66,7 +66,7 @@
 @media screen and (max-width: 600px) {
   .song-title {
     font-size: 0.75rem !important; /* Regola la dimensione del titolo per smartphone */
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 
   .song-artists {

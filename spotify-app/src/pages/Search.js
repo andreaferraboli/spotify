@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import axios from 'axios';
 import Track from '../components/track';
 import PlaylistCard from '../components/PlaylistCard';
@@ -16,22 +16,22 @@ import "../styles/search.css";
 export const responsive = {
     superLargeDesktop: {
         // the naming can be any, depends on you.
-        breakpoint: { max: 4000, min: 3000 },
+        breakpoint: {max: 4000, min: 3000},
         items: 6,
         slidesToSlide: 2
     },
     desktop: {
-        breakpoint: { max: 3000, min: 1024 },
+        breakpoint: {max: 3000, min: 1024},
         items: 4,
         slidesToSlide: 4 // optional, default to 1.
     },
     tablet: {
-        breakpoint: { max: 1024, min: 464 },
+        breakpoint: {max: 1024, min: 464},
         items: 2,
         slidesToSlide: 1 // optional, default to 1.
     },
     mobile: {
-        breakpoint: { max: 464, min: 0 },
+        breakpoint: {max: 464, min: 0},
         items: 1,
         slidesToSlide: 1 // optional, default to 1.
     }
@@ -39,29 +39,29 @@ export const responsive = {
 export const responsiveArtist = {
     superLargeDesktop: {
         // the naming can be any, depends on you.
-        breakpoint: { max: 4000, min: 3000 },
+        breakpoint: {max: 4000, min: 3000},
         items: 8,
         slidesToSlide: 3
     },
     desktop: {
-        breakpoint: { max: 3000, min: 1024 },
+        breakpoint: {max: 3000, min: 1024},
         items: 6,
         slidesToSlide: 2 // optional, default to 1.
     },
     tablet: {
-        breakpoint: { max: 1024, min: 464 },
+        breakpoint: {max: 1024, min: 464},
         items: 2,
         slidesToSlide: 1 // optional, default to 1.
     },
     mobile: {
-        breakpoint: { max: 464, min: 0 },
+        breakpoint: {max: 464, min: 0},
         items: 2,
         slidesToSlide: 1 // optional, default to 1.
     }
 };
 
-export default function SearchResults({ user, snackbar }) {
-    const { query } = useParams(); // Preleva la query dall'URL
+export default function SearchResults({user, snackbar}) {
+    const {query} = useParams(); // Preleva la query dall'URL
     const [searchResults, setSearchResults] = useState(null);
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
     const [currentAudioElement, setCurrentAudioElement] = useState(null);
@@ -70,7 +70,7 @@ export default function SearchResults({ user, snackbar }) {
 
     useEffect(() => {
         setSearchResults(null);
-    
+
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`);
@@ -79,11 +79,11 @@ export default function SearchResults({ user, snackbar }) {
                 snackbar('Error fetching search results:' + error, "error");
             }
         };
-    
+
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query, apiKey, user._id]);
-    
+
 
     return (
         <div>
@@ -94,12 +94,15 @@ export default function SearchResults({ user, snackbar }) {
                     {searchResults.tracks && searchResults.tracks.length > 0 && (
                         <h2>Brani</h2>
                     )}
-                    <div style={{ height: '50vh', padding: " 0 0 0 20px" }}>
+                    <div style={{height: '50vh', padding: " 0 0 0 20px"}}>
                         <Scrollbar>
                             {searchResults.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
-                                setCurrentAudioElement={setCurrentAudioElement}
-                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                       currentAudioElement={currentAudioElement}
+                                       setCurrentAudioElement={setCurrentAudioElement}
+                                       track={track} currentPlayingIndex={currentPlayingIndex}
+                                       setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                       snackbar={snackbar}></Track>
                             ))}
                         </Scrollbar>
                     </div>
@@ -109,11 +112,11 @@ export default function SearchResults({ user, snackbar }) {
                         <>
                             <h2>Album</h2>
                             <Carousel showDots={true} itemClass="carousel-item-album"
-                                containerClass="carousel-container" responsive={responsive}>
+                                      containerClass="carousel-container" responsive={responsive}>
 
                                 {searchResults.albums?.map(album => (
                                     <Link key={album.id} to={`/album/${album.id}`}>
-                                        <Album album={album} />
+                                        <Album album={album}/>
                                     </Link>
                                 ))}
                             </Carousel></>
@@ -136,12 +139,11 @@ export default function SearchResults({ user, snackbar }) {
                                             owner={playlist.type === "public"
                                                 ? `${playlist.owner.profile_name} • pubblica`
                                                 : user.profile_name}
-                                            selectedPlaylistId={null} />
+                                            selectedPlaylistId={null}/>
                                     </Link>
                                 ))}
                             </Carousel></>
                     )}
-                    {console.log(searchResults?.playlistWithSong)}
                     {searchResults?.playlistWithSong && searchResults.playlistWithSong?.length > 0 && (
                         <>
                             <h2>Playlist che contengono una canzone "{query}"</h2>
@@ -158,7 +160,7 @@ export default function SearchResults({ user, snackbar }) {
                                             owner={playlist.type === "public"
                                                 ? `${playlist.owner.profile_name} • pubblica`
                                                 : user.profile_name}
-                                            selectedPlaylistId={null} />
+                                            selectedPlaylistId={null}/>
                                     </Link>
                                 ))}
                             </Carousel></>
@@ -169,12 +171,12 @@ export default function SearchResults({ user, snackbar }) {
                         <>
                             <h2>Artisti</h2>
                             <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container"
-                                responsive={responsive}>
+                                      responsive={responsive}>
                                 {searchResults.artists?.map(artist => (
                                     <Link key={artist.id} to={`/artist/${artist.id}`}>
                                         <ArtistCard
                                             artist={artist}
-                                            selectedArtistId={""} />
+                                            selectedArtistId={""}/>
                                     </Link>
 
                                 ))}
@@ -185,11 +187,11 @@ export default function SearchResults({ user, snackbar }) {
                         <>
                             <h2>Utenti</h2>
                             <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container"
-                                responsive={responsive}>
+                                      responsive={responsive}>
                                 {searchResults.users?.map(user => (
                                     <Link key={user._id} to={`/user/${user._id}`}>
                                         <UserCard
-                                            user={user} />
+                                            user={user}/>
                                     </Link>
 
                                 ))}
@@ -200,7 +202,7 @@ export default function SearchResults({ user, snackbar }) {
 
                             <h2>Tags</h2>
                             <Carousel showDots={true} itemClass="carousel-item" containerClass="carousel-container"
-                                responsive={responsive}>
+                                      responsive={responsive}>
                                 {searchResults.tags?.map(playlist => (
                                     <Link key={playlist.id} to={`/playlist/${playlist.id}`}>
                                         <PlaylistCard
@@ -208,7 +210,7 @@ export default function SearchResults({ user, snackbar }) {
                                             owner={playlist.type === "public"
                                                 ? `${playlist.owner.profile_name} • pubblica`
                                                 : user.profile_name}
-                                            selectedPlaylistId={null} />
+                                            selectedPlaylistId={null}/>
                                     </Link>
                                 ))}
                             </Carousel></>
@@ -217,15 +219,15 @@ export default function SearchResults({ user, snackbar }) {
             ) : (
                 <div>
                     <h2>Brani</h2>
-                    <div style={{ padding: "0 20px" }}>
-                        <TrackSkeleton />
-                        <TrackSkeleton />
-                        <TrackSkeleton />
-                        <TrackSkeleton />
+                    <div style={{padding: "0 20px"}}>
+                        <TrackSkeleton/>
+                        <TrackSkeleton/>
+                        <TrackSkeleton/>
+                        <TrackSkeleton/>
                     </div>
                     <h2>Album</h2>
                     <Carousel showDots={true} itemClass="carousel-item-album"
-                        containerClass="carousel-container" responsive={responsive}>
+                              containerClass="carousel-container" responsive={responsive}>
                         <AlbumSkeleton></AlbumSkeleton>
                         <AlbumSkeleton></AlbumSkeleton>
                         <AlbumSkeleton></AlbumSkeleton>

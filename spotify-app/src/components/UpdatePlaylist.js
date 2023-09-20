@@ -178,20 +178,25 @@ function UpdatePlaylist({playlist, user, snackbar}) {
                 <Button className='save-changes' variant="contained" color="primary" onClick={handleSaveChanges}>
                     Salva modifiche
                 </Button>
-                <Button className='cancel-changes' variant="contained" color="primary" onClick={()=>{window.location.reload()}}>
+                <Button className='cancel-changes' variant="contained" color="primary" onClick={() => {
+                    window.location.reload()
+                }}>
                     Annulla modifiche
                 </Button>
             </div>
 
             {searchResults.length > 0 ? (
                 <Grid container spacing={2}>
-                    {searchResults.map((track,index) => (
+                    {searchResults.map((track, index) => (
                         <React.Fragment key={track.id}>
                             <Grid item xs={10}>
                                 <div>
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
-                                setCurrentAudioElement={setCurrentAudioElement}
-                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                    <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                           currentAudioElement={currentAudioElement}
+                                           setCurrentAudioElement={setCurrentAudioElement}
+                                           track={track} currentPlayingIndex={currentPlayingIndex}
+                                           setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                           snackbar={snackbar}></Track>
                                 </div>
                             </Grid>
                             <Grid item xs={2} style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
@@ -213,9 +218,12 @@ function UpdatePlaylist({playlist, user, snackbar}) {
                         <>
                             <Grid item xs={10}>
                                 <div className="track-item">
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
-                                setCurrentAudioElement={setCurrentAudioElement}
-                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
+                                    <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                           currentAudioElement={currentAudioElement}
+                                           setCurrentAudioElement={setCurrentAudioElement}
+                                           track={track} currentPlayingIndex={currentPlayingIndex}
+                                           setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
+                                           snackbar={snackbar}></Track>
                                 </div>
                             </Grid>
                             <Grid style={{

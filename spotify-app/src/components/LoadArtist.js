@@ -77,7 +77,7 @@ const LoadArtist = (props) => {
                 props.register();
             }
         } catch (error) {
-            isRegistrationInProgress = false;
+            setIsRegistrationInProgress(false);
             props.snackbar("Errore durante la registrazione: " + error, "error");
             // Handle the error in some way
         }

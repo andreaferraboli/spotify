@@ -15,7 +15,7 @@ body,
   border-radius: 8px;
   margin-left: 25% !important;
   margin-right: 25% !important;
-  margin-top: 0% !important;
+  margin-top: 0 !important;
   width: 50% !important;
   height: 100vh !important;
   justify-content: center !important;
@@ -140,8 +140,8 @@ body,
 @media screen and (max-width: 600px) {
   .container {
     width: 100% !important;
-    margin-left: 0% !important;
-  margin-right: 0% !important;
+    margin-left: 0 !important;
+  margin-right: 0 !important;
   }
 }
 

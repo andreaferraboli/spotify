@@ -34,7 +34,7 @@ export default function Library({user, snackbar}) {
             {user?.my_playlists?.length > 0 && (
                 <div className='home-section'>
                     <h2>Le mie PLAYLIST</h2>
-                    <Grid container spacing={2} style={{marginLeft:"0px"}}>
+                    <Grid container spacing={2} style={{marginLeft: "0px"}}>
                         {user.my_playlists.map((playlist) => (
                             <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                 <Link to={`/playlist/${playlist.id}`}>
@@ -54,7 +54,7 @@ export default function Library({user, snackbar}) {
             {followed_playlists?.length > 0 && (
                 <div className='home-section'>
                     <h2>Playlist che segui</h2>
-                    <Grid container spacing={2} style={{marginLeft:"0px"}}>
+                    <Grid container spacing={2} style={{marginLeft: "0px"}}>
                         {followed_playlists.map((playlist) => (
                             <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                 <Link to={`/playlist/${playlist.id}`}>
@@ -74,7 +74,7 @@ export default function Library({user, snackbar}) {
             {your_public_playlists?.length > 0 && (
                 <div className='home-section'>
                     <h2>Playlist pubbliche create da te</h2>
-                    <Grid container spacing={2} style={{marginLeft:"0px"}}>
+                    <Grid container spacing={2} style={{marginLeft: "0px"}}>
                         {your_public_playlists.map((playlist) => (
                             <Grid key={playlist.id} item xs={12} sm={6} md={4} lg={3}>
                                 <Link to={`/playlist/${playlist.id}`}>
