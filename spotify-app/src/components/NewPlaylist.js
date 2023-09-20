@@ -21,6 +21,8 @@ function NewPlaylist({ user, snackbar }) {
     });
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
     useEffect(() => {
         async function fetchPlaylistId() {
@@ -116,6 +118,9 @@ function NewPlaylist({ user, snackbar }) {
             // Se la traccia è già presente, puoi gestire questa situazione come preferisci
             snackbar('La traccia è già presente nella playlist.', "error");
         }
+        currentAudioElement.pause();
+        setCurrentAudioElement(null);
+        setCurrentPlayingIndex(null);
     };
 
 
@@ -263,11 +268,13 @@ function NewPlaylist({ user, snackbar }) {
 
                 {searchResults.length > 0 ? (
                     <Grid container spacing={2}>
-                        {searchResults.map((track) => (
+                        {searchResults.map((track,index) => (
                             <React.Fragment key={track.id}>
                                 <Grid item xs={10}>
                                     <div>
-                                        <Track track={track} snackbar={snackbar} />
+                                    <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
+                                setCurrentAudioElement={setCurrentAudioElement}
+                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
                                     </div>
                                 </Grid>
                                 <Grid item xs={2}
@@ -289,11 +296,10 @@ function NewPlaylist({ user, snackbar }) {
                         {localPlaylist?.tracks?.map((track, index) => (
                             <><Grid item xs={10}>
                                 <div className="track-item">
-                                    <Track
-                                        userPlaylists={user.my_playlists.concat(user.playlists)}
-                                        track={track}
-                                        index={index + 1}
-                                        snackbar={snackbar} />
+                                    
+                                         <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
+                                         setCurrentAudioElement={setCurrentAudioElement}
+                                             track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track> 
                                 </div>
                             </Grid>
                                 <Grid style={{

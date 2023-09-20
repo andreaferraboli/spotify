@@ -14,6 +14,8 @@ const Artist = ({user, snackbar}) => {
     const [artist, setArtist] = useState([{}]);
     const [query, setQuery] = useState("");
     const [tracks, setTracks] = useState([]);
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
@@ -137,8 +139,9 @@ const Artist = ({user, snackbar}) => {
                         <Grid container spacing={2}>
                             <Typography variant="h4" style={{margin: "4%"}}>Top Tracks</Typography>
                             {tracks?.map((track, index) => (
-                                <Track userPlaylists={user.my_playlists.concat(user.playlists)} key={track.id}
-                                       track={track} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} currentAudioElement={currentAudioElement}
+                                setCurrentAudioElement={setCurrentAudioElement}
+                                track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
                             ))}
                         </Grid>
                     </div>

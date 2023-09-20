@@ -12,6 +12,8 @@ function UpdatePlaylist({playlist, user, snackbar}) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState(playlist); // Inizializza con l'ID corretto della playlist
     const [searchValue, setSearchValue] = useState('');
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
     const handleSearch = async (query) => {
@@ -37,6 +39,9 @@ function UpdatePlaylist({playlist, user, snackbar}) {
 
     useEffect(() => {
         createImageCollage(localPlaylist.tracks.map((track) => track.image));
+        currentAudioElement?.pause();
+        setCurrentAudioElement(null);
+        setCurrentPlayingIndex(null);
     }, [localPlaylist.tracks]);
     // Funzione per spostare una traccia in alto nell'array
     const handleMoveTrackUp = (currentIndex) => {
@@ -180,11 +185,13 @@ function UpdatePlaylist({playlist, user, snackbar}) {
 
             {searchResults.length > 0 ? (
                 <Grid container spacing={2}>
-                    {searchResults.map((track) => (
+                    {searchResults.map((track,index) => (
                         <React.Fragment key={track.id}>
                             <Grid item xs={10}>
                                 <div>
-                                    <Track track={track} snackbar={snackbar}/>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
+                                setCurrentAudioElement={setCurrentAudioElement}
+                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
                                 </div>
                             </Grid>
                             <Grid item xs={2} style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
@@ -206,11 +213,9 @@ function UpdatePlaylist({playlist, user, snackbar}) {
                         <>
                             <Grid item xs={10}>
                                 <div className="track-item">
-                                    <Track
-                                        userPlaylists={user.my_playlists.concat(user.playlists)}
-                                        track={track}
-                                        index={index + 1}
-                                        snackbar={snackbar}/>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
+                                setCurrentAudioElement={setCurrentAudioElement}
+                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
                                 </div>
                             </Grid>
                             <Grid style={{

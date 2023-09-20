@@ -3,48 +3,46 @@ import { Link, useNavigate } from "react-router-dom";
 import { Grid, Menu, MenuItem, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import axios from 'axios';
 import "../styles/track.css";
 
-let currentAudioElement = null;
-let currentPlayingIndex= null;
 const Track = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioElement, setAudioElement] = useState(new Audio(props.track.preview_url));
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
 
     const navigate = useNavigate();
+
     const toggleAudio = () => {
         if (!props.track.preview_url) {
-            props.snackbar("Anteprima canzone non disponibile", "warning");
-            return;
+          props.snackbar("Anteprima canzone non disponibile", "warning");
+          return;
         }
-
-        // Se c'è un elemento audio corrente, interrompilo
-        if (currentAudioElement) {
-            console.log("current audio", currentAudioElement)
-            currentAudioElement.pause();
-        }
-
-        // Crea un nuovo elemento audio con la nuova URL della canzone
-        const audioElement = new Audio(props.track.preview_url);
-
-        // Imposta l'elemento audio corrente sulla variabile globale
-        currentAudioElement = audioElement;
-        console.log("current audio dopo set",currentAudioElement)
-
-        if (isPlaying) {
-            audioElement.pause();
+    
+        if (props.currentPlayingIndex === props.index) {
+          // Se la traccia corrente è già in riproduzione, interrompi la riproduzione
+          props.currentAudioElement.pause();
+          setIsPlaying(false);
+          props.setCurrentPlayingIndex(null); // Aggiorna l'indice corrente a null
+          props.setCurrentAudioElement(null); // Imposta l'elemento audio corrente a null
         } else {
-            audioElement.play();
+          // Se c'è un'altra traccia in riproduzione, interrompi la riproduzione
+          if (props.currentAudioElement) {
+            props.currentAudioElement.pause();
+          }
+    
+          // Avvia la nuova traccia
+          audioElement.play();
+          setIsPlaying(true);
+          props.setCurrentPlayingIndex(props.index); // Imposta l'indice corrente
+          props.setCurrentAudioElement(audioElement); // Imposta l'elemento audio corrente
         }
-
-        setIsPlaying(!isPlaying);
-    };
+      };
 
     useEffect(() => {
         setAudioElement(new Audio(props.track.preview_url));
-
     }, [props.track.preview_url]);
 
     const handleMenuOpen = (event) => {
@@ -88,11 +86,15 @@ const Track = (props) => {
                     <Typography variant="body1">{props.index}</Typography>
                 </Grid>
                 <Grid xs={1} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
-                    <div className={`image-container ${isPlaying ? 'playing' : ''}`}
+                    <div className={`image-container ${isPlaying && props.currentPlayingIndex === props.index ? 'playing' : ''}`}
                         style={{ backgroundImage: `url(${props.track.image})` }}>
-                        {isPlaying && props.index === currentPlayingIndex ? (
+                        {(isPlaying && props.currentPlayingIndex === props.index) ? (
                             <div className="play-icon-div">
-                                <PlayCircleOutlineIcon className="play-icon" />
+                                {isPlaying ? (
+                                    <PauseCircleOutlineIcon className="play-icon" />
+                                ) : (
+                                    <PlayCircleOutlineIcon className="play-icon" />
+                                )}
                             </div>
                         ) : null}
                     </div>
@@ -126,7 +128,6 @@ const Track = (props) => {
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleMenuClose}
-
                     >
                         <div className="custom-menu">
                             <MenuItem className="menu-heading " onClick={() => searchTrack(props.track.id)}>Cerca nelle
@@ -139,7 +140,6 @@ const Track = (props) => {
                                 </MenuItem>
                             ))}
                         </div>
-
                     </Menu>
                 </Grid>
             </Grid>
@@ -149,7 +149,6 @@ const Track = (props) => {
 
 export default Track;
 
-// Funzione per formattare la durata in minuti e secondi
 export const formatDuration = (duration) => {
     const minutes = Math.floor(duration / 60000);
     const seconds = ((duration % 60000) / 1000).toFixed(0);

@@ -28,7 +28,8 @@ const Playlist = ({ user, snackbar }) => {
     const [editing, setEditing] = useState(false);
     const [isAddingTag, setIsAddingTag] = useState(false);
     const [newTag, setNewTag] = useState('');
-
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
     const navigate = useNavigate();
@@ -505,8 +506,9 @@ const Playlist = ({ user, snackbar }) => {
                     <div className="top-tracks-section">
                         <Grid container spacing={2}>
                             {playlist?.tracks.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
-                                    track={track} index={index + 1} snackbar={snackbar}></Track>
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)} currentAudioElement={currentAudioElement}
+                                    setCurrentAudioElement={setCurrentAudioElement}
+                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
 
                             ))}
                         </Grid>

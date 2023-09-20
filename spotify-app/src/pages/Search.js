@@ -63,20 +63,27 @@ export const responsiveArtist = {
 export default function SearchResults({ user, snackbar }) {
     const { query } = useParams(); // Preleva la query dall'URL
     const [searchResults, setSearchResults] = useState(null);
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
 
     const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
-        setSearchResults(null)
-        // Invia la richiesta al server con l'API key nell'URL come query parameter
-        axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`)
-            .then(response => {
+        setSearchResults(null);
+    
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3100/search/${query}?id=${user._id}&apikey=${apiKey}`);
                 setSearchResults(response.data);
-            })
-            .catch(error => {
+            } catch (error) {
                 snackbar('Error fetching search results:' + error, "error");
-            });
-    }, [query, apiKey, snackbar, user._id]);
+            }
+        };
+    
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query, apiKey, user._id]);
+    
 
     return (
         <div>
@@ -90,7 +97,9 @@ export default function SearchResults({ user, snackbar }) {
                     <div style={{ height: '50vh', padding: " 0 0 0 20px" }}>
                         <Scrollbar>
                             {searchResults.tracks?.map((track, index) => (
-                                <Track track={track} index={index + 1} />
+                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}  currentAudioElement={currentAudioElement}
+                                setCurrentAudioElement={setCurrentAudioElement}
+                                    track={track} currentPlayingIndex={currentPlayingIndex} setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1} snackbar={snackbar}></Track>
                             ))}
                         </Scrollbar>
                     </div>
