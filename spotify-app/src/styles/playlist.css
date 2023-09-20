@@ -86,40 +86,50 @@
   .input-new-playlist{
     width: 40% !important;
   }
-  .input-playlist,.input-new-playlist, .input-add-tags {
-    & input {
-      color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
-    }
-    & label {
-      color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del testo di default (label) */
-      &.MuiInputLabel-shrink {
-        color: var(
-          --text-color
-        ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
-      }
-    }
-    & .MuiOutlinedInput-notchedOutline {
-      border-color: var(--text-color);
-      border-radius: 500px; /* Cambia il colore del bordo dell'input */
-    }
-    & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-      border-color: var(
-        --text-color
-      ); /* Cambia il colore del bordo quando l'input è in hover */
-    }
-    & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: var(
-        --text-color
-      ); /* Cambia il colore del bordo quando l'input ha il focus */
-    }
-    & .MuiFormHelperText-root {
-      color: var(
-        --text-color
-      ); /* Cambia il colore del testo dell'helper text (se presente) */
-    }
-  }
+  .input-playlist input,
+.input-new-playlist input,
+.input-add-tags input {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
+}
+
+.input-playlist label,
+.input-new-playlist label,
+.input-add-tags label {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo di default (label) */
+}
+
+.input-playlist label.MuiInputLabel-shrink,
+.input-new-playlist label.MuiInputLabel-shrink,
+.input-add-tags label.MuiInputLabel-shrink {
+  color: var(--text-color); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+}
+
+.input-playlist .MuiOutlinedInput-notchedOutline,
+.input-new-playlist .MuiOutlinedInput-notchedOutline,
+.input-add-tags .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del bordo dell'input */
+}
+
+.input-playlist .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.input-new-playlist .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.input-add-tags .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input è in hover */
+}
+
+.input-playlist .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.input-new-playlist .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.input-add-tags .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input ha il focus */
+}
+
+.input-playlist .MuiFormHelperText-root,
+.input-new-playlist .MuiFormHelperText-root,
+.input-add-tags .MuiFormHelperText-root {
+  color: var(--text-color); /* Cambia il colore del testo dell'helper text (se presente) */
+}
 
   .css-mhc70k-MuiGrid-root {
     margin-top: 0 !important;

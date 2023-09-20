@@ -50,40 +50,37 @@ body,
   border-radius: 500px;
   background-color: var(--background-color);
 }
-.input {
-  & input {
-    color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
-  }
-  & label {
-    color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del testo di default (label) */
-    &.MuiInputLabel-shrink {
-      color: var(
-        --text-color
-      ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
-    }
-  }
-  & .MuiOutlinedInput-notchedOutline {
-    border-color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del bordo dell'input */
-  }
-  & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(
-      --text-color
-    ); /* Cambia il colore del bordo quando l'input è in hover */
-  }
-  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(
-      --text-color
-    ); /* Cambia il colore del bordo quando l'input ha il focus */
-  }
-  & .MuiFormHelperText-root {
-    color: var(
-      --text-color
-    ); /* Cambia il colore del testo dell'helper text (se presente) */
-  }
+.input input {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
 }
+
+.input label {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo di default (label) */
+}
+
+.input label.MuiInputLabel-shrink {
+  color: var(--text-color); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+}
+
+.input .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del bordo dell'input */
+}
+
+.input .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input è in hover */
+}
+
+.input .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input ha il focus */
+}
+
+.input .MuiFormHelperText-root {
+  color: var(--text-color); /* Cambia il colore del testo dell'helper text (se presente) */
+}
+
 .MuiGrid-item {
   padding-left: 0 !important;
 }

@@ -1,37 +1,34 @@
-.account-textfield {
-  & input {
-    color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
-  }
-  & label {
-    color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del testo di default (label) */
-    &.MuiInputLabel-shrink {
-      color: var(
-        --text-color
-      ); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
-    }
-  }
-  & .MuiOutlinedInput-notchedOutline {
-    border-color: var(--text-color);
-    border-radius: 500px; /* Cambia il colore del bordo dell'input */
-  }
-  & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: var(
-      --text-color
-    ); /* Cambia il colore del bordo quando l'input è in hover */
-  }
-  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: var(
-      --text-color
-    ); /* Cambia il colore del bordo quando l'input ha il focus */
-  }
-  & .MuiFormHelperText-root {
-    color: var(
-      --text-color
-    ); /* Cambia il colore del testo dell'helper text (se presente) */
-  }
+.account-textfield input {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo all'interno dell'input */
 }
+
+.account-textfield label {
+  color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del testo di default (label) */
+}
+
+.account-textfield label.MuiInputLabel-shrink {
+  color: var(--text-color); /* Cambia il colore del label quando è shrink (quando l'utente scrive nell'input) */
+}
+
+.account-textfield .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color);
+  border-radius: 500px; /* Cambia il colore del bordo dell'input */
+}
+
+.account-textfield .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input è in hover */
+}
+
+.account-textfield .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color); /* Cambia il colore del bordo quando l'input ha il focus */
+}
+
+.account-textfield .MuiFormHelperText-root {
+  color: var(--text-color); /* Cambia il colore del testo dell'helper text (se presente) */
+}
+
 
 .button-container {
   display: flex;
