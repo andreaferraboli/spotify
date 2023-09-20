@@ -118,7 +118,7 @@ function NewPlaylist({user, snackbar}) {
             // Se la traccia è già presente, puoi gestire questa situazione come preferisci
             snackbar('La traccia è già presente nella playlist.', "error");
         }
-        currentAudioElement.pause();
+        currentAudioElement?.pause();
         setCurrentAudioElement(null);
         setCurrentPlayingIndex(null);
     };
