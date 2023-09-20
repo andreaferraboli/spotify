@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {Button, Grid, TextField, Typography} from '@mui/material';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import LoadArtist from "../components/LoadArtist"
 import LoadGenres from "../components/LoadGenres"
 
 import "../styles/login.css"; // Importa il file CSS con gli stili personalizzati
 
-const RegisterPage = ({snackbar}) => {
+const RegisterPage = ({ snackbar }) => {
     const [userId, setUserId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -70,7 +70,7 @@ const RegisterPage = ({snackbar}) => {
 
             if (response.status === 200) {
                 snackbar("informazioni caricate correttamente", "success")
-                const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, {"fileUrl": response.data.fileUrl})
+                const responseImage = await axios.post(`http://localhost:3100/setUserImage/${userId}?apikey=${apiKey}`, { "fileUrl": response.data.fileUrl })
                 if (responseImage.status === 200) {
                     snackbar("immagine caricata correttamente", "success")
                 } else {
@@ -135,7 +135,7 @@ const RegisterPage = ({snackbar}) => {
         <>
             <div className='background'>
                 {loadGenres ? (
-                    <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={snackbar}/>
+                    <LoadGenres setFavouriteGenres={setFavouriteGenres} loadArtist={loadedArtist} snackbar={snackbar} />
                 ) : loadArtist ? (
                     <LoadArtist
                         favouriteGenres={favouriteGenres}
@@ -145,7 +145,7 @@ const RegisterPage = ({snackbar}) => {
                         snackbar={snackbar}
                     ></LoadArtist>
                 ) : (
-                    <><Grid container direction="column" alignItems="center" spacing={3} className="container">
+                    <><Grid container direction="column" alignItems="center" spacing={3} className="container" >
                         <Grid item>
                             <Link to="/">
                                 <img
@@ -160,20 +160,21 @@ const RegisterPage = ({snackbar}) => {
                                 Registrati
                             </Typography>
                         </Grid>
-                        <Grid item>
+                        <Grid item >
                             <TextField
                                 label="Nome"
                                 variant="outlined"
                                 fullWidth
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
-                                className="input"/><TextField
-                            label="Cognome"
-                            variant="outlined"
-                            fullWidth
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            className="input"/>
+                                className="input" />
+                            <TextField
+                                label="Cognome"
+                                variant="outlined"
+                                fullWidth
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                className="input" />
 
                             <TextField
                                 label="Email"
@@ -181,14 +182,14 @@ const RegisterPage = ({snackbar}) => {
                                 fullWidth
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="input"/>
+                                className="input" />
                             <TextField
                                 label="Nome utente"
                                 variant="outlined"
                                 fullWidth
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="input"/>
+                                className="input" />
                             <TextField
                                 label="Password"
                                 variant="outlined"
@@ -196,21 +197,22 @@ const RegisterPage = ({snackbar}) => {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="input"/><TextField
-                            label="Conferma password"
-                            variant="outlined"
-                            fullWidth
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="input"/>
-                            <Typography style={{paddingLeft: "10%"}} variant="body2">Immagine Profilo</Typography>
+                                className="input" />
+                            <TextField
+                                label="Conferma password"
+                                variant="outlined"
+                                fullWidth
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="input" />
+                            <Typography style={{ paddingLeft: "10%" }} variant="body2">Immagine Profilo</Typography>
                             <TextField
                                 type="file"
                                 variant="outlined"
                                 fullWidth
                                 onChange={(e) => handleProfileImageChange(e)}
-                                className="input"/>
+                                className="input" />
                             <Button
                                 variant="contained"
                                 fullWidth
@@ -220,7 +222,7 @@ const RegisterPage = ({snackbar}) => {
                                 Avanti
                             </Button>
                         </Grid>
-                        <Grid item>
+                        <Grid item >
                             <Typography variant="body2">
                                 Hai già un account? <Link to="/login" className='link'>Accedi qui</Link>
                             </Typography>
