@@ -92,20 +92,28 @@ export default function SearchResults({user, snackbar}) {
                 <div>
                     {/* Sezione Brani */}
                     {searchResults.tracks && searchResults.tracks.length > 0 && (
-                        <h2>Brani</h2>
+                        <div>
+                            <h2>Brani</h2>
+                            <div style={{ height: '50vh', padding: "0 0 0 20px" }}>
+                                <Scrollbar>
+                                    {searchResults.tracks.map((track, index) => (
+                                        <Track
+                                            key={track.id}
+                                            userPlaylists={user.my_playlists?.concat(user.playlists)}
+                                            currentAudioElement={currentAudioElement}
+                                            setCurrentAudioElement={setCurrentAudioElement}
+                                            track={track}
+                                            currentPlayingIndex={currentPlayingIndex}
+                                            setCurrentPlayingIndex={setCurrentPlayingIndex}
+                                            index={index + 1}
+                                            snackbar={snackbar}
+                                        />
+                                    ))}
+                                </Scrollbar>
+                            </div>
+                        </div>
                     )}
-                    <div style={{height: '50vh', padding: " 0 0 0 20px"}}>
-                        <Scrollbar>
-                            {searchResults.tracks?.map((track, index) => (
-                                <Track key={track.id} userPlaylists={user.my_playlists?.concat(user.playlists)}
-                                       currentAudioElement={currentAudioElement}
-                                       setCurrentAudioElement={setCurrentAudioElement}
-                                       track={track} currentPlayingIndex={currentPlayingIndex}
-                                       setCurrentPlayingIndex={setCurrentPlayingIndex} index={index + 1}
-                                       snackbar={snackbar}></Track>
-                            ))}
-                        </Scrollbar>
-                    </div>
+
 
                     {/* Sezione Album */}
                     {searchResults.albums && searchResults.albums.length > 0 && (
