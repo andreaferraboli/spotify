@@ -132,7 +132,9 @@ body,
     background-color: var(--secondary-color);
     color: black;
 }
-
+.visible-icon{
+  color:var(--text-color);
+}
 
 @media screen and (max-width: 600px) {
   .container {

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import axios from 'axios';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LoadArtist from "../components/LoadArtist"
 import LoadGenres from "../components/LoadGenres"
 
@@ -21,6 +25,15 @@ const RegisterPage = ({ snackbar }) => {
     const [loadGenres, setLoadGenres] = useState(false);
     const [loadArtist, setLoadArtist] = useState(false);
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+    const toggleShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
     const navigate = useNavigate();
     const getFavouriteArtists = () => {
         return favouriteArtists.length;
@@ -194,18 +207,46 @@ const RegisterPage = ({ snackbar }) => {
                                 label="Password"
                                 variant="outlined"
                                 fullWidth
-                                type="password"
+                                type={showPassword ? 'text' : 'password'} // Cambia il tipo in base a showPassword
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="input" />
+                                className="input"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="Toggle password visibility"
+                                                onClick={toggleShowPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
                             <TextField
                                 label="Conferma password"
                                 variant="outlined"
                                 fullWidth
-                                type="password"
+                                type={showConfirmPassword ? 'text' : 'password'} // Cambia il tipo in base a showPassword
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="input" />
+                                className="input"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="Toggle password visibility"
+                                                onClick={toggleShowConfirmPassword}
+                                                edge="end"
+                                            >
+                                                {showConfirmPassword ? <VisibilityIcon className="visible-icon" /> : <VisibilityOffIcon className="visible-icon" />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
                             <Typography style={{ paddingLeft: "10%" }} variant="body2">Immagine Profilo</Typography>
                             <TextField
                                 type="file"
