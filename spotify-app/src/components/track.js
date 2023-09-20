@@ -6,6 +6,8 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import axios from 'axios';
 import "../styles/track.css";
 
+let currentAudioElement = null;
+let currentPlayingIndex= null;
 const Track = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -14,14 +16,29 @@ const Track = (props) => {
     const navigate = useNavigate();
     const toggleAudio = () => {
         if (!props.track.preview_url) {
-            props.snackbar("anteprima canzone non disponibile", "warning");
+            props.snackbar("Anteprima canzone non disponibile", "warning");
             return;
         }
+
+        // Se c'è un elemento audio corrente, interrompilo
+        if (currentAudioElement) {
+            console.log("current audio", currentAudioElement)
+            currentAudioElement.pause();
+        }
+
+        // Crea un nuovo elemento audio con la nuova URL della canzone
+        const audioElement = new Audio(props.track.preview_url);
+
+        // Imposta l'elemento audio corrente sulla variabile globale
+        currentAudioElement = audioElement;
+        console.log("current audio dopo set",currentAudioElement)
+
         if (isPlaying) {
             audioElement.pause();
         } else {
             audioElement.play();
         }
+
         setIsPlaying(!isPlaying);
     };
 
@@ -73,7 +90,7 @@ const Track = (props) => {
                 <Grid xs={1} sm={1} item className="image-container-wrapper" onClick={toggleAudio}>
                     <div className={`image-container ${isPlaying ? 'playing' : ''}`}
                         style={{ backgroundImage: `url(${props.track.image})` }}>
-                        {isPlaying ? (
+                        {isPlaying && props.index === currentPlayingIndex ? (
                             <div className="play-icon-div">
                                 <PlayCircleOutlineIcon className="play-icon" />
                             </div>
