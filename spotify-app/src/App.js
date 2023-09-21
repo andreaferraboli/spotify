@@ -35,6 +35,8 @@ function App() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
+    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
     const Alert = React.forwardRef(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -149,6 +151,9 @@ function App() {
                                                 onClose={closeDrawer}
                                             >
                                                 <SideBar
+                                                    user={user._id}
+                                                    currentAudioElement={currentAudioElement}
+                                                    setCurrentAudioElement={setCurrentAudioElement}
                                                     playlists={user?.my_playlists}
                                                     public_playlists={user?.playlists}
                                                     onPlaylistClick={handlePlaylistClick}
@@ -157,6 +162,9 @@ function App() {
                                             </Drawer>
                                         ) : (
                                             <SideBar
+                                                user={user._id}
+                                                currentAudioElement={currentAudioElement}
+                                                setCurrentAudioElement={setCurrentAudioElement}
                                                 playlists={user?.my_playlists}
                                                 public_playlists={user?.playlists}
                                                 onPlaylistClick={handlePlaylistClick}
@@ -168,7 +176,8 @@ function App() {
                                 <Grid style={{height: "100vh"}} item xs={12} md={10.5} lg={10.5}>
                                     {!isLoginPage && !isRegisterPage &&
                                         <Navbar user={user} setQuery={setQuery} onDrawerToggle={handleDrawerToggle}
-                                                isSmallScreen={isSmallScreen}/>}
+                                                isSmallScreen={isSmallScreen} currentAudioElement={currentAudioElement}
+                                                setCurrentAudioElement={setCurrentAudioElement}/>}
 
                                     <Scrollbar style={{height: "94vh", marginBottom: "5%"}}>
                                         <Routes>
@@ -176,12 +185,14 @@ function App() {
                                                                                  snackbar={showSnackbar}/>}/>
                                             <Route path="/register" element={<Register snackbar={showSnackbar}/>}/>
                                             <Route path="/search/:query"
-                                                   element={<Search user={user} snackbar={showSnackbar}/>}/>
+                                                   element={<Search user={user} snackbar={showSnackbar}  currentAudioElement={currentAudioElement}
+                                                   setCurrentAudioElement={setCurrentAudioElement}/>}/>
                                             <Route path="/searchTrack/:idTrack"
                                                    element={<SearchTrack user={user} snackbar={showSnackbar}/>}/>
 
                                             <Route path="/newPlaylist"
-                                                   element={<NewPlaylist user={user} snackbar={showSnackbar}/>}/>
+                                                   element={<NewPlaylist user={user} snackbar={showSnackbar}  currentAudioElement={currentAudioElement}
+                                                   setCurrentAudioElement={setCurrentAudioElement}/>}/>
                                             <Route path="/myAccount"
                                                    element={<Account user={user} handleLogin={handleLogin}
                                                                      snackbar={showSnackbar}/>}/>
@@ -194,12 +205,14 @@ function App() {
                                                 element={<Playlist
                                                     user={user}
                                                     playlistId={selectedPlaylistId}
-                                                    snackbar={showSnackbar}/>}/>
+                                                    snackbar={showSnackbar}  currentAudioElement={currentAudioElement}
+                                                    setCurrentAudioElement={setCurrentAudioElement}/>}/>
                                             <Route
                                                 path="/album/:albumId"
                                                 element={<Album
                                                     user={user}
-                                                    snackbar={showSnackbar}/>}/>
+                                                    snackbar={showSnackbar}  currentAudioElement={currentAudioElement}
+                                                    setCurrentAudioElement={setCurrentAudioElement}/>}/>
                                             <Route
                                                 path="/track/:trackId"
                                                 element={<Track
@@ -209,7 +222,8 @@ function App() {
                                                 element={<Artist
                                                     user={user}
                                                     artistId={selectedArtistId}
-                                                    snackbar={showSnackbar}/>}/>
+                                                    snackbar={showSnackbar}  currentAudioElement={currentAudioElement}
+                                                    setCurrentAudioElement={setCurrentAudioElement}/>}/>
                                             <Route
                                                 path="/"
                                                 element={

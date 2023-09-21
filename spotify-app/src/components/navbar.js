@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {alpha, styled} from "@mui/material/styles";
-import {IconButton} from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { alpha, styled } from "@mui/material/styles";
+import { IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,7 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import NavigationButtons from "./NavigationButtons";
 import "../styles/navbar.css";
 
-const Search = styled("div")(({theme}) => ({
+const Search = styled("div")(({ theme }) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -27,7 +27,7 @@ const Search = styled("div")(({theme}) => ({
     },
 }));
 
-const SearchIconWrapper = styled("div")(({theme}) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: "100%",
     position: "absolute",
@@ -37,7 +37,7 @@ const SearchIconWrapper = styled("div")(({theme}) => ({
     justifyContent: "center",
 }));
 
-const StyledInputBase = styled(InputBase)(({theme}) => ({
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: "inherit",
     "& .MuiInputBase-input": {
         padding: theme.spacing(1, 1, 1, 0),
@@ -64,6 +64,8 @@ export default function Navbar(props) {
     }, [searchText, props]);
 
     const handleInputChange = (event) => {
+        props.currentAudioElement?.pause()
+        props.setCurrentAudioElement(null)
         setSearchText(event.target.value);
     };
     let profile = props.user ?? {};
@@ -87,10 +89,11 @@ export default function Navbar(props) {
                                     aria-label="menu"
                                     onClick={props.onDrawerToggle}
                                 >
-                                    <MenuIcon/>
+                                    <MenuIcon />
                                 </IconButton>
                             )}
-                            <NavigationButtons/>
+                            <NavigationButtons currentAudioElement={props.currentAudioElement}
+                                setCurrentAudioElement={props.setCurrentAudioElement} />
                             <Box
                                 sx={{
                                     display: "flex",
@@ -101,19 +104,22 @@ export default function Navbar(props) {
                             >
                                 <Search>
                                     <SearchIconWrapper>
-                                        <SearchIcon/>
+                                        <SearchIcon />
                                     </SearchIconWrapper>
                                     <StyledInputBase
                                         placeholder="Search…"
-                                        inputProps={{"aria-label": "search"}}
+                                        inputProps={{ "aria-label": "search" }}
                                         onChange={handleInputChange}
                                     />
                                 </Search>
                             </Box>
                             <Box>
-                                <Link to={profileLink} style={{textDecoration: "none"}}>
+                                <Link to={profileLink} style={{ textDecoration: "none" }} onClick={() => {
+                                    props.currentAudioElement?.pause();
+                                    props.setCurrentAudioElement(null)
+                                }}>
                                     <Chip
-                                        avatar={<Avatar alt={profile_name} src={image}/>}
+                                        avatar={<Avatar alt={profile_name} src={image} />}
                                         label={profile_name}
                                         variant="outlined"
                                         className="customLabel"

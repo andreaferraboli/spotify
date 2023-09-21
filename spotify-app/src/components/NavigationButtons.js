@@ -5,15 +5,19 @@ import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRound
 import {useNavigate} from 'react-router-dom';
 import "../styles/navbar.css";
 
-function NavigationButtons() {
+function NavigationButtons(props) {
     const navigate = useNavigate();
 
     const handleGoBack = () => {
         navigate(-1); // Naviga all'indietro nella cronologia
+        props.currentAudioElement?.pause()
+        props.setCurrentAudioElement(null)
     };
 
     const handleGoForward = () => {
         navigate(1); // Naviga avanti nella cronologia
+        props.currentAudioElement?.pause()
+        props.setCurrentAudioElement(null)
     };
 
     return (

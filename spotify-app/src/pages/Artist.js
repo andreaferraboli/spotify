@@ -9,13 +9,12 @@ import {responsive} from "./Search"
 import Album from "../components/Album"
 import Track from "../components/track"
 
-const Artist = ({user, snackbar}) => {
+const Artist = ({user, snackbar, currentAudioElement,setCurrentAudioElement }) => {
     const {artistId} = useParams(); // Ottieni l'id dell'artista dall'URL della pagina
     const [artist, setArtist] = useState([{}]);
     const [query, setQuery] = useState("");
     const [tracks, setTracks] = useState([]);
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
-    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {

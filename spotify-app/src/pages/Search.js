@@ -60,11 +60,10 @@ export const responsiveArtist = {
     }
 };
 
-export default function SearchResults({user, snackbar}) {
+export default function SearchResults({user, snackbar, currentAudioElement,setCurrentAudioElement}) {
     const {query} = useParams(); // Preleva la query dall'URL
     const [searchResults, setSearchResults] = useState(null);
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
-    const [currentAudioElement, setCurrentAudioElement] = useState(null);
 
     const apiKey = process.env.REACT_APP_API_KEY;
 

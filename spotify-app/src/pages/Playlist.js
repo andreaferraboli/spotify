@@ -22,14 +22,13 @@ export function formatDuration(milliseconds) {
     return `${hours} ore e ${minutes} minuti`;
 }
 
-const Playlist = ({user, snackbar}) => {
+const Playlist = ({user, snackbar, currentAudioElement,setCurrentAudioElement}) => {
     const {playlistId} = useParams();
     const [playlist, setPlaylist] = useState();
     const [editing, setEditing] = useState(false);
     const [isAddingTag, setIsAddingTag] = useState(false);
     const [newTag, setNewTag] = useState('');
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
-    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
 
     const navigate = useNavigate();
@@ -500,8 +499,18 @@ const Playlist = ({user, snackbar}) => {
                     )}
                 </Grid>
                 {editing ? (
-                    <UpdatePlaylist user={user} playlist={playlist} snackbar={snackbar}
-                                    onClose={() => setEditing(false)}/>
+                    <>
+                       {currentAudioElement?.pause()}
+                       {setCurrentAudioElement(null)}
+                       <UpdatePlaylist
+                         user={user}
+                         playlist={playlist}
+                         snackbar={snackbar}
+                         onClose={() => setEditing(false)}
+                         currentAudioElement={currentAudioElement}
+                         setCurrentAudioElement={setCurrentAudioElement}
+                       />
+                     </>
                 ) : (
                     <div className="top-tracks-section">
                         <Grid container spacing={2}>

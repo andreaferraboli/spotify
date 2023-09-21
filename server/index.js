@@ -1141,18 +1141,28 @@ app.delete("/deleteProfile/:id", authenticateApiKey, async (req, res) => {
   const userId = req.params.id;
   try {
     const pwmClient = await new mongoClient(uri).connect();
-    const user = await pwmClient
-      .db("spotify").collection('users').findOneAndDelete({
-        _id: new ObjectId(userId),
-      });
     await pwmClient.db("spotify").collection('public_playlists').updateMany(
       { "followers": userId },
       { $pull: { "followers": userId } }
     )
+    const playlists = await pwmClient
+      .db("spotify")
+      .collection('public_playlists')
+      .find({ "owner.id": userId }, { projection: { _id: 0, id: 1 } })
+      .toArray();
+
+    const deletedPlaylistIds = playlists.map(playlist => playlist.id);
     await pwmClient.db("spotify").collection('public_playlists').deleteMany(
       { "owner.id": userId }
     )
-
+    // Emetti separatamente ciascun ID di playlist eliminata
+    deletedPlaylistIds?.forEach(deletedPlaylistId => {
+      io.emit('playlistDeleted', { playlistId: deletedPlaylistId });
+    });
+    const user = await pwmClient
+      .db("spotify").collection('users').findOneAndDelete({
+        _id: new ObjectId(userId),
+      });
     res.status(200).json({ message: "Profilo eliminato con successo." });
   } catch (error) {
     res.status(500).json({ message: "Errore durante l'eliminazione del profilo." });

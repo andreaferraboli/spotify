@@ -9,7 +9,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import axios from 'axios';
 import {formatDuration} from "../pages/Playlist"
 
-function NewPlaylist({user, snackbar}) {
+function NewPlaylist({user, snackbar, currentAudioElement,setCurrentAudioElement}) {
     const [searchResults, setSearchResults] = useState([]);
     const [localPlaylist, setLocalPlaylist] = useState({
         id: "",
@@ -22,7 +22,7 @@ function NewPlaylist({user, snackbar}) {
     const [searchValue, setSearchValue] = useState('');
     const [playlistId, setPlaylistId] = useState('');
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
-    const [currentAudioElement, setCurrentAudioElement] = useState(null);
+
     const apiKey = process.env.REACT_APP_API_KEY;
     useEffect(() => {
         async function fetchPlaylistId() {

@@ -6,10 +6,9 @@ import axios from 'axios';
 import {formatDuration} from "./Playlist"
 import "../styles/album.css"; // Assumi che tu abbia uno stile CSS per l'album
 
-const Album = ({user, snackbar}) => {
+const Album = ({user, snackbar, currentAudioElement,setCurrentAudioElement}) => {
     const {albumId} = useParams();
     const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
-    const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const [album, setAlbum] = useState();
 
     useEffect(() => {

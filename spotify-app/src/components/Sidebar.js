@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Sidebar.css";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SidebarOption from "./SidebarOption";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -25,10 +25,21 @@ function Sidebar(props) {
             <div></div>
 
             <div className="div-icons">
-                <SidebarOption Icon={HomeIcon} option="Home" navigateTo="/"/>
-                <SidebarOption Icon={SearchIcon} option="Search" navigateTo="/search"/>
-                <SidebarOption Icon={LibraryMusicIcon} option="Your Library" navigateTo="/myLibrary"/>
-                <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" navigateTo="/newPlaylist"/>
+                <SidebarOption Icon={HomeIcon} option="Home" navigateTo="/" currentAudioElement={props.currentAudioElement}
+                                       setCurrentAudioElement={props.setCurrentAudioElement}/>
+                <SidebarOption Icon={SearchIcon} option="Search" navigateTo="/search" currentAudioElement={props.currentAudioElement}
+                                       setCurrentAudioElement={props.setCurrentAudioElement} />
+                {
+                    (props.user !== undefined && props.user !== null && props.user!=="undefined") && (
+                        <>
+                            <SidebarOption Icon={LibraryMusicIcon} option="Your Library" navigateTo="/myLibrary" currentAudioElement={props.currentAudioElement}
+                                       setCurrentAudioElement={props.setCurrentAudioElement} />
+                            <SidebarOption Icon={PlaylistAddIcon} option="Add Playlist" navigateTo="/newPlaylist" currentAudioElement={props.currentAudioElement}
+                                       setCurrentAudioElement={props.setCurrentAudioElement} />
+                        </>
+                    )
+                }
+
 
             </div>
             <div className="div-text">
@@ -38,11 +49,13 @@ function Sidebar(props) {
                 <Scrollbar>
                     {playlists?.map((playlist) => (
                         <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id}
-                                       option={playlist.name}/>
+                            option={playlist.name} currentAudioElement={props.currentAudioElement}
+                            setCurrentAudioElement={props.setCurrentAudioElement}/>
                     ))}
                     {props.public_playlists?.map((playlist) => (
                         <SidebarOption key={playlist.id} navigateTo={"/playlist/" + playlist.id} option={playlist.name}
-                                       public={true}/>
+                            public={true} currentAudioElement={props.currentAudioElement}
+                            setCurrentAudioElement={props.setCurrentAudioElement}/>
                     ))}
                 </Scrollbar>
             </div>

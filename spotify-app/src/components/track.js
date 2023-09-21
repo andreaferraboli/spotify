@@ -22,14 +22,14 @@ const Track = (props) => {
 
         if (props.currentPlayingIndex === props.index) {
             // Se la traccia corrente è già in riproduzione, interrompi la riproduzione
-            props.currentAudioElement.pause();
+            props.currentAudioElement?.pause();
             setIsPlaying(false);
             props.setCurrentPlayingIndex(null); // Aggiorna l'indice corrente a null
             props.setCurrentAudioElement(null); // Imposta l'elemento audio corrente a null
         } else {
             // Se c'è un'altra traccia in riproduzione, interrompi la riproduzione
             if (props.currentAudioElement) {
-                props.currentAudioElement.pause();
+                props.currentAudioElement?.pause();
             }
 
             // Avvia la nuova traccia
@@ -39,6 +39,15 @@ const Track = (props) => {
             props.setCurrentAudioElement(audioElement); // Imposta l'elemento audio corrente
         }
     };
+    useEffect(() => {
+        // Quando il componente viene smontato, imposta l'elemento audio corrente a null
+        return () => {
+            if (props.currentAudioElement) {
+                props.currentAudioElement?.pause();
+            }
+            props.setCurrentAudioElement(null);
+        };
+    }, []);
 
     useEffect(() => {
         setAudioElement(new Audio(props.track.preview_url));
