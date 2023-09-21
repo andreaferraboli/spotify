@@ -4,6 +4,7 @@ import PlaylistCard from "../components/PlaylistCard"
 import ArtistCard from "../components/ArtistCard"
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import io from 'socket.io-client';
 import {responsive, responsiveArtist} from "./Search"
 import "../styles/home.css";
 
@@ -16,6 +17,43 @@ const Home = (props) => {
         // Chiamata alla funzione che ottiene le playlist correlate
         GetRelatedPlaylists(props.user._id);
     }, [props.user._id]);
+    useEffect(() => {
+        const socket = io('http://localhost:3100'); // Assicurati di utilizzare l'indirizzo corretto del tuo server
+
+        socket.on('connect', () => {
+            console.log('Connesso al server WebSocket');
+        });
+
+        socket.on('playlistRemovedHome', (data) => {
+             console.log("Ricevuta notifica di eliminazione della playlist");
+            // Verifica se l'ID della playlist aggiornata è quello della pagina visualizzata
+            const isPresenteInPublic = public_playlists.some(playlist => playlist.id === data.playlistId);
+            const isPresenteInFollowed = followed_playlists.some(playlist => playlist.id === data.playlistId);
+            if (isPresenteInPublic || isPresenteInFollowed) {
+                window.location.reload()
+            }
+        });
+        socket.on('playlistAddedHome', (data) => {
+                window.location.reload()
+        });
+
+        socket.on('playlistDeleted', (data) => {
+            // Verifica se l'ID della playlist eliminata è quello della pagina visualizzata
+            const isPresenteInPublic = public_playlists?.some(playlist => playlist.id === data.playlistId);
+            const isPresenteInFollowed = followed_playlists?.some(playlist => playlist.id === data.playlistId);
+            if (isPresenteInPublic || isPresenteInFollowed) {
+                window.location.reload()
+            }
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnesso dal server WebSocket');
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [public_playlists,followed_playlists]);
 
     const GetRelatedPlaylists = async (userId) => {
         const apiKey = process.env.REACT_APP_API_KEY;
@@ -23,8 +61,8 @@ const Home = (props) => {
             const response = await axios.get(`http://localhost:3100/relatedPlaylists/${userId}?apikey=${apiKey}`);
             if (response.status === 200) {
                 const data = response.data;
-                setPublicPlaylists(data.public_playlists.filter(item => item.owner.id !== userId) || []);
                 setFollowedPlaylists(data.followed_playlists || []);
+                setPublicPlaylists(data.public_playlists.filter(item => (item.owner.id !== userId && !data.followed_playlists.some(followed=> followed.id===item.id))) || []);
                 setYourPublicPlaylists(data.your_public_playlists || []);
             } else {
                 props.snackbar('Error fetching related playlists', "error");

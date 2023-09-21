@@ -51,9 +51,18 @@ io.on('connection', (socket) => {
     // Emetti un evento a tutti i client connessi per notificare l'aggiornamento
     io.emit('playlistUpdated', data);
   });
+  socket.on('removedPlaylistHome', (data) => {
+    // Emetti un evento a tutti i client connessi per notificare l'aggiornamento
+    io.emit('playlistRemovedHome', data);
+  });
+  socket.on('addedPlaylistHome', (data) => {
+    // Emetti un evento a tutti i client connessi per notificare l'aggiornamento
+    io.emit('playlistAddedHome', data);
+  });
   socket.on('deletePlaylist', (data) => {
     io.emit('playlistDeleted', data);
   });
+
 
 });
 function authenticateApiKey(req, res, next) {
@@ -1028,6 +1037,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
         });
         if (insertedPlaylist.insertedId !== null) {
           io.emit('playlistUpdated', { playlistId });
+          io.emit('playlistAddedHome', { playlistId });
           res.status(200).json({ message: "Playlist spostata con successo." });
         } else {
           res.status(500).json({ message: "Errore durante lo spostamento della playlist." });
@@ -1050,6 +1060,7 @@ app.put("/movePlaylist/:id", authenticateApiKey, async (req, res) => {
 
         if (insertedPlaylist.modifiedCount > 0) {
           io.emit('playlistUpdated', { playlistId });
+          io.emit('playlistRemovedHome', { playlistId });
           res.status(200).json({ message: "Playlist spostata con successo." });
         } else {
           res.status(500).json({ message: "Errore durante lo spostamento della playlist." });

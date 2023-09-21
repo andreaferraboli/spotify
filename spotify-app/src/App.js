@@ -35,7 +35,6 @@ function App() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('info');
-    const [currentPlayingIndex, setCurrentPlayingIndex] = useState(null);
     const [currentAudioElement, setCurrentAudioElement] = useState(null);
     const apiKey = process.env.REACT_APP_API_KEY;
     const Alert = React.forwardRef(function Alert(props, ref) {
@@ -78,15 +77,17 @@ function App() {
             // Chiamata alla funzione per ottenere le playlist quando il componente Sidebar viene montato
             fetchUser();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    
+    
+    const navigate = useNavigate(); // Hook per ottenere la funzione di navigazione
     useEffect(() => {
         if (query !== null && query !== undefined && query !== '')
             navigate(`/search/${query}`);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query])
-
-
-    const navigate = useNavigate(); // Hook per ottenere la funzione di navigazione
 
     const handlePlaylistClick = (playlistId) => {
         setSelectedPlaylistId(playlistId);

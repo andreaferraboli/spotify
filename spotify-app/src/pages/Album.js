@@ -28,6 +28,7 @@ const Album = ({user, snackbar, currentAudioElement,setCurrentAudioElement}) => 
         };
 
         fetchAlbum();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [albumId]);
 
     return (
